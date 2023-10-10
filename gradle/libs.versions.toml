@@ -31,6 +31,7 @@ protobuf = "3.24.3"
 protobufPlugin = "0.9.4"
 tiles = "1.2.0"
 tiles-material = "1.2.0"
+timber = "5.0.1"
 watchface-complications-data-source-ktx = "1.1.1"
 
 [libraries]
@@ -72,6 +73,7 @@ protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-
 protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
 tiles = { group = "androidx.wear.tiles", name = "tiles", version.ref = "tiles" }
 tiles-material = { group = "androidx.wear.tiles", name = "tiles-material", version.ref = "tiles-material" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }

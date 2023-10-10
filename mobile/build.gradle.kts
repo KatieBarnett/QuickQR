@@ -83,6 +83,8 @@ dependencies {
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
 
+    implementation(libs.timber)
+
     implementation(libs.play.services.code.scanner)
 
     testImplementation(libs.junit)
