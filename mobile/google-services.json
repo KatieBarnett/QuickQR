@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1001013685765",
+    "project_id": "quickqr-70d93",
+    "storage_bucket": "quickqr-70d93.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1001013685765:android:bb9c646b1b4561d3b6f66c",
+        "android_client_info": {
+          "package_name": "dev.veryniche.quickqr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBR9tlDelsG_AkC6D9Vth9H5gliFKPN7aI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
