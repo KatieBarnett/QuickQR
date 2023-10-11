@@ -29,6 +29,7 @@ material3 = "1.1.2"
 play-services-wearable = "18.1.0"
 protobuf = "3.24.3"
 protobufPlugin = "0.9.4"
+qrgenerator = "1.0.1"
 tiles = "1.2.0"
 tiles-material = "1.2.0"
 timber = "5.0.1"
@@ -49,7 +50,6 @@ compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "core-splashscreen" }
 datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
@@ -71,6 +71,7 @@ play-services-code-scanner = { group = "com.google.android.gms", name = "play-se
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "play-services-wearable" }
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
 protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
+qrgenerator = { group = "com.github.androidmads", name = "QRGenerator", version.ref = "qrgenerator" }
 tiles = { group = "androidx.wear.tiles", name = "tiles", version.ref = "tiles" }
 tiles-material = { group = "androidx.wear.tiles", name = "tiles-material", version.ref = "tiles-material" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }

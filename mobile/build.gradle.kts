@@ -86,6 +86,7 @@ dependencies {
     implementation(libs.timber)
 
     implementation(libs.play.services.code.scanner)
+    implementation(libs.qrgenerator)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

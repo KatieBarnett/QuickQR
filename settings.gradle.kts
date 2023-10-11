@@ -3,6 +3,11 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven("https://www.jitpack.io") {
+            content {
+                includeGroup("com.github.androidmads")
+            }
+        }
     }
 }
 dependencyResolutionManagement {
@@ -10,6 +15,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://www.jitpack.io") {
+            content {
+                includeGroup("com.github.androidmads")
+            }
+        }
     }
 }
 
