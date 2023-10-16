@@ -40,7 +40,6 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun QuickQRThemeMobileApp() {
         QuickQRTheme {
-            val navController = rememberNavController()
             val context = LocalContext.current
             val viewModel: MainViewModel = hiltViewModel()
             var barcodeContent by remember { mutableStateOf<String?>(null) }
@@ -51,15 +50,16 @@ class MainActivity : ComponentActivity() {
 
             Column {
                 Button(onClick = {
-                    val scanner =
-                        GmsBarcodeScanning.getClient(context, viewModel.barcodeScannerOptions)
+                    val scanner = GmsBarcodeScanning.getClient(context, viewModel.barcodeScannerOptions)
                     scanner.startScan()
                         .addOnSuccessListener { barcode ->
                             // Task completed successfully
                             Timber.d("got barcode ${barcode.displayValue}")
                             barcodeContent = barcode.displayValue
                             qrCodeBitmapBase64 = barcode.displayValue?.let {
-                                viewModel.createQRImage(it)
+                                val base64 = viewModel.createQRImage(it)
+                                Timber.d("got barcode base64 $base64")
+                                base64
                             }
                         }
                         .addOnCanceledListener {

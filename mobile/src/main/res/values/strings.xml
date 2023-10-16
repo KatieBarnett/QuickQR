@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Quick QR</string>
+
+    <string name="add_qr">Add QR Code</string>
+
 </resources>

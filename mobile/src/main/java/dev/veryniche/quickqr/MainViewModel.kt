@@ -21,8 +21,8 @@ class MainViewModel @Inject constructor(
 
     fun createQRImage(content: String): String {
         // Initializing the QR Encoder with your value to be encoded, type you required and Dimension
-        // Initializing the QR Encoder with your value to be encoded, type you required and Dimension
-        val qrgEncoder = QRGEncoder(content, null, QRGContents.Type.TEXT, 300)
+        val qrgEncoder = QRGEncoder("https://veryniche.dev/", null, QRGContents.Type.TEXT, 300)
+//        val qrgEncoder = QRGEncoder(content, null, QRGContents.Type.TEXT, 300)
 //        qrgEncoder.setColorBlack(Color.RED)
 //        qrgEncoder.setColorWhite(Color.BLUE)∂
             // Getting QR-Code as Bitmap∂
