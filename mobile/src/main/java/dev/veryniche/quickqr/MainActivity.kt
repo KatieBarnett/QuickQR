@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,15 +16,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import dagger.hilt.android.AndroidEntryPoint
+import dev.veryniche.quickqr.components.TileGrid
+import dev.veryniche.quickqr.core.Constants
 import dev.veryniche.quickqr.core.decodeImage
+import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import timber.log.Timber
 
@@ -48,8 +55,12 @@ class MainActivity : ComponentActivity() {
                 qrCodeBitmapBase64?.decodeImage()
             } }
 
-            Column {
-                Button(onClick = {
+            val tiles: List<QRCodeItem> by viewModel.tiles.collectAsStateWithLifecycle(listOf())
+
+            TileGrid(
+                tiles = tiles,
+                cellMinSize = 128.dp,
+                addTile = {
                     val scanner = GmsBarcodeScanning.getClient(context, viewModel.barcodeScannerOptions)
                     scanner.startScan()
                         .addOnSuccessListener { barcode ->
@@ -70,15 +81,43 @@ class MainActivity : ComponentActivity() {
                             // Task failed with an exception
                             Timber.e(e)
                         }
+                },
+                longPress = {},
+                modifier = Modifier.fillMaxSize(),
+            )
 
-                }) {
-                    Text("Scan barcode")
-                }
-                Text(barcodeContent.orEmpty(), color = MaterialTheme.colorScheme.primary)
-                qrCodeBitmap?.asImageBitmap()?.let {
-                    Image(it, barcodeContent.orEmpty())
-                }
-            }
+
+//            Column {
+//                Button(onClick = {
+//                    val scanner = GmsBarcodeScanning.getClient(context, viewModel.barcodeScannerOptions)
+//                    scanner.startScan()
+//                        .addOnSuccessListener { barcode ->
+//                            // Task completed successfully
+//                            Timber.d("got barcode ${barcode.displayValue}")
+//                            barcodeContent = barcode.displayValue
+//                            qrCodeBitmapBase64 = barcode.displayValue?.let {
+//                                val base64 = viewModel.createQRImage(it)
+//                                Timber.d("got barcode base64 $base64")
+//                                base64
+//                            }
+//                        }
+//                        .addOnCanceledListener {
+//                            // Task canceled
+//                            Timber.d("barcode cancelled")
+//                        }
+//                        .addOnFailureListener { e ->
+//                            // Task failed with an exception
+//                            Timber.e(e)
+//                        }
+//
+//                }) {
+//                    Text("Scan barcode")
+//                }
+//                Text(barcodeContent.orEmpty(), color = MaterialTheme.colorScheme.primary)
+//                qrCodeBitmap?.asImageBitmap()?.let {
+//                    Image(it, barcodeContent.orEmpty())
+//                }
+//            }
 
 
 //            var showWelcomeDialog by remember { mutableStateOf(true) }

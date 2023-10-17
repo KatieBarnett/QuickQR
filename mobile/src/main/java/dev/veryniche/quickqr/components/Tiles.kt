@@ -5,25 +5,19 @@ import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.twotone.Add
-import androidx.compose.material.icons.twotone.Email
-import androidx.compose.material.icons.twotone.Info
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,19 +28,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.core.Constants
+import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
 import dev.veryniche.quickqr.core.decodeImage
+import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 
 @Composable
@@ -54,13 +49,17 @@ fun SideQRCode(
     image: Bitmap,
     barcodeContent: String,
     background: Color,
+    contentColor: Color = MaterialTheme.colorScheme.onPrimary,
     modifier: Modifier = Modifier,
 ) {
-    Surface (
-        color = background,
+    ElevatedCard(
+        colors = CardDefaults.cardColors(
+            containerColor = background,
+            contentColor = contentColor
+        ),
         modifier = modifier.padding(Dimen.QRCodeDisplayPadding)
     ) {
-        Image(image.asImageBitmap(), barcodeContent)
+        Image(image.asImageBitmap(), barcodeContent, Modifier.fillMaxSize())
     }
 }
 
@@ -70,21 +69,49 @@ fun SideDetails(
     content: String?,
     icon: ImageVector,
     background: Color,
+    contentColor: Color = MaterialTheme.colorScheme.onPrimary,
     modifier: Modifier = Modifier,
 ) {
-    Surface (
-        color = background,
+    ElevatedCard(
+        colors = CardDefaults.cardColors(
+            containerColor = background,
+            contentColor = contentColor
+        ),
         modifier = modifier.padding(Dimen.QRCodeDisplayPadding)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier.padding(Dimen.QRDetailDisplayPadding)
+            modifier = Modifier
+                .padding(Dimen.QRDetailDisplayPadding)
+                .fillMaxSize()
         ) {
-            Image(icon, contentDescription = content, modifier = Modifier.fillMaxSize(0.3f))
-            Text(name)
+            Image(
+                icon,
+                colorFilter = ColorFilter.tint(contentColor),
+                contentDescription = content,
+                modifier = Modifier
+                    .fillMaxSize(0.3f)
+            )
+            Box(contentAlignment = Alignment.Center,
+                modifier = Modifier.weight(0.3f)){
+                ResponsiveText(
+                    text = name,
+                    textStyle = MaterialTheme.typography.displayLarge,
+                    textColor = contentColor,
+                    textAlign = TextAlign.Center,
+                )
+            }
             content?.let {
-                Text(content)
+                Box(contentAlignment = Alignment.Center,
+                    modifier = Modifier.weight(0.3f)) {
+                    ResponsiveText(
+                        text = content,
+                        textStyle = MaterialTheme.typography.displayMedium,
+                        textColor = contentColor,
+                        textAlign = TextAlign.Center,
+                    )
+                }
             }
         }
     }
@@ -101,6 +128,34 @@ fun SideAdd(modifier: Modifier) {
     )
 }
 
+@Composable
+fun Tile(
+    qrCodeItem: QRCodeItem,
+    modifier: Modifier = Modifier,
+) {
+    Tile(
+        sideFront = { modifier ->
+            SideDetails(
+                name = qrCodeItem.name,
+                content = qrCodeItem.content,
+                icon = qrCodeItem.icon,
+                background = qrCodeItem.primaryColor,
+                contentColor = qrCodeItem.secondaryColor,
+                modifier = modifier
+            )
+        },
+        sideBack = { modifier ->
+            SideQRCode(
+                image = qrCodeItem.imageBase64.decodeImage(),
+                barcodeContent = qrCodeItem.content,
+                background = qrCodeItem.primaryColor,
+                contentColor = qrCodeItem.secondaryColor,
+                modifier = modifier
+            )
+        },
+        modifier = modifier,
+    )
+}
 
 @Composable
 fun Tile(
@@ -135,7 +190,7 @@ fun Tile(
         }
     }
 
-    Box(modifier.clickable { showingFront = !(showingFront ?: false) }) {
+    Box(modifier.aspectRatio(1f).clickable { showingFront = !(showingFront ?: false) }) {
         val animatedModifier = Modifier
             .fillMaxSize()
             .graphicsLayer {
@@ -158,7 +213,7 @@ fun AddTile(
     onTap: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    SideAdd(modifier = modifier.clickable {
+    SideAdd(modifier = modifier.aspectRatio(1f).clickable {
         onTap.invoke()
     })
 }
@@ -167,9 +222,7 @@ fun AddTile(
 @Composable
 fun AddTilePreview() {
     QuickQRTheme {
-        Box(Modifier.aspectRatio(1f)) {
-            AddTile({}, Modifier.fillMaxSize())
-        }
+        AddTile({}, Modifier)
     }
 }
 
@@ -177,27 +230,9 @@ fun AddTilePreview() {
 @Composable
 fun TilePreview() {
     QuickQRTheme {
-        Box(Modifier.aspectRatio(1f)) {
-            Tile(
-                sideFront = { modifier ->
-                    SideDetails(
-                        name = Constants.sampleName,
-                        content = Constants.sampleUrl,
-                        icon = Icons.Outlined.Info,
-                        background = MaterialTheme.colorScheme.primary,
-                        modifier = modifier
-                    )
-                },
-                sideBack = { modifier ->
-                    SideQRCode(
-                        image = Constants.sampleQRCodeBase.decodeImage(),
-                        barcodeContent = Constants.sampleUrl,
-                        background = MaterialTheme.colorScheme.primary,
-                        modifier = modifier
-                    )
-                },
-                modifier = Modifier.fillMaxSize(),
-            )
-        }
+        Tile(
+            qrCodeItem = sampleQRCodeItem,
+            modifier = Modifier,
+        )
     }
 }
