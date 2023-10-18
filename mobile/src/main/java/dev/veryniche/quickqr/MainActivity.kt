@@ -5,6 +5,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
@@ -56,35 +59,40 @@ class MainActivity : ComponentActivity() {
             } }
 
             val tiles: List<QRCodeItem> by viewModel.tiles.collectAsStateWithLifecycle(listOf())
-
-            TileGrid(
-                tiles = tiles,
-                cellMinSize = 128.dp,
-                addTile = {
-                    val scanner = GmsBarcodeScanning.getClient(context, viewModel.barcodeScannerOptions)
-                    scanner.startScan()
-                        .addOnSuccessListener { barcode ->
-                            // Task completed successfully
-                            Timber.d("got barcode ${barcode.displayValue}")
-                            barcodeContent = barcode.displayValue
-                            qrCodeBitmapBase64 = barcode.displayValue?.let {
-                                val base64 = viewModel.createQRImage(it)
-                                Timber.d("got barcode base64 $base64")
-                                base64
-                            }
-                        }
-                        .addOnCanceledListener {
-                            // Task canceled
-                            Timber.d("barcode cancelled")
-                        }
-                        .addOnFailureListener { e ->
-                            // Task failed with an exception
-                            Timber.e(e)
-                        }
-                },
-                longPress = {},
-                modifier = Modifier.fillMaxSize(),
-            )
+            var cellsPerRow by remember { mutableStateOf(3) }
+            Box(Modifier) {
+                    TileGrid(
+                        tiles = tiles,
+                        cellsPerRow = cellsPerRow,
+                        addTile = {
+                            val scanner = GmsBarcodeScanning.getClient(
+                                context,
+                                viewModel.barcodeScannerOptions
+                            )
+                            scanner.startScan()
+                                .addOnSuccessListener { barcode ->
+                                    // Task completed successfully
+                                    Timber.d("got barcode ${barcode.displayValue}")
+                                    barcodeContent = barcode.displayValue
+                                    qrCodeBitmapBase64 = barcode.displayValue?.let {
+                                        val base64 = viewModel.createQRImage(it)
+                                        Timber.d("got barcode base64 $base64")
+                                        base64
+                                    }
+                                }
+                                .addOnCanceledListener {
+                                    // Task canceled
+                                    Timber.d("barcode cancelled")
+                                }
+                                .addOnFailureListener { e ->
+                                    // Task failed with an exception
+                                    Timber.e(e)
+                                }
+                        },
+                        longPress = {},
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
 
 
 //            Column {

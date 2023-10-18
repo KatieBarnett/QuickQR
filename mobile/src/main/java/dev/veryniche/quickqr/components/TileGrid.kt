@@ -19,13 +19,13 @@ import dev.veryniche.quickqr.core.theme.QuickQRTheme
 @Composable
 fun TileGrid(
     tiles: List<QRCodeItem>,
-    cellMinSize: Dp,
+    cellsPerRow: Int,
     addTile: () -> Unit,
     longPress: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = cellMinSize)
+        columns = GridCells.Fixed(cellsPerRow)
     ) {
         item {
             AddTile(addTile)
@@ -45,7 +45,7 @@ fun TileGridPreview() {
                 sampleQRCodeItem,sampleQRCodeItem,sampleQRCodeItem,sampleQRCodeItem,
                 sampleQRCodeItem,sampleQRCodeItem,sampleQRCodeItem,sampleQRCodeItem,
             ),
-            cellMinSize = 128.dp,
+            cellsPerRow = 3,
             addTile = {},
             longPress = {},
             modifier = Modifier.fillMaxSize(),
