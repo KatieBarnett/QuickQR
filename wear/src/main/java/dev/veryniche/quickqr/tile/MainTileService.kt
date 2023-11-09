@@ -2,6 +2,7 @@ package dev.veryniche.quickqr.tile
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -66,5 +67,6 @@ private fun tileLayout(context: Context): LayoutElementBuilders.LayoutElement {
 )
 @Composable
 fun TilePreview() {
+    Layout()
     LayoutRootPreview(root = tileLayout(LocalContext.current))
 }
