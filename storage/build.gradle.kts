@@ -3,21 +3,23 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.dagger.hilt.android)
+    alias(libs.plugins.protobuf)
     alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "dev.veryniche.quickqr.core"
     compileSdk = rootProject.extra["compileSdk"] as Int
 
     defaultConfig {
         minSdk = rootProject.extra["minSdk"] as Int
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
-    buildTypes {
+    buildTypes {        
+        debug {
+
+        }
         release {
             isMinifyEnabled = true
             proguardFiles(
@@ -33,29 +35,38 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
+    namespace = "dev.veryniche.quickqr.storage"
 }
 
 dependencies {
+    implementation(project(":core"))
 
     implementation(libs.core.ktx)
-    implementation(libs.appcompat)
-    implementation(libs.material)
     implementation(libs.hilt)
+
+    implementation(libs.datastore)
+    implementation(libs.protobuf.kotlin.lite)
+
+    implementation(libs.compose.ui)
+
     ksp(libs.hilt.compiler)
+}
 
-    implementation(platform(libs.compose.bom))
-    implementation(libs.compose.foundation)
-    implementation(libs.compose.material3)
-
-    implementation(libs.material.icons.extended)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
+// Setup protobuf configuration, generating lite Java and Kotlin classes
+protobuf {
+    protoc {
+        artifact = libs.protobuf.protoc.get().toString()
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                register("java") {
+                    option("lite")
+                }
+                register("kotlin") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }

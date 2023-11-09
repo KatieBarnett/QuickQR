@@ -2,13 +2,12 @@ package dev.veryniche.quickqr
 
 import android.app.Application
 import android.util.Log
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
-import timber.log.Timber.*
-import java.lang.RuntimeException
+import timber.log.Timber.DebugTree
+import timber.log.Timber.Tree
 
 
 @HiltAndroidApp

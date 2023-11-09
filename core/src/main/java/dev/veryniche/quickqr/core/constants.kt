@@ -1,14 +1,10 @@
 package dev.veryniche.quickqr.core
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import dev.veryniche.quickqr.core.model.Icon
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.theme.md_theme_light_onPrimary
 import dev.veryniche.quickqr.core.theme.md_theme_light_primary
+import java.util.Date
 
 object Constants {
     val sampleUrl = "https://veryniche.dev/"
@@ -18,11 +14,13 @@ object Constants {
             "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"
 
     val sampleQRCodeItem = QRCodeItem(
+        id = 0,
         name = sampleName,
         content = sampleUrl,
         imageBase64 = sampleQRCodeBase64,
-        icon = Icons.Outlined.Info,
+        icon = Icon.ADD_QR_CODE,
         primaryColor = md_theme_light_primary,
         secondaryColor = md_theme_light_onPrimary,
+        lastModified = Date()
     )
 }

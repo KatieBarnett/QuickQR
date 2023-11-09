@@ -12,9 +12,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
@@ -36,9 +33,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import dev.veryniche.quickqr.R
-import dev.veryniche.quickqr.core.Constants
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
 import dev.veryniche.quickqr.core.decodeImage
+import dev.veryniche.quickqr.core.model.Icon
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
@@ -122,7 +119,7 @@ fun SideAdd(modifier: Modifier) {
     SideDetails(
         name = stringResource(R.string.add_qr),
         content = null,
-        icon = Icons.Outlined.Add,
+        icon = Icon.ADD_QR_CODE.vector,
         background = MaterialTheme.colorScheme.primary,
         modifier = modifier
     )
@@ -138,7 +135,7 @@ fun Tile(
             SideDetails(
                 name = qrCodeItem.name,
                 content = qrCodeItem.content,
-                icon = qrCodeItem.icon,
+                icon = qrCodeItem.icon.vector,
                 background = qrCodeItem.primaryColor,
                 contentColor = qrCodeItem.secondaryColor,
                 modifier = modifier

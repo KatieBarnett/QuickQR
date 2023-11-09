@@ -27,3 +27,4 @@ rootProject.name = "Quick QR"
 include(":mobile")
 include(":wear")
 include(":core")
+include(":storage")

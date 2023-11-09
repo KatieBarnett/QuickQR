@@ -1,14 +1,10 @@
 package dev.veryniche.quickqr
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.veryniche.quickqr.core.Constants
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
 import dev.veryniche.quickqr.core.encodeImage
 import dev.veryniche.quickqr.core.model.QRCodeItem

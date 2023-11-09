@@ -93,4 +93,5 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     wearApp(project(":wear"))
     implementation(project(":core"))
+    implementation(project(":storage"))
 }

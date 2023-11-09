@@ -27,10 +27,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="dev.veryniche.quickqr" />
+                  <option name="mobileSdkAppId" value="1:1001013685765:android:bb9c646b1b4561d3b6f66c" />
+                  <option name="projectId" value="quickqr-70d93" />
+                  <option name="projectNumber" value="1001013685765" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
