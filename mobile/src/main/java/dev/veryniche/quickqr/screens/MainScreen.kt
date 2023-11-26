@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.veryniche.quickqr.MainViewModel
-import dev.veryniche.quickqr.components.AddNew
+import dev.veryniche.quickqr.components.Edit
 import dev.veryniche.quickqr.components.TileGrid
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import kotlinx.coroutines.launch
@@ -55,8 +55,10 @@ fun MainScreen() {
                 sheetState = sheetState
             ) {
                 // TODO get saved barcode in state and pass to Add New content
-                AddNew(
-                    onSaveClick = { },
+                Edit(
+                    onSaveClick = { name, content, icon, primaryColor, secondaryColor ->
+                        viewModel.processEdit(name, content, icon, primaryColor, secondaryColor)
+                    },
                     onScanClick = { viewModel.scanBarcode(context) },
                     onCloseClick = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion {

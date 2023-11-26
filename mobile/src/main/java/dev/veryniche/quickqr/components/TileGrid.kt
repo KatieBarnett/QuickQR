@@ -37,8 +37,14 @@ fun TileGridPreview() {
     QuickQRTheme {
         TileGrid(
             tiles = listOf(
-                sampleQRCodeItem,sampleQRCodeItem,sampleQRCodeItem,sampleQRCodeItem,
-                sampleQRCodeItem,sampleQRCodeItem,sampleQRCodeItem,sampleQRCodeItem,
+                sampleQRCodeItem,
+                sampleQRCodeItem,
+                sampleQRCodeItem,
+                sampleQRCodeItem,
+                sampleQRCodeItem,
+                sampleQRCodeItem,
+                sampleQRCodeItem,
+                sampleQRCodeItem,
             ),
             cellsPerRow = 3,
             addTile = {},

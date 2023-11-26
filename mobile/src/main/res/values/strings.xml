@@ -2,5 +2,8 @@
     <string name="app_name">Quick QR</string>
 
     <string name="add_qr">Add QR Code</string>
+    <string name="label_name">Name</string>
+    <string name="label_content">Content</string>
+    <string name="save_qr">Save Changes</string>
 
 </resources>
