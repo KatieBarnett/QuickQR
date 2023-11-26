@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.paparazzi)
 }
 
 android {
@@ -55,9 +56,7 @@ android {
 dependencies {
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
-    implementation(libs.play.services.wearable)
     implementation(libs.material)
-    implementation(libs.androidx.material3)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
@@ -94,4 +93,6 @@ dependencies {
     wearApp(project(":wear"))
     implementation(project(":core"))
     implementation(project(":storage"))
+    implementation(libs.showkase)
+    ksp(libs.showkase.processor)
 }

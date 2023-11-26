@@ -1,50 +1,47 @@
 [versions]
-activity-compose = "1.8.0"
-agp = "8.3.0-alpha09"
+activity-compose = "1.8.1"
+agp = "8.3.0-alpha14"
 androidx-test-ext-junit = "1.1.5"
 appcompat = "1.6.1"
 codeScanner = "16.1.0"
-compose-bom = "2023.10.00"
+compose-bom = "2023.10.01"
 compose-compiler = "1.5.3"
-compose-foundation = "1.2.0"
-compose-material = "1.2.0"
-composeNavigation = "2.7.4"
-constraintlayout = "2.1.4"
+composeNavigation = "2.7.5"
 core-ktx = "1.12.0"
 core-splashscreen = "1.0.1"
 datastore = "1.0.0"
-firebaseBom = "32.3.1"
+firebaseBom = "32.6.0"
 firebaseCrashlyticsPlugin = "2.9.9"
 googleServicesPlugin = "4.4.0"
 hilt = "2.48"
-hiltAndroidx = "1.0.0"
+hiltAndroidx = "1.1.0"
 horologist-compose-tools = "0.4.8"
 horologist-tiles = "0.4.8"
 junit = "4.13.2"
 kotlin = "1.9.10"
 kspPlugin = "1.9.10-1.0.13"
 lifecycle = "2.6.2"
+lifecycleRuntimeCompose = "2.6.2"
 material = "1.10.0"
-material3 = "1.1.2"
+paparazziPlugin = "1.3.1"
 play-services-wearable = "18.1.0"
 protobuf = "3.24.3"
 protobufPlugin = "0.9.4"
 qrgenerator = "1.0.1"
+showkase = "1.0.0-beta18"
 tiles = "1.2.0"
 tiles-material = "1.2.0"
 timber = "5.0.1"
 watchface-complications-data-source-ktx = "1.1.1"
-lifecycleRuntimeCompose = "2.6.2"
 
 [libraries]
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 compose-animation = { group = "androidx.compose.animation", name = "animation" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
-compose-foundation = { group = "androidx.wear.compose", name = "compose-foundation", version.ref = "compose-foundation" }
-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "compose-material" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3"}
 compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavigation" }
 compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
@@ -70,20 +67,23 @@ lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 play-services-code-scanner = { group = "com.google.android.gms", name = "play-services-code-scanner", version.ref = "codeScanner" }
-play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "play-services-wearable" }
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
 protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
 qrgenerator = { group = "com.github.androidmads", name = "QRGenerator", version.ref = "qrgenerator" }
-tiles = { group = "androidx.wear.tiles", name = "tiles", version.ref = "tiles" }
-tiles-material = { group = "androidx.wear.tiles", name = "tiles-material", version.ref = "tiles-material" }
+showkase = { group = "com.airbnb.android", name = "showkase", version.ref = "showkase" }
+showkase-processor = { group = "com.airbnb.android", name = "showkase-processor", version.ref = "showkase" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-watchface-complications-data-source-ktx = { group = "androidx.wear.watchface", name = "watchface-complications-data-source-ktx", version.ref = "watchface-complications-data-source-ktx" }
-androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+wear-compose-foundation = { group = "androidx.wear.compose", name = "compose-foundation" }
+wear-compose-material = { group = "androidx.wear.compose", name = "compose-material" }
+wear-play-services = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "play-services-wearable" }
+wear-tiles = { group = "androidx.wear.tiles", name = "tiles", version.ref = "tiles" }
+wear-tiles-material = { group = "androidx.wear.tiles", name = "tiles-material", version.ref = "tiles-material" }
+wear-watchface-complications-data-source-ktx = { group = "androidx.wear.watchface", name = "watchface-complications-data-source-ktx", version.ref = "watchface-complications-data-source-ktx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -93,5 +93,6 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServicesPlugin" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kspPlugin" }
+paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazziPlugin" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 
