@@ -53,7 +53,7 @@ dependencies {
     implementation(libs.wear.play.services)
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
-    implementation(libs.ui.tooling.preview)
+    implementation(libs.compose.ui.tooling.preview)
     implementation(libs.wear.compose.material)
     implementation(libs.wear.compose.foundation)
     implementation(libs.activity.compose)
@@ -66,7 +66,7 @@ dependencies {
     implementation(project(":core"))
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
-    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
     wearApp(project(":wear"))
 }

@@ -76,8 +76,6 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 wear-compose-foundation = { group = "androidx.wear.compose", name = "compose-foundation" }
 wear-compose-material = { group = "androidx.wear.compose", name = "compose-material" }
 wear-play-services = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "play-services-wearable" }
