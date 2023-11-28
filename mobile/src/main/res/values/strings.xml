@@ -5,5 +5,7 @@
     <string name="label_name">Name</string>
     <string name="label_content">Content</string>
     <string name="save_qr">Save Changes</string>
+    <string name="navigate_back">Back</string>
+    <string name="navigate_about">About</string>
 
 </resources>
