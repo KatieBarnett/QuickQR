@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import com.airbnb.android.showkase.models.Showkase
 import com.airbnb.android.showkase.models.ShowkaseBrowserComponent
 import com.android.resources.NightMode
-import dev.katiebarnett.welcometoflip.showkase.getMetadata
+import dev.veryniche.quickqr.showkase.getMetadata
 import org.junit.runners.Parameterized
 
 class ComponentPreview(
