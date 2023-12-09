@@ -4,12 +4,13 @@ import android.graphics.Bitmap
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -31,9 +33,12 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
 import dev.veryniche.quickqr.core.decodeImage
@@ -41,6 +46,8 @@ import dev.veryniche.quickqr.core.model.Icon
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
+import dev.veryniche.quickqr.previews.TilePreview
+import timber.log.Timber
 
 @Composable
 fun SideQRCode(
@@ -62,7 +69,7 @@ fun SideQRCode(
             contentDescription = barcodeContent,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(Dimen.QRCodeDisplayPadding)
+                .padding(Dimen.qRCodeDisplayPadding)
         )
     }
 }
@@ -81,13 +88,13 @@ fun SideDetails(
             containerColor = background,
             contentColor = contentColor
         ),
-        modifier = modifier.padding(Dimen.QRCodeDisplayPadding)
+        modifier = modifier
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
-                .padding(Dimen.QRDetailDisplayPadding)
+                .padding(Dimen.qRDetailDisplayPadding)
                 .fillMaxSize()
         ) {
             Image(
@@ -96,22 +103,27 @@ fun SideDetails(
                 contentDescription = content,
                 modifier = Modifier.fillMaxSize(0.3f)
             )
-            Spacer(modifier = Modifier.weight(0.1f))
-            Text(
-                text = name,
-                color = contentColor,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.weight(0.3f)
-            )
-            content?.let {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.weight(0.3f)) {
                 Text(
-                    text = it,
+                    text = name,
                     color = contentColor,
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.weight(0.3f)
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier
                 )
+            }
+            content?.let {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.weight(0.3f)) {
+                    Text(
+                        text = it,
+                        color = contentColor,
+                        textAlign = TextAlign.Center,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier
+                    )
+                }
             }
         }
     }
@@ -131,6 +143,8 @@ fun SideAdd(modifier: Modifier) {
 @Composable
 fun Tile(
     qrCodeItem: QRCodeItem,
+    longPressDetail: (QRCodeItem) -> Unit,
+    longPressCode: (QRCodeItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Tile(
@@ -153,39 +167,46 @@ fun Tile(
                 modifier = modifier
             )
         },
+        longPressDetail = {
+            longPressDetail.invoke(qrCodeItem)
+        },
+        longPressCode = {
+            longPressCode.invoke(qrCodeItem)
+        },
         modifier = modifier,
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Tile(
     sideFront: @Composable (Modifier) -> Unit,
     sideBack: @Composable (Modifier) -> Unit,
+    longPressDetail: () -> Unit,
+    longPressCode: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showingFront by remember { mutableStateOf<Boolean?>(null) }
     var flipRotation by remember { mutableFloatStateOf(0f) }
     val animationSpecFlip = tween<Float>(1000, easing = CubicBezierEasing(0.4f, 0.0f, 0.8f, 0.8f))
-
-    showingFront?.let {
-        LaunchedEffect(showingFront) {
-            if (showingFront != false) {
-                // Do the flip
-                animate(
-                    initialValue = 0f,
-                    targetValue = 180f,
-                    animationSpec = animationSpecFlip
-                ) { value: Float, _: Float ->
-                    flipRotation = value
-                }
-            } else {
-                animate(
-                    initialValue = 180f,
-                    targetValue = 0f,
-                    animationSpec = animationSpecFlip
-                ) { value: Float, _: Float ->
-                    flipRotation = value
-                }
+    val haptics = LocalHapticFeedback.current
+    LaunchedEffect(showingFront) {
+        if (showingFront == false) {
+            // Do the flip
+            animate(
+                initialValue = 0f,
+                targetValue = 180f,
+                animationSpec = animationSpecFlip
+            ) { value: Float, _: Float ->
+                flipRotation = value
+            }
+        } else if (showingFront == true) {
+            animate(
+                initialValue = 180f,
+                targetValue = 0f,
+                animationSpec = animationSpecFlip
+            ) { value: Float, _: Float ->
+                flipRotation = value
             }
         }
     }
@@ -193,7 +214,21 @@ fun Tile(
     Box(
         modifier
             .aspectRatio(1f)
-            .clickable { showingFront = !(showingFront ?: false) }
+            .combinedClickable(
+                onClick = {
+                    Timber.d("Calling onClick $showingFront to ${!(showingFront ?: true)}")
+                    showingFront = !(showingFront ?: true)
+                },
+                onLongClick = {
+                    Timber.d("Calling onLongClick $showingFront")
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    if (showingFront != false) {
+                        longPressDetail.invoke()
+                    } else {
+                        longPressCode.invoke()
+                    }
+                }
+            )
     ) {
         val animatedModifier = Modifier
             .fillMaxSize()
@@ -228,15 +263,27 @@ fun AddTile(
     )
 }
 
- @Preview
- @Composable
- fun AddTilePreview() {
+@TilePreview
+@Composable
+fun AddTilePreview() {
     QuickQRTheme {
         AddTile({}, Modifier)
     }
- }
+}
 
-@Preview
+class TileParameterProvider : PreviewParameterProvider<QRCodeItem> {
+    override val values = sequenceOf(
+        sampleQRCodeItem,
+//        sampleQRCodeItem.copy(name = "Very very very very very long name"),
+//        sampleQRCodeItem.copy(content = "Very very very very very long content"),
+//        sampleQRCodeItem.copy(
+//            name = "Very very very very very long name",
+//            content = "Very very very very very long content"
+//        ),
+    )
+}
+
+@TilePreview
 @Composable
 fun TileFrontPreview() {
     QuickQRTheme {
@@ -251,9 +298,24 @@ fun TileFrontPreview() {
     }
 }
 
- @Preview
- @Composable
- fun TileBackPreview() {
+@TilePreview
+@Composable
+fun TileFrontLongDetailsPreview() {
+    QuickQRTheme {
+        SideDetails(
+            name = "Very very very very very long name",
+            content = "Very very very very very long content",
+            icon = sampleQRCodeItem.icon.vector,
+            background = sampleQRCodeItem.primaryColor,
+            contentColor = sampleQRCodeItem.secondaryColor,
+            modifier = Modifier.aspectRatio(1f)
+        )
+    }
+}
+
+@TilePreview
+@Composable
+fun TileBackPreview() {
     QuickQRTheme {
         SideQRCode(
             image = sampleQRCodeItem.imageBase64.decodeImage(),
@@ -263,15 +325,17 @@ fun TileFrontPreview() {
             modifier = Modifier.aspectRatio(1f)
         )
     }
- }
+}
 
- @Preview
- @Composable
- fun TilePreview() {
+@TilePreview
+@Composable
+fun TilePreview() {
     QuickQRTheme {
         Tile(
             qrCodeItem = sampleQRCodeItem,
+            longPressCode = {},
+            longPressDetail = {},
             modifier = Modifier,
         )
     }
- }
+}

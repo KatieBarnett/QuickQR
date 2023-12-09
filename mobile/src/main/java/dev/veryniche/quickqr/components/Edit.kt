@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -24,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
@@ -73,22 +76,30 @@ fun Edit(
                     label = { Text(stringResource(R.string.label_content)) }
                 )
             }
-            Box(Modifier.size(Dimen.AddCodeQRSize)) {
-                if (imageBitmap != null) {
-                    imageBitmap?.let {
-                        Image(it, content, Modifier.fillMaxSize())
+            Column {
+                Box(Modifier.size(Dimen.AddCodeQRSize)) {
+                    if (imageBitmap != null) {
+                        imageBitmap?.let {
+                            Image(it, content, Modifier.fillMaxSize())
+                        }
+                    } else {
+                        Image(
+                            Icon.SCAN.vector,
+                            contentDescription = content,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clickable {
+                                    onScanClick.invoke()
+                                }
+                        )
                     }
-                } else {
-                    Image(
-                        Icon.SCAN.vector,
-                        contentDescription = content,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clickable {
-                                onScanClick.invoke()
-                            }
-                    )
                 }
+                Text(
+                    text = stringResource(R.string.click_to_scan),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier
+                )
             }
         }
         Button(onClick = {
