@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.airbnb.android.showkase.models.Showkase
 import com.airbnb.android.showkase.models.ShowkaseBrowserColor
-import dev.katiebarnett.welcometoflip.showkase.getMetadata
+import dev.veryniche.quickqr.showkase.getMetadata
 import org.junit.runners.Parameterized
 
 class ColorPreview(

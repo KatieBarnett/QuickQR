@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.airbnb.android.showkase.models.Showkase
 import com.airbnb.android.showkase.models.ShowkaseBrowserTypography
-import dev.katiebarnett.welcometoflip.showkase.getMetadata
+import dev.veryniche.quickqr.showkase.getMetadata
 import org.junit.runners.Parameterized
 import java.util.Locale
 
