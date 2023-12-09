@@ -216,11 +216,9 @@ fun Tile(
             .aspectRatio(1f)
             .combinedClickable(
                 onClick = {
-                    Timber.d("Calling onClick $showingFront to ${!(showingFront ?: true)}")
                     showingFront = !(showingFront ?: true)
                 },
                 onLongClick = {
-                    Timber.d("Calling onLongClick $showingFront")
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     if (showingFront != false) {
                         longPressDetail.invoke()

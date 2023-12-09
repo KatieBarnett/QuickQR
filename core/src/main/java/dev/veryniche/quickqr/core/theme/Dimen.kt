@@ -10,7 +10,7 @@ object Dimen {
     val AddCodeQRSize = 100.dp
     val AddCodeQRPadding = 16.dp
     val AddCodeQRVerticalSpacing = 16.dp
-    val AddCodeQRHorizontalSpacing = 16.dp
+    val AddCodeQRHorizontalSpacing = 8.dp
 
     val tileWidthDefault = 125.dp
 }
