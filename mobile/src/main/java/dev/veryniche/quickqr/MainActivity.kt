@@ -4,12 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
-import dev.veryniche.quickqr.screens.MainScreen
+import dev.veryniche.quickqr.navigation.QuickQRNavHost
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -24,7 +23,8 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun QuickQRThemeMobileApp() {
         QuickQRTheme {
-            MainScreen()
+            val navController = rememberNavController()
+            QuickQRNavHost(navController = navController)
         }
     }
 

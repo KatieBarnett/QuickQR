@@ -1,6 +1,5 @@
 package dev.veryniche.quickqr.components
 
-import android.graphics.Bitmap
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
@@ -20,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -30,7 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -41,17 +39,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
-import dev.veryniche.quickqr.core.decodeImage
 import dev.veryniche.quickqr.core.model.Icon
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.previews.TilePreview
-import timber.log.Timber
 
 @Composable
 fun SideQRCode(
-    image: Bitmap,
+    image: ImageBitmap,
     barcodeContent: String,
     background: Color = MaterialTheme.colorScheme.primary,
     contentColor: Color = MaterialTheme.colorScheme.onPrimary,
@@ -65,7 +61,7 @@ fun SideQRCode(
         modifier = modifier
     ) {
         Image(
-            bitmap = image.asImageBitmap(),
+            bitmap = image,
             contentDescription = barcodeContent,
             modifier = Modifier
                 .fillMaxSize()
@@ -160,7 +156,7 @@ fun Tile(
         },
         sideBack = { modifier ->
             SideQRCode(
-                image = qrCodeItem.imageBase64.decodeImage(),
+                image = qrCodeItem.imageBitmap,
                 barcodeContent = qrCodeItem.content,
                 background = qrCodeItem.primaryColor,
                 contentColor = qrCodeItem.secondaryColor,
@@ -316,7 +312,7 @@ fun TileFrontLongDetailsPreview() {
 fun TileBackPreview() {
     QuickQRTheme {
         SideQRCode(
-            image = sampleQRCodeItem.imageBase64.decodeImage(),
+            image = sampleQRCodeItem.imageBitmap,
             barcodeContent = sampleQRCodeItem.content,
             background = sampleQRCodeItem.primaryColor,
             contentColor = sampleQRCodeItem.secondaryColor,

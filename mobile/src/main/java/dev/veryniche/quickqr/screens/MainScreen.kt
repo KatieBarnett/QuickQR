@@ -30,7 +30,10 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    openExpandedQRCode: (id: Int) -> Unit,
+    modifier: Modifier
+) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showEditSheet by remember { mutableStateOf(false) }
@@ -48,6 +51,7 @@ fun MainScreen() {
                 },
             )
         },
+        modifier = modifier
     ) { contentPadding ->
         val tiles: List<QRCodeItem> by viewModel.tiles.collectAsStateWithLifecycle(listOf())
         Box(Modifier.padding(contentPadding)) {
@@ -61,7 +65,9 @@ fun MainScreen() {
                     editSheetContext = it
                     showEditSheet = true
                 },
-                longPressCode = {},
+                longPressCode = {
+                    openExpandedQRCode(it.id)
+                },
                 modifier = Modifier.fillMaxSize(),
             )
         }
@@ -77,6 +83,7 @@ fun MainScreen() {
                 Edit(
                     initialItem = editSheetContext,
                     onSaveClick = { name, content, icon, primaryColor, secondaryColor ->
+                        showEditSheet = false
                         viewModel.processEdit(name, content, icon, primaryColor, secondaryColor)
                     },
                     onScanClick = { viewModel.scanBarcode(context) },
