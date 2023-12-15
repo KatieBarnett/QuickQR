@@ -5,7 +5,9 @@ import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.storage.models.Qrcodes
 import dev.veryniche.quickqr.storage.util.toQRCode
 import dev.veryniche.quickqr.storage.util.toQRCodeItem
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class QRCodesDataSource @Inject constructor(
@@ -27,9 +29,15 @@ class QRCodesDataSource @Inject constructor(
             if (currentIndex != -1) {
                 currentQRCodes.toBuilder().setQrCodes(currentIndex, qrCode.toQRCode()).build()
             } else {
-                currentQRCodes.toBuilder().addQrCodes(qrCode.toQRCode()).build()
+                currentQRCodes.toBuilder().addQrCodes(qrCode.toQRCode(currentQRCodes.qrCodesList.size)).build()
             }
         }
+    }
+
+    fun getQRCode(id: Int): QRCodeItem? {
+        return runBlocking {
+            qRCodeDataStore.data.firstOrNull()
+        }?.qrCodesList?.firstOrNull { it.id == id }?.toQRCodeItem()
     }
 
     suspend fun deleteQRCode(id: Int) {
@@ -50,5 +58,3 @@ class QRCodesDataSource @Inject constructor(
         }
     }
 }
-
-

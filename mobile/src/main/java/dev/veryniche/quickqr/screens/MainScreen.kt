@@ -30,10 +30,14 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    openExpandedQRCode: (id: Int) -> Unit,
+    modifier: Modifier
+) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showEditSheet by remember { mutableStateOf(false) }
+    var editSheetContext by remember { mutableStateOf<QRCodeItem?>(null) }
     val viewModel: MainViewModel = hiltViewModel()
     val context = LocalContext.current
     Scaffold(
@@ -47,39 +51,46 @@ fun MainScreen() {
                 },
             )
         },
+        modifier = modifier
     ) { contentPadding ->
         val tiles: List<QRCodeItem> by viewModel.tiles.collectAsStateWithLifecycle(listOf())
-        // TODO allow this to be configurable
-        val cellsPerRow by remember { mutableStateOf(3) }
         Box(Modifier.padding(contentPadding)) {
             TileGrid(
                 tiles = tiles,
-                cellsPerRow = cellsPerRow,
                 addTile = {
-                    showBottomSheet = true
+                    editSheetContext = null
+                    showEditSheet = true
                 },
-                longPress = {},
+                longPressDetail = {
+                    editSheetContext = it
+                    showEditSheet = true
+                },
+                longPressCode = {
+                    openExpandedQRCode(it.id)
+                },
                 modifier = Modifier.fillMaxSize(),
             )
         }
 
-        if (showBottomSheet) {
+        if (showEditSheet) {
             ModalBottomSheet(
                 onDismissRequest = {
-                    showBottomSheet = false
+                    showEditSheet = false
                 },
                 sheetState = sheetState
             ) {
                 // TODO get saved barcode in state and pass to Add New content
                 Edit(
+                    initialItem = editSheetContext,
                     onSaveClick = { name, content, icon, primaryColor, secondaryColor ->
+                        showEditSheet = false
                         viewModel.processEdit(name, content, icon, primaryColor, secondaryColor)
                     },
                     onScanClick = { viewModel.scanBarcode(context) },
                     onCloseClick = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
-                                showBottomSheet = false
+                                showEditSheet = false
                             }
                         }
                     },

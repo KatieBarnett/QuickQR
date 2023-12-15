@@ -1,6 +1,7 @@
 package dev.veryniche.quickqr.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,8 +22,8 @@ fun ShowkaseActionIcon() {
         }
     ) {
         Icon(
-            imageVector = Icons.Filled.Info,
-            contentDescription = stringResource(id = R.string.navigate_about)
+            imageVector = Icons.Filled.Build,
+            contentDescription = stringResource(id = R.string.navigate_showkase)
         )
     }
 }

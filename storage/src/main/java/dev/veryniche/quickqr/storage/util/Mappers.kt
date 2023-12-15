@@ -20,10 +20,10 @@ fun QRCode.toQRCodeItem(): QRCodeItem {
     )
 }
 
-fun QRCodeItem.toQRCode(): QRCode {
+fun QRCodeItem.toQRCode(newId: Int? = null): QRCode {
     val builder = QRCode.newBuilder()
-    builder.id = id
-    builder.iconName = name
+    builder.id = newId ?: id
+    builder.name = name
     builder.content = content
     builder.imageBase64 = imageBase64
     builder.iconName = icon.name

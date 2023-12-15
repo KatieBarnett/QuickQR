@@ -3,14 +3,16 @@ package dev.veryniche.quickqr.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -24,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
 import dev.veryniche.quickqr.core.model.Icon
@@ -35,6 +37,7 @@ import dev.veryniche.quickqr.core.theme.Dimen.AddCodeQRPadding
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.core.theme.md_theme_light_onPrimary
 import dev.veryniche.quickqr.core.theme.md_theme_light_primary
+import dev.veryniche.quickqr.previews.ComponentPreviews
 
 @Composable
 fun Edit(
@@ -60,7 +63,8 @@ fun Edit(
         verticalArrangement = Arrangement.spacedBy(Dimen.AddCodeQRVerticalSpacing),
         modifier = Modifier.padding(AddCodeQRPadding)
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(Dimen.AddCodeQRHorizontalSpacing)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(Dimen.AddCodeQRHorizontalSpacing),
+            modifier = Modifier.height(intrinsicSize = IntrinsicSize.Max)) {
             Column {
                 TextField(
                     value = name.orEmpty(),
@@ -73,20 +77,39 @@ fun Edit(
                     label = { Text(stringResource(R.string.label_content)) }
                 )
             }
-            Box(Modifier.size(Dimen.AddCodeQRSize)) {
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .weight(0.25f).fillMaxHeight()
+                    .clickable {
+                        onScanClick.invoke()
+                    }
+            ) {
                 if (imageBitmap != null) {
                     imageBitmap?.let {
-                        Image(it, content, Modifier.fillMaxSize())
+                        Image(it, content, Modifier.fillMaxWidth().aspectRatio(1f))
                     }
+                    Text(
+                        text = stringResource(R.string.click_to_rescan),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 } else {
                     Image(
                         Icon.SCAN.vector,
                         contentDescription = content,
                         modifier = Modifier
-                            .fillMaxSize()
+                            .fillMaxWidth().aspectRatio(1f)
                             .clickable {
                                 onScanClick.invoke()
                             }
+                    )
+                    Text(
+                        text = stringResource(R.string.click_to_scan),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
@@ -105,8 +128,7 @@ fun Edit(
 //    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview
+@ComponentPreviews
 @Composable
 fun AddNewPreview() {
     QuickQRTheme {

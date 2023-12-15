@@ -5,14 +5,11 @@ import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.veryniche.quickqr.core.decodeImage
 import dev.veryniche.quickqr.core.encodeImage
 import dev.veryniche.quickqr.core.model.Icon
 import dev.veryniche.quickqr.core.model.QRCodeItem
@@ -24,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    val qrCodesRepository: QRCodesRepository
+    private val qrCodesRepository: QRCodesRepository
 ) : ViewModel() {
 
     val tiles = qrCodesRepository.getQRCodes()
@@ -70,8 +67,8 @@ class MainViewModel @Inject constructor(
             val qrImageBase64 = createQRImage(content)
             val qrCodeItem = QRCodeItem(
                 id = 1,
-                name = name,
-                content = content,
+                name = name.trim(),
+                content = content.trim(),
                 imageBase64 = qrImageBase64,
                 icon = icon,
                 primaryColor = primaryColor,

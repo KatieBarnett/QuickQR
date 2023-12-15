@@ -1,37 +1,44 @@
 package dev.veryniche.quickqr.components
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
 import dev.veryniche.quickqr.core.model.QRCodeItem
+import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
+import dev.veryniche.quickqr.previews.ScreenPreview
 
 @Composable
 fun TileGrid(
     tiles: List<QRCodeItem>,
-    cellsPerRow: Int,
     addTile: () -> Unit,
-    longPress: () -> Unit,
+    longPressDetail: (QRCodeItem) -> Unit,
+    longPressCode: (QRCodeItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(cellsPerRow)
+        columns = GridCells.Adaptive(minSize = Dimen.tileWidthDefault),
+        contentPadding = PaddingValues(Dimen.qRDetailDisplaySpacing),
+        horizontalArrangement = Arrangement.spacedBy(Dimen.qRDetailDisplaySpacing),
+        verticalArrangement = Arrangement.spacedBy(Dimen.qRDetailDisplaySpacing),
+        modifier = modifier
     ) {
         item {
             AddTile(addTile)
         }
         items(tiles) { tile ->
-            Tile(tile)
+            Tile(tile, longPressDetail, longPressCode)
         }
     }
 }
 
-@Preview
+@ScreenPreview
 @Composable
 fun TileGridPreview() {
     QuickQRTheme {
@@ -46,9 +53,9 @@ fun TileGridPreview() {
                 sampleQRCodeItem,
                 sampleQRCodeItem,
             ),
-            cellsPerRow = 3,
             addTile = {},
-            longPress = {},
+            longPressDetail = {},
+            longPressCode = {},
             modifier = Modifier.fillMaxSize(),
         )
     }
