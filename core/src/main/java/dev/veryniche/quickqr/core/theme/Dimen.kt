@@ -13,4 +13,7 @@ object Dimen {
     val AddCodeQRHorizontalSpacing = 8.dp
 
     val tileWidthDefault = 125.dp
+
+
+    val iconWidthDefault = 24.dp
 }

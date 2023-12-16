@@ -27,7 +27,7 @@ object Constants {
         name = sampleName,
         content = sampleUrl,
         imageBase64 = sampleQRCodeBase64,
-        icon = Icon.STAR,
+        icon = Icon.Star,
         primaryColor = md_theme_light_primary,
         secondaryColor = md_theme_light_onPrimary,
         lastModified = Date()

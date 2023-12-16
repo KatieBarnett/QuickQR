@@ -43,7 +43,7 @@ import dev.veryniche.quickqr.core.model.Icon
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
-import dev.veryniche.quickqr.previews.TilePreview
+import dev.veryniche.quickqr.previews.PreviewTile
 
 @Composable
 fun SideQRCode(
@@ -257,7 +257,7 @@ fun AddTile(
     )
 }
 
-@TilePreview
+@PreviewTile
 @Composable
 fun AddTilePreview() {
     QuickQRTheme {
@@ -277,7 +277,7 @@ class TileParameterProvider : PreviewParameterProvider<QRCodeItem> {
     )
 }
 
-@TilePreview
+@PreviewTile
 @Composable
 fun TileFrontPreview() {
     QuickQRTheme {
@@ -292,7 +292,7 @@ fun TileFrontPreview() {
     }
 }
 
-@TilePreview
+@PreviewTile
 @Composable
 fun TileFrontLongDetailsPreview() {
     QuickQRTheme {
@@ -307,7 +307,7 @@ fun TileFrontLongDetailsPreview() {
     }
 }
 
-@TilePreview
+@PreviewTile
 @Composable
 fun TileBackPreview() {
     QuickQRTheme {
@@ -321,7 +321,7 @@ fun TileBackPreview() {
     }
 }
 
-@TilePreview
+@PreviewTile
 @Composable
 fun TilePreview() {
     QuickQRTheme {

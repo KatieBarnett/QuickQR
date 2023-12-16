@@ -1,6 +1,6 @@
 [versions]
 activity-compose = "1.8.1"
-agp = "8.3.0-alpha17"
+agp = "8.3.0-alpha18"
 androidx-test-ext-junit = "1.1.5"
 appcompat = "1.6.1"
 codeScanner = "16.1.0"

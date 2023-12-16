@@ -37,7 +37,7 @@ import dev.veryniche.quickqr.core.theme.Dimen.AddCodeQRPadding
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.core.theme.md_theme_light_onPrimary
 import dev.veryniche.quickqr.core.theme.md_theme_light_primary
-import dev.veryniche.quickqr.previews.ComponentPreviews
+import dev.veryniche.quickqr.previews.PreviewComponent
 
 @Composable
 fun Edit(
@@ -128,7 +128,7 @@ fun Edit(
 //    }
 }
 
-@ComponentPreviews
+@PreviewComponent
 @Composable
 fun AddNewPreview() {
     QuickQRTheme {

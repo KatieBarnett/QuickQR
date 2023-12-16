@@ -27,8 +27,8 @@ import dev.veryniche.quickqr.core.Constants
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
-import dev.veryniche.quickqr.previews.ComponentPreviews
-import dev.veryniche.quickqr.previews.ScreenPreview
+import dev.veryniche.quickqr.previews.PreviewComponent
+import dev.veryniche.quickqr.previews.PreviewScreen
 
 @Composable
 fun ExpandedQRCode(
@@ -92,8 +92,8 @@ fun ExpandedQRCode(
     }
 }
 
-@ComponentPreviews
-@ScreenPreview
+@PreviewComponent
+@PreviewScreen
 @Composable
 fun ExpandedQRCodePreview() {
     QuickQRTheme {

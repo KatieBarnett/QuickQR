@@ -12,7 +12,7 @@ import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
-import dev.veryniche.quickqr.previews.ScreenPreview
+import dev.veryniche.quickqr.previews.PreviewScreen
 
 @Composable
 fun TileGrid(
@@ -38,7 +38,7 @@ fun TileGrid(
     }
 }
 
-@ScreenPreview
+@PreviewScreen
 @Composable
 fun TileGridPreview() {
     QuickQRTheme {
