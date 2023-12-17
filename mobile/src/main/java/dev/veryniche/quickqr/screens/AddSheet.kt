@@ -13,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import dev.veryniche.quickqr.components.AddChoice
 import dev.veryniche.quickqr.components.AddEnterName
@@ -47,10 +46,9 @@ fun AddSheet(
         icon: QRIcon?,
         primaryColor: QRColor?,
     ) -> ImageBitmap?,
-    onScanClick: () -> Unit,
-    onCloseClick: () -> Unit
+    onScanClick: () -> Unit
 ) {
-    var pages by remember {
+    val pages by remember {
         mutableStateOf(
             listOf(
                 AddPage.ADD_CHOICE,
@@ -94,9 +92,12 @@ fun AddSheet(
             AddPage.ENTER_URL -> {
                 AddEnterUrl(
                     onNextClick = {
-                        content = it
-                        coroutineScope.launch {
-                            pagerState.scrollToNextPage()
+                        if (!it.isNullOrBlank()) {
+                            content = it
+                            coroutineScope.launch {
+                                pagerState.scrollToNextPage()
+                            }
+                        } else {
                         }
                     },
                     modifier = Modifier
@@ -128,7 +129,7 @@ fun AddSheet(
                 AddEnterName(
                     onSaveClick = {
                         name = it
-                        onSaveClick.invoke(name, content, icon, primaryColor)?.let {
+                        onSaveClick.invoke(name, content, icon, primaryColor).let {
                             imageBitmap = it
                         }
                     },
@@ -149,8 +150,7 @@ fun AddSheetPreview() {
                 modifier = Modifier,
                 onSaveClick = { name, content, icon, primaryColor ->
                     null
-                },
-                { }
+                }
             ) {
             }
         }

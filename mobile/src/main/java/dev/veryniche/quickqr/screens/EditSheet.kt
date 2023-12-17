@@ -1,4 +1,4 @@
-package dev.veryniche.quickqr.components
+package dev.veryniche.quickqr.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -8,17 +8,21 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,11 +32,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.veryniche.quickqr.R
+import dev.veryniche.quickqr.components.ColorSelectorDialog
+import dev.veryniche.quickqr.components.IconSelectorDialog
+import dev.veryniche.quickqr.components.QRColorShape
+import dev.veryniche.quickqr.core.Constants
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
+import dev.veryniche.quickqr.core.decodeImage
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.model.QRIcon
@@ -42,11 +53,14 @@ import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.Dimen.AddCodeQRPadding
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.previews.PreviewComponent
+import timber.log.Timber
+import java.util.Date
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun Edit(
+fun EditSheet(
     initialItem: QRCodeItem? = null,
+    scannedCode: Pair<String, String>?,
     onSaveClick: (
         name: String?,
         content: String?,
@@ -54,16 +68,18 @@ fun Edit(
         primaryColor: QRColor
     ) -> ImageBitmap?,
     onScanClick: () -> Unit,
-    onIconClick: (QRIcon) -> Unit,
-    onColorClick: (QRColor) -> Unit,
-    onCloseClick: () -> Unit,
 ) {
-    var imageBitmap by remember { mutableStateOf(initialItem?.imageBitmap) }
+    var imageBitmap by remember(scannedCode) {
+        Timber.d("Got a scanned code of: ${scannedCode?.first?.decodeImage()?.asImageBitmap()}")
+        mutableStateOf(scannedCode?.first?.decodeImage()?.asImageBitmap() ?: initialItem?.imageBitmap)
+    }
     var name by remember { mutableStateOf(initialItem?.name) }
-    var content by remember { mutableStateOf(initialItem?.content) }
+    var content by remember(scannedCode) { mutableStateOf(scannedCode?.second ?: initialItem?.content) }
     var icon by remember { mutableStateOf(initialItem?.icon ?: getRandomIcon()) }
     var primaryColor by remember { mutableStateOf(initialItem?.primaryColor ?: getRandomColor()) }
 
+    var showColorSelector by remember { mutableStateOf(false) }
+    var showIconSelector by remember { mutableStateOf(false) }
     Column(
         verticalArrangement = Arrangement.spacedBy(Dimen.AddCodeQRVerticalSpacing),
         modifier = Modifier.padding(AddCodeQRPadding)
@@ -72,21 +88,38 @@ fun Edit(
             horizontalArrangement = Arrangement.spacedBy(Dimen.AddCodeQRHorizontalSpacing),
             modifier = Modifier.height(intrinsicSize = IntrinsicSize.Max)
         ) {
-            Column {
-                TextField(
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                OutlinedTextField(
                     value = name.orEmpty(),
                     onValueChange = { name = it },
-                    label = { Text(stringResource(R.string.label_name)) }
+                    isError = name.isNullOrBlank(),
+                    label = { Text(stringResource(R.string.label_name)) },
+                    supportingText = {
+                        if (name.isNullOrBlank()) {
+                            Text(
+                                text = stringResource(R.string.validation_message_name),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
                 )
-                TextField(
+                OutlinedTextField(
                     value = content.orEmpty(),
                     onValueChange = { content = it },
-                    label = { Text(stringResource(R.string.label_content)) }
+                    isError = content.isNullOrBlank(),
+                    label = { Text(stringResource(R.string.label_content)) },
+                    supportingText = {
+                        if (content.isNullOrBlank()) {
+                            Text(
+                                text = stringResource(R.string.validation_message_content),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
                 )
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(8.dp)
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -101,7 +134,7 @@ fun Edit(
                                 .size(48.dp)
                                 .aspectRatio(1f)
                                 .clickable {
-                                    onIconClick.invoke(icon)
+                                    showIconSelector = true
                                 }
                         )
                     }
@@ -117,7 +150,7 @@ fun Edit(
                                 .padding(top = 4.dp, bottom = 4.dp)
                                 .size(40.dp)
                                 .clickable {
-                                    onColorClick.invoke(primaryColor)
+                                    showColorSelector = true
                                 }
                         )
                     }
@@ -168,28 +201,74 @@ fun Edit(
                 }
             }
         }
-        Button(onClick = {
-            onSaveClick.invoke(name, content, icon, primaryColor)?.let {
+        Button(
+            enabled = !name.isNullOrBlank() && !content.isNullOrBlank(),
+            onClick = {
+            onSaveClick.invoke(name, content, icon, primaryColor).let {
                 imageBitmap = it
             }
         }, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.save_qr))
+        }
+        Spacer(
+            Modifier.windowInsetsBottomHeight(
+                WindowInsets.systemBars
+            )
+        )
+    }
+
+    if (showColorSelector) {
+        ColorSelectorDialog(
+            onDismissRequest = { showColorSelector = false }
+        ) {
+            primaryColor = it
+            showColorSelector = false
+        }
+    }
+
+    if (showIconSelector) {
+        IconSelectorDialog(
+            onDismissRequest = { showIconSelector = false }
+        ) {
+            icon = it
+            showIconSelector = false
         }
     }
 }
 
 @PreviewComponent
 @Composable
-fun AddNewPreview() {
+fun EditSheetPreview() {
     QuickQRTheme {
         Surface {
-            Edit(
+            EditSheet(
                 initialItem = sampleQRCodeItem,
+                scannedCode = null,
                 onSaveClick = { _, _, _, _ -> null },
-                onScanClick = {},
-                onIconClick = {},
-                onColorClick = {},
-                onCloseClick = {},
+                onScanClick = { Pair(null, null) },
+            )
+        }
+    }
+}
+
+@PreviewComponent
+@Composable
+fun EditSheetErrorPreview() {
+    QuickQRTheme {
+        Surface {
+            EditSheet(
+                initialItem = QRCodeItem(
+                    id = 0,
+                    name = "",
+                    content = "",
+                    imageBase64 = "",
+                    icon = QRIcon.Star,
+                    primaryColor = QRColor.Violet,
+                    lastModified = Date()
+                ),
+                scannedCode = null,
+                onSaveClick = { _, _, _, _ -> null },
+                onScanClick = { Pair(null, null) },
             )
         }
     }

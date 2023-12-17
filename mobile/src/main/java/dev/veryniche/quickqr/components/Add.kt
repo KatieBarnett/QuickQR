@@ -10,9 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,18 +73,27 @@ fun AddEnterUrl(
     onNextClick: (String) -> Unit,
     modifier: Modifier
 ) {
-    var content by remember { mutableStateOf("") }
-
+    var content by remember { mutableStateOf<String?>(null) }
     AddContainer({
         Text(stringResource(id = R.string.add_enter_url))
-        TextField(
-            value = content,
+        OutlinedTextField(
+            value = content.orEmpty(),
             onValueChange = { content = it },
+            isError = content.isNullOrBlank(),
             label = { Text(stringResource(R.string.label_content)) },
+            supportingText = {
+                if (content.isNullOrBlank()) {
+                    Text(
+                        text = stringResource(R.string.validation_message_content),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         )
         Button(
-            onClick = { onNextClick.invoke(content) },
+            enabled = !content.isNullOrBlank(),
+            onClick = { onNextClick.invoke(content.orEmpty()) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(id = R.string.add_next))
@@ -122,17 +132,27 @@ fun AddEnterName(
     onSaveClick: (String) -> Unit,
     modifier: Modifier
 ) {
-    var name by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf<String?>(null) }
     AddContainer({
         Text(stringResource(id = R.string.add_enter_name))
-        TextField(
-            value = name,
+        OutlinedTextField(
+            value = name.orEmpty(),
             onValueChange = { name = it },
+            isError = name.isNullOrBlank(),
             label = { Text(stringResource(R.string.label_name)) },
+            supportingText = {
+                if (name.isNullOrBlank()) {
+                    Text(
+                        text = stringResource(R.string.validation_message_name),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         )
         Button(
-            onClick = { onSaveClick.invoke(name) },
+            enabled = !name.isNullOrBlank(),
+            onClick = { onSaveClick.invoke(name.orEmpty()) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(id = R.string.add_save))

@@ -3,7 +3,9 @@ package dev.veryniche.quickqr
 import android.content.Context
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,10 +13,11 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.veryniche.quickqr.core.encodeImage
-import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.model.QRColor
+import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.storage.QRCodesRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Date
@@ -26,6 +29,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     val tiles = qrCodesRepository.getQRCodes()
+    val scannedCode = MutableStateFlow<Pair<String, String>?>(null)
 
     private val barcodeScannerOptions = GmsBarcodeScannerOptions.Builder()
         .enableAutoZoom() // available on 16.1.0 and higher
@@ -42,7 +46,9 @@ class MainViewModel @Inject constructor(
                 barcode.displayValue?.let {
                     val base64 = createQRImage(it)
                     Timber.d("got barcode base64 $base64")
-                    base64
+                    viewModelScope.launch {
+                        scannedCode.emit(Pair(base64, it))
+                    }
                 }
             }
             .addOnCanceledListener {
@@ -54,15 +60,16 @@ class MainViewModel @Inject constructor(
     }
 
     fun processEdit(
+        context: Context,
         name: String?,
         content: String?,
         icon: QRIcon,
         primaryColor: QRColor,
     ): ImageBitmap? {
         if (name == null) {
-            // TODO validation
+            return null // Shouldn't happen
         } else if (content == null) {
-            // TODO validation
+            return null // Shouldn't happen
         } else {
             val qrImageBase64 = createQRImage(content)
             val qrCodeItem = QRCodeItem(
@@ -79,7 +86,6 @@ class MainViewModel @Inject constructor(
             }
             return qrCodeItem.imageBitmap
         }
-        return null
     }
 
     private suspend fun saveQRCodeItem(item: QRCodeItem) {

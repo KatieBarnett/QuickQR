@@ -22,11 +22,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.veryniche.quickqr.BuildConfig
 import dev.veryniche.quickqr.MainViewModel
 import dev.veryniche.quickqr.R
-import dev.veryniche.quickqr.components.Edit
 import dev.veryniche.quickqr.components.ShowkaseActionIcon
 import dev.veryniche.quickqr.components.TileGrid
 import dev.veryniche.quickqr.core.model.QRCodeItem
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,6 +39,7 @@ fun MainScreen(
     var showAddSheet by remember { mutableStateOf(false) }
     val viewModel: MainViewModel = hiltViewModel()
     val context = LocalContext.current
+    val scannedCode by viewModel.scannedCode.collectAsStateWithLifecycle()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -82,16 +81,16 @@ fun MainScreen(
                 AddSheet(
                     onSaveClick = { name, content, icon, primaryColor ->
                         showAddSheet = false
-                        viewModel.processEdit(name, content, icon!!, primaryColor!!)
+                        viewModel.processEdit(context, name, content, icon!!, primaryColor!!)
                     },
                     onScanClick = { viewModel.scanBarcode(context) },
-                    onCloseClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                showAddSheet = false
-                            }
-                        }
-                    },
+//                    onCloseClick = {
+//                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+//                            if (!sheetState.isVisible) {
+//                                showAddSheet = false
+//                            }
+//                        }
+//                    },
                     modifier = Modifier
                 )
             }
@@ -102,23 +101,25 @@ fun MainScreen(
                 },
                 sheetState = sheetState
             ) {
-                // TODO get saved barcode in state and pass to Add New content
-                Edit(
+                EditSheet(
                     initialItem = editSheetContext,
                     onSaveClick = { name, content, icon, primaryColor ->
                         showEditSheet = false
-                        viewModel.processEdit(name, content, icon, primaryColor)
+                        viewModel.processEdit(context, name, content, icon, primaryColor)
                     },
-                    onScanClick = { viewModel.scanBarcode(context) },
-                    onColorClick = {},
-                    onIconClick = {},
-                    onCloseClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                showEditSheet = false
-                            }
-                        }
-                    },
+                    scannedCode = scannedCode,
+                    onScanClick = {
+                        viewModel.scanBarcode(context)
+                                  },
+//                    onColorClick = {},
+//                    onIconClick = {},
+//                    onCloseClick = {
+//                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+//                            if (!sheetState.isVisible) {
+//                                showEditSheet = false
+//                            }
+//                        }
+//                    },
                 )
             }
         }

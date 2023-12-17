@@ -14,6 +14,10 @@
 
     <string name="edit_icon">Icon:</string>
     <string name="edit_colour">Color:</string>
+    <string name="edit_message_close">OK</string>
+
+    <string name="validation_message_name">Please enter a name for the QR code</string>
+    <string name="validation_message_content">Please enter a URL for the QR code or scan an existing code</string>
 
     <string name="add_scan">Scan a QR Code</string>
     <string name="add_enter_url">Enter URL</string>
