@@ -3,7 +3,7 @@
 
     <string name="add_qr">Add QR Code</string>
     <string name="label_name">Name</string>
-    <string name="label_content">Url content</string>
+    <string name="label_content">URL content</string>
     <string name="save_qr">Save Changes</string>
     <string name="navigate_back">Back</string>
     <string name="navigate_about">About</string>
@@ -12,13 +12,16 @@
     <string name="click_to_rescan">Click to re-scan</string>
     <string name="generic_error">Something went wrong. Please try again.</string>
 
+    <string name="edit_icon">Icon:</string>
+    <string name="edit_colour">Color:</string>
 
     <string name="add_scan">Scan a QR Code</string>
-    <string name="add_enter_url">Enter url</string>
+    <string name="add_enter_url">Enter URL</string>
     <string name="add_or">or</string>
     <string name="add_next">Next</string>
-    <string name="add_select_icon">Select an icon</string>
-    <string name="add_select_color">Select a color</string>
+    <string name="add_select_icon">Select an icon:</string>
+    <string name="add_select_color">Select a color:</string>
+    <string name="add_enter_name">Enter name:</string>
     <string name="add_save">Save</string>
 
 </resources>

@@ -38,6 +38,7 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     var showEditSheet by remember { mutableStateOf(false) }
     var editSheetContext by remember { mutableStateOf<QRCodeItem?>(null) }
+    var showAddSheet by remember { mutableStateOf(false) }
     val viewModel: MainViewModel = hiltViewModel()
     val context = LocalContext.current
     Scaffold(
@@ -59,7 +60,7 @@ fun MainScreen(
                 tiles = tiles,
                 addTile = {
                     editSheetContext = null
-                    showEditSheet = true
+                    showAddSheet = true
                 },
                 longPressDetail = {
                     editSheetContext = it
@@ -71,8 +72,30 @@ fun MainScreen(
                 modifier = Modifier.fillMaxSize(),
             )
         }
-
-        if (showEditSheet) {
+        if (showAddSheet) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    showAddSheet = false
+                },
+                sheetState = sheetState
+            ) {
+                AddSheet(
+                    onSaveClick = { name, content, icon, primaryColor ->
+                        showAddSheet = false
+                        viewModel.processEdit(name, content, icon!!, primaryColor!!)
+                    },
+                    onScanClick = { viewModel.scanBarcode(context) },
+                    onCloseClick = {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showAddSheet = false
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                )
+            }
+        } else if (showEditSheet) {
             ModalBottomSheet(
                 onDismissRequest = {
                     showEditSheet = false
@@ -82,11 +105,13 @@ fun MainScreen(
                 // TODO get saved barcode in state and pass to Add New content
                 Edit(
                     initialItem = editSheetContext,
-                    onSaveClick = { name, content, icon, primaryColor, secondaryColor ->
+                    onSaveClick = { name, content, icon, primaryColor ->
                         showEditSheet = false
-                        viewModel.processEdit(name, content, icon, primaryColor, secondaryColor)
+                        viewModel.processEdit(name, content, icon, primaryColor)
                     },
                     onScanClick = { viewModel.scanBarcode(context) },
+                    onColorClick = {},
+                    onIconClick = {},
                     onCloseClick = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {

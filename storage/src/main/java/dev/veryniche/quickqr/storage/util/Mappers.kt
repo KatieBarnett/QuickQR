@@ -1,8 +1,9 @@
 package dev.veryniche.quickqr.storage.util
 
 import androidx.compose.ui.graphics.Color
-import dev.veryniche.quickqr.core.model.Icon
+import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.core.model.QRCodeItem
+import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.storage.models.QRCode
 import java.util.Date
 
@@ -12,9 +13,8 @@ fun QRCode.toQRCodeItem(): QRCodeItem {
         name = name,
         content = content,
         imageBase64 = imageBase64,
-        icon = Icon.valueOf(iconName),
-        primaryColor = Color(primaryColor),
-        secondaryColor = Color(secondaryColor),
+        icon = QRIcon.valueOf(iconName),
+        primaryColor = QRColor.Violet,//QRColor.valueOf(colorName),
         sortOrder = sortOrder,
         lastModified = Date(lastModified.toLong())
     )
@@ -27,8 +27,7 @@ fun QRCodeItem.toQRCode(newId: Int? = null): QRCode {
     builder.content = content
     builder.imageBase64 = imageBase64
     builder.iconName = icon.name
-    builder.primaryColor = primaryColorInt
-    builder.secondaryColor = secondaryColorInt
+//    builder.colorName = primaryColor.name
     builder.sortOrder = sortOrder ?: -1
     builder.lastModified = lastModified.time.toDouble()
     return builder.build()

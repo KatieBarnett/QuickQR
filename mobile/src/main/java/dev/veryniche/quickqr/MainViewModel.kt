@@ -11,8 +11,9 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.veryniche.quickqr.core.encodeImage
-import dev.veryniche.quickqr.core.model.Icon
+import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.core.model.QRCodeItem
+import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.storage.QRCodesRepository
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -55,9 +56,8 @@ class MainViewModel @Inject constructor(
     fun processEdit(
         name: String?,
         content: String?,
-        icon: Icon,
-        primaryColor: Color,
-        secondaryColor: Color
+        icon: QRIcon,
+        primaryColor: QRColor,
     ): ImageBitmap? {
         if (name == null) {
             // TODO validation
@@ -72,7 +72,6 @@ class MainViewModel @Inject constructor(
                 imageBase64 = qrImageBase64,
                 icon = icon,
                 primaryColor = primaryColor,
-                secondaryColor = secondaryColor,
                 lastModified = Date()
             )
             viewModelScope.launch {

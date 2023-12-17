@@ -1,6 +1,11 @@
 package dev.veryniche.quickqr.core.model
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import dev.veryniche.quickqr.core.theme.md_theme_dark_onSurface
+import dev.veryniche.quickqr.core.theme.md_theme_light_onSurface
+import dev.veryniche.quickqr.core.util.isDark
 
 // Colours from https://materialui.co/metrocolors
 enum class QRColor(val color: Color, val showInList: Boolean = true) {
@@ -24,7 +29,15 @@ enum class QRColor(val color: Color, val showInList: Boolean = true) {
     Steel(Color(0xFF647687)),
     Mauve(Color(0xFF76608A)),
     Sienna(Color(0xFFA0522D)),
-    Clouds(Color(0xFFECF0F1)),
+    Clouds(Color(0xFFECF0F1))
+}
+
+fun QRColor.getSecondaryColor(): Color {
+    return if (color.toArgb().isDark()) {
+        md_theme_dark_onSurface
+    } else {
+        md_theme_light_onSurface
+    }
 }
 
 fun getRandomColor(): QRColor {

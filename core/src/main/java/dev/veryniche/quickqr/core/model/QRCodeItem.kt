@@ -1,8 +1,6 @@
 package dev.veryniche.quickqr.core.model
 
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.toArgb
 import dev.veryniche.quickqr.core.decodeImage
 import java.util.Date
 
@@ -11,15 +9,13 @@ data class QRCodeItem(
     val name: String,
     val content: String,
     val imageBase64: String,
-    val icon: Icon,
-    val primaryColor: Color,
-    val secondaryColor: Color,
+    val icon: QRIcon,
+    val primaryColor: QRColor,
     val sortOrder: Int? = null,
     val lastModified: Date
 ) {
-    val primaryColorInt = primaryColor.toArgb()
-    val secondaryColorInt = secondaryColor.toArgb()
     val imageBitmap = imageBase64.decodeImage().asImageBitmap()
+    val secondaryColor = primaryColor.getSecondaryColor()
 }
 
 

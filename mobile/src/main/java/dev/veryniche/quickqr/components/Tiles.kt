@@ -39,7 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
-import dev.veryniche.quickqr.core.model.Icon
+import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
@@ -130,7 +130,7 @@ fun SideAdd(modifier: Modifier) {
     SideDetails(
         name = stringResource(R.string.add_qr),
         content = null,
-        icon = Icon.ADD_QR_CODE.vector,
+        icon = QRIcon.ADD_QR_CODE.vector,
         background = MaterialTheme.colorScheme.primary,
         modifier = modifier
     )
@@ -149,7 +149,7 @@ fun Tile(
                 name = qrCodeItem.name,
                 content = qrCodeItem.content,
                 icon = qrCodeItem.icon.vector,
-                background = qrCodeItem.primaryColor,
+                background = qrCodeItem.primaryColor.color,
                 contentColor = qrCodeItem.secondaryColor,
                 modifier = modifier
             )
@@ -158,7 +158,7 @@ fun Tile(
             SideQRCode(
                 image = qrCodeItem.imageBitmap,
                 barcodeContent = qrCodeItem.content,
-                background = qrCodeItem.primaryColor,
+                background = qrCodeItem.primaryColor.color,
                 contentColor = qrCodeItem.secondaryColor,
                 modifier = modifier
             )
@@ -285,7 +285,7 @@ fun TileFrontPreview() {
             name = sampleQRCodeItem.name,
             content = sampleQRCodeItem.content,
             icon = sampleQRCodeItem.icon.vector,
-            background = sampleQRCodeItem.primaryColor,
+            background = sampleQRCodeItem.primaryColor.color,
             contentColor = sampleQRCodeItem.secondaryColor,
             modifier = Modifier.aspectRatio(1f)
         )
@@ -300,7 +300,7 @@ fun TileFrontLongDetailsPreview() {
             name = "Very very very very very long name",
             content = "Very very very very very long content",
             icon = sampleQRCodeItem.icon.vector,
-            background = sampleQRCodeItem.primaryColor,
+            background = sampleQRCodeItem.primaryColor.color,
             contentColor = sampleQRCodeItem.secondaryColor,
             modifier = Modifier.aspectRatio(1f)
         )
@@ -314,7 +314,7 @@ fun TileBackPreview() {
         SideQRCode(
             image = sampleQRCodeItem.imageBitmap,
             barcodeContent = sampleQRCodeItem.content,
-            background = sampleQRCodeItem.primaryColor,
+            background = sampleQRCodeItem.primaryColor.color,
             contentColor = sampleQRCodeItem.secondaryColor,
             modifier = Modifier.aspectRatio(1f)
         )

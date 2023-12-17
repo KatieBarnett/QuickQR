@@ -3,12 +3,10 @@ package dev.veryniche.quickqr.core.model
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountBalance
 import androidx.compose.material.icons.rounded.AccountCircle
-import androidx.compose.material.icons.rounded.Chat
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material.icons.rounded.Face
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
-import androidx.compose.material.icons.rounded.Fingerprint
 import androidx.compose.material.icons.rounded.Hearing
 import androidx.compose.material.icons.rounded.Help
 import androidx.compose.material.icons.rounded.Home
@@ -22,7 +20,6 @@ import androidx.compose.material.icons.rounded.QuestionAnswer
 import androidx.compose.material.icons.rounded.Route
 import androidx.compose.material.icons.rounded.Savings
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.ShoppingBag
 import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material.icons.rounded.Star
@@ -36,7 +33,7 @@ import androidx.compose.material.icons.rounded.Widgets
 import androidx.compose.material.icons.rounded.Work
 import androidx.compose.ui.graphics.vector.ImageVector
 
-enum class Icon(val vector: ImageVector, val showInList: Boolean = true) {
+enum class QRIcon(val vector: ImageVector, val showInList: Boolean = true) {
     ADD_QR_CODE(Icons.Rounded.QrCode2, showInList = false),
     SCAN(Icons.Rounded.QrCodeScanner, showInList = false),
     Web(Icons.Rounded.Web),
@@ -69,6 +66,6 @@ enum class Icon(val vector: ImageVector, val showInList: Boolean = true) {
     ViewInAr(Icons.Rounded.ViewInAr)
 }
 
-fun getRandomIcon(): Icon {
-    return Icon.entries.filter { it.showInList }.random()
+fun getRandomIcon(): QRIcon {
+    return QRIcon.entries.filter { it.showInList }.random()
 }

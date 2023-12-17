@@ -48,7 +48,7 @@ fun ExpandedQRCode(
         ) {
             Surface(
                 modifier = Modifier.size(100.dp),
-                color = qrCodeItem.primaryColor,
+                color = qrCodeItem.primaryColor.color,
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Image(

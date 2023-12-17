@@ -1,7 +1,8 @@
 package dev.veryniche.quickqr.core
 
-import dev.veryniche.quickqr.core.model.Icon
+import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.core.model.QRCodeItem
+import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.theme.md_theme_light_onPrimary
 import dev.veryniche.quickqr.core.theme.md_theme_light_primary
 import java.util.Date
@@ -27,9 +28,8 @@ object Constants {
         name = sampleName,
         content = sampleUrl,
         imageBase64 = sampleQRCodeBase64,
-        icon = Icon.Star,
-        primaryColor = md_theme_light_primary,
-        secondaryColor = md_theme_light_onPrimary,
+        icon = QRIcon.Star,
+        primaryColor = QRColor.Violet,
         lastModified = Date()
     )
 
