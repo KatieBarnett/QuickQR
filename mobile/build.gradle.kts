@@ -72,6 +72,8 @@ dependencies {
     implementation(libs.compose.animation)
     implementation(libs.compose.runtime.livedata)
 
+    implementation(libs.activity.ktx)
+
     implementation(libs.hilt.navigation.compose)
     implementation(libs.compose.navigation)
 
@@ -88,9 +90,11 @@ dependencies {
     implementation(libs.play.services.code.scanner)
     implementation(libs.qrgenerator)
 
+    implementation(libs.billing)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
-    wearApp(project(":wear"))
+//    wearApp(project(":wear"))
     implementation(project(":core"))
     implementation(project(":storage"))
     implementation(libs.showkase)

@@ -40,24 +40,28 @@
     <string name="confirm_delete_dismiss">Cancel</string>
 
 
-    <string name="about_subtitle">About the app</string>
+    <string name="about_title">Quick QR: About</string>
     <string name="about_developer_title">About the developer</string>
-    <string name="about_developer">About the developer</string>
+    <string name="about_developer">Visit our website</string>
+    <string name="about_developer_text">At Very Niche we are a small app development team specialising in apps for very niche uses, nothing is too small! If you have an idea for an app you need, please let us know!</string>
+    <string name="about_developer_url">https://veryniche.dev</string>
     <string name="about_privacy_policy_title">Privacy policy</string>
-    <string name="about_privacy_policy">Please click here to view the privacy policy.</string>
-    <string name="about_remove_ads_title">Don\'t want to see ads?</string>
-    <string name="about_remove_ads">Help me make more apps!</string>
+    <string name="about_privacy_policy">View the privacy policy</string>
+    <string name="about_privacy_policy_url">https://veryniche.dev</string>
+    <string name="about_pro_version_title">Don\'t want to see ads?\nWant to add more than one QR Code?</string>
+    <string name="about_get_pro_version">Get the pro version!</string>
+    <string name="about_instructions">Welcome to Quick QR - Store, share and show your favourite QR codes!</string>
+    <string name="about_instructions_ul_1">Add QR Code: Tap to add a QR Code</string>
+    <string name="about_instructions_ul_2">Tap tile: Flip over the card and see the QR code, tap again to flip back</string>
+    <string name="about_instructions_ul_3">Long press tile front side: Edit tile details &amp; QR code</string>
+    <string name="about_instructions_ul_4">Long press tile QR code side: Show QR code full screen</string>
+    <string name="about_coming_soon_title">Coming Soon</string>
+    <string name="about_coming_soon_ul_1">Companion Wear OS app to show your QR codes on your watch</string>
+    <string name="about_coming_soon_ul_2">Ability to reorder QR Code tiles</string>
 
     <string name="welcome_title">Welcome!</string>
     <string name="welcome_close">Close</string>
     <string name="welcome_dont_show_again">Don\'t show this again</string>
-    <string name="about_instructions">Before you start, this is not a game by itself.\n\nThis app is meant to be used with the Welcome To The Moon game to allow you to flip cards easily, save your game and save precious table space.\n\nYou must have access to the physical game in order to play, this just replaces the three stacks of number and action cards.\n\nAll mechanics, theme and gameplay of the game belong to the designers Alexis Allard &amp; Benoit Turpin.\n\nIf you don\'t already have the game, you can check it out at BoardGameGeek:\n</string>
-    <string name="welcome_remove_ads_1">Don\'t want to see ads? Click</string>
-    <string name="welcome_remove_ads_2">here</string>
-    <string name="welcome_remove_ads_3">to remove them.</string>
-    <string name="welcome_coming_soon_title">Coming Soon</string>
-    <string name="welcome_coming_soon_ul_1">Companion wear app</string>
-    <string name="welcome_coming_soon_ul_2">Ability to reorder QR Code tiles</string>
 
 
 </resources>

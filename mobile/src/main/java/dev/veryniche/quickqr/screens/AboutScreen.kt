@@ -1,33 +1,53 @@
 package dev.veryniche.quickqr.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat.startActivity
 import com.airbnb.android.showkase.models.Showkase
-import dev.veryniche.quickqr.util.AboutAppText
-import dev.veryniche.quickqr.util.UnorderedListText
 import dev.veryniche.quickqr.BuildConfig
-import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.R
+import dev.veryniche.quickqr.components.NavigationIcon
+import dev.veryniche.quickqr.components.TopAppBarTitle
+import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
+import dev.veryniche.quickqr.previews.PreviewScreen
 import dev.veryniche.quickqr.showkase.getBrowserIntent
-import dev.veryniche.quickqr.util.Analytics
-import dev.veryniche.quickqr.util.TrackedScreen
-import dev.veryniche.quickqr.util.trackScreenView
+import dev.veryniche.quickqr.util.UnorderedListText
+
+@Composable
+fun AboutHeading(textRes: Int, modifier: Modifier = Modifier) {
+    Text(
+        text = stringResource(id = textRes),
+        style = MaterialTheme.typography.headlineSmall,
+        color = MaterialTheme.colorScheme.primary,
+        fontWeight = FontWeight.Bold,
+        modifier = modifier.fillMaxWidth()
+    )
+}
+
+@Composable
+fun AboutText(textRes: Int, modifier: Modifier = Modifier) {
+    Text(
+        text = stringResource(id = textRes),
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = modifier.fillMaxWidth()
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,15 +56,17 @@ fun AboutScreen(
     modifier: Modifier = Modifier
 ) {
     val scrollableState = rememberScrollState()
-
-    TrackedScreen {
-        trackScreenView(name = Analytics.Screen.About)
-    }
+    val context = LocalContext.current
+//    TrackedScreen {
+//        trackScreenView(name = Analytics.Screen.About)
+//    }
     Scaffold(
         topBar = {
-            LargeTopAppBar(
-                title = { Text(text = stringResource(id = R.string.app_name)) },
-                navigationIcon = { onNavigateBack.invoke() }
+            TopAppBar(
+                title = {
+                    TopAppBarTitle(R.string.about_title)
+                },
+                navigationIcon = { NavigationIcon { onNavigateBack.invoke() } }
             )
         },
         modifier = modifier
@@ -58,43 +80,60 @@ fun AboutScreen(
                 .padding(Dimen.spacingDouble)
         ) {
             Text(
-                text = stringResource(id = R.string.about_subtitle),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
-            )
-            AboutAppText()
-            Text(
-                text = stringResource(id = R.string.about_developer_title),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
-            )
-            Text(text = stringResource(id = R.string.about_developer))
-            Text(
-                text = stringResource(id = R.string.welcome_coming_soon_title),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
+                text = stringResource(id = R.string.about_instructions),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth()
             )
             UnorderedListText(
                 textLines = listOf(
-                    R.string.welcome_coming_soon_ul_1,
-                    R.string.welcome_coming_soon_ul_2
+                    R.string.about_instructions_ul_1,
+                    R.string.about_instructions_ul_2,
+                    R.string.about_instructions_ul_3,
+                    R.string.about_instructions_ul_4,
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = Dimen.spacing)
             )
-            Text(
-                text = stringResource(id = R.string.about_remove_ads_title),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
+
+            AboutHeading(R.string.about_coming_soon_title)
+            UnorderedListText(
+                textLines = listOf(
+                    R.string.about_coming_soon_ul_1,
+                    R.string.about_coming_soon_ul_2
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = Dimen.spacing)
             )
-            Text(text = stringResource(id = R.string.about_remove_ads))
+
+            AboutHeading(R.string.about_pro_version_title)
+            Button(content = {
+                Text(text = stringResource(id = R.string.about_get_pro_version))
+            }, onClick = {
+            })
+
+            AboutHeading(R.string.about_developer_title)
+            AboutText(R.string.about_developer_text)
+            val aboutDeveloperUrl = stringResource(id = R.string.about_developer_url)
+            Button(content = {
+                Text(text = stringResource(id = R.string.about_developer))
+            }, onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(aboutDeveloperUrl))
+                context.startActivity(intent)
+            })
+
+            val privacyPolicyUrl = stringResource(id = R.string.about_privacy_policy_url)
+            AboutHeading(R.string.about_privacy_policy_title)
+            Button(content = {
+                Text(text = stringResource(id = R.string.about_privacy_policy))
+            }, onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacyPolicyUrl))
+                context.startActivity(intent)
+            })
+
             if (BuildConfig.DEBUG) {
-                val context = LocalContext.current
                 Spacer(modifier = Modifier.height(Dimen.spacingDouble))
                 Button(content = {
                     Text(stringResource(id = R.string.navigate_showkase))
@@ -106,7 +145,7 @@ fun AboutScreen(
     }
 }
 
-@Preview(group = "About Screen", showBackground = true)
+@PreviewScreen
 @Composable
 fun AboutScreenPreview() {
     QuickQRTheme {

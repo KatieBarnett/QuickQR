@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
     fun QuickQRThemeMobileApp() {
         QuickQRTheme {
             val navController = rememberNavController()
-            QuickQRNavHost(navController = navController)
+            QuickQRNavHost(navController = navController, window = window)
         }
     }
 

@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.veryniche.quickqr.MainViewModel
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.components.TileGrid
+import dev.veryniche.quickqr.components.TopAppBarTitle
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.util.Analytics
 import dev.veryniche.quickqr.util.TrackedScreen
@@ -128,7 +129,7 @@ fun MainScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(id = R.string.app_name))
+                    TopAppBarTitle(R.string.app_name)
                 },
                 actions = {
                     IconButton(

@@ -25,6 +25,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Quick QR"
 include(":mobile")
-include(":wear")
+//include(":wear")
 include(":core")
 include(":storage")

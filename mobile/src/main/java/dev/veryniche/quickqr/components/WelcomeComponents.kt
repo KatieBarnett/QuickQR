@@ -20,25 +20,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import dev.veryniche.quickqr.util.AboutAppText
-import dev.veryniche.quickqr.util.RemoveAdsText
-import dev.veryniche.quickqr.util.UnorderedListText
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
-import dev.veryniche.quickqr.navigation.About
+import dev.veryniche.quickqr.screens.AboutHeading
+import dev.veryniche.quickqr.screens.AboutText
+import dev.veryniche.quickqr.util.UnorderedListText
 
 @Composable
-fun WelcomeDialog(navController: NavController, onDismissRequest: () -> Unit) {
+fun WelcomeDialog(onDismissRequest: () -> Unit) {
     AnimatedTransitionDialog(onDismissRequest = onDismissRequest) { dialogHelper ->
-        WelcomeDialogContent(navController, onDismissRequest)
+        WelcomeDialogContent(onDismissRequest)
     }
 }
 
 @Composable
-fun WelcomeDialogContent(navController: NavController, onDismissRequest: () -> Unit) {
+fun WelcomeDialogContent(onDismissRequest: () -> Unit) {
     val scrollableState = rememberScrollState()
     val checkedState = remember { mutableStateOf(false) }
     Card(
@@ -51,31 +48,39 @@ fun WelcomeDialogContent(navController: NavController, onDismissRequest: () -> U
                 .padding(Dimen.spacing)
                 .verticalScroll(scrollableState)
         ) {
+            AboutHeading(R.string.welcome_title)
             Text(
-                text = stringResource(id = R.string.welcome_title),
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
-            )
-            AboutAppText()
-            Text(
-                text = stringResource(id = R.string.welcome_coming_soon_title),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
+                text = stringResource(id = R.string.about_instructions),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth()
             )
             UnorderedListText(
                 textLines = listOf(
-                    R.string.welcome_coming_soon_ul_1,
-                    R.string.welcome_coming_soon_ul_2
+                    R.string.about_instructions_ul_1,
+                    R.string.about_instructions_ul_2,
+                    R.string.about_instructions_ul_3,
+                    R.string.about_instructions_ul_4,
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = Dimen.spacing)
             )
-            RemoveAdsText({
-                navController.navigate(About.route)
-                onDismissRequest.invoke(/*checkedState.value*/)
+            AboutHeading(R.string.about_coming_soon_title)
+            UnorderedListText(
+                textLines = listOf(
+                    R.string.about_coming_soon_ul_1,
+                    R.string.about_coming_soon_ul_2
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = Dimen.spacing)
+            )
+
+            AboutHeading(R.string.about_pro_version_title)
+            Button(content = {
+                Text(text = stringResource(id = R.string.about_get_pro_version))
+            }, onClick = {
             })
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -99,6 +104,6 @@ fun WelcomeDialogContent(navController: NavController, onDismissRequest: () -> U
 @Composable
 fun WelcomeDialogPreview() {
     QuickQRTheme {
-        WelcomeDialogContent(rememberNavController(), {})
+        WelcomeDialogContent({})
     }
 }

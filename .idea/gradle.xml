@@ -12,7 +12,6 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/mobile" />
             <option value="$PROJECT_DIR$/storage" />
-            <option value="$PROJECT_DIR$/wear" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

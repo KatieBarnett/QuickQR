@@ -1,26 +1,36 @@
 package dev.veryniche.quickqr.components
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import dev.veryniche.quickqr.R
 
 @Composable
-fun NavigationIcon(navController: NavController) {
-    if (navController.previousBackStackEntry != null) {
-        IconButton(
-            onClick = { navController.navigateUp() }
-        ) {
-            Icon(
-                imageVector = Icons.Filled.ArrowBack,
-                contentDescription = stringResource(id = R.string.navigate_back)
-            )
-        }
+fun TopAppBarTitle(textResource: Int) {
+    Text(
+        text = stringResource(textResource),
+        style = MaterialTheme.typography.titleLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+    )
+}
+
+@Composable
+fun NavigationIcon(onClick: () -> Unit) {
+    IconButton(
+        onClick = { onClick.invoke() }
+    ) {
+        Icon(
+            imageVector = Icons.Filled.ArrowBack,
+            contentDescription = stringResource(id = R.string.navigate_back)
+        )
     }
 }
 

@@ -16,6 +16,8 @@ annotation class PreviewTile
 @Preview(name = "extra large font", group = "Extra Large Font", fontScale = 1.3f)
 annotation class PreviewComponent
 
-@Preview(device = Devices.PIXEL_3, showSystemUi = true)
-@Preview(device = Devices.PIXEL_4_XL, showSystemUi = true)
+@Preview(device = Devices.PIXEL_3, group = "Regular Font", fontScale = 1.0f, showSystemUi = true)
+@Preview(device = Devices.PIXEL_3, group = "Extra Large Font", fontScale = 1.3f, showSystemUi = true)
+@Preview(device = Devices.PIXEL_4_XL, group = "Regular Font", fontScale = 1.0f, showSystemUi = true)
+@Preview(device = Devices.PIXEL_4_XL, group = "Extra Large Font", fontScale = 1.3f, showSystemUi = true)
 annotation class PreviewScreen
