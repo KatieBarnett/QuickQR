@@ -1,0 +1,106 @@
+package dev.veryniche.quickqr.util
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.analytics
+import com.google.firebase.analytics.logEvent
+import dev.veryniche.quickqr.core.model.QRColor
+import dev.veryniche.quickqr.core.model.QRIcon
+import dev.veryniche.quickqr.util.Analytics.Screen.MainScreen
+import timber.log.Timber
+
+object Analytics {
+    object Screen {
+        const val MainScreen = "Main Screen"
+        const val ExpandedCode = "Expanded Code"
+        const val About = "About"
+    }
+
+    object Action {
+        const val AddCode = "Add Code"
+        const val EditCode = "Edit Code"
+        const val ExpandCode = "Expand Code"
+        const val DeleteCode = "Delete Code"
+        const val ScanCodeEdit = "Scan Code Edit"
+        const val ScanCodeAdd = "Scan Code Add"
+        const val EnterCodeManually = "Enter Code Manually Add"
+        const val WelcomeRemoveAds = "Welcome Remove Ads"
+    }
+
+    object Type {
+        const val ColorChoice = "Color"
+        const val IconChoice = "Icon"
+    }
+}
+
+@Composable
+fun TrackedScreen(
+    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+    onStart: () -> Unit, // Send the 'started' analytics event
+) {
+    // Safely update the current lambdas when a new one is provided
+    val currentOnStart by rememberUpdatedState(onStart)
+
+    // If `lifecycleOwner` changes, dispose and reset the effect
+    DisposableEffect(lifecycleOwner) {
+        // Create an observer that triggers our remembered callbacks
+        // for sending analytics events
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_START) {
+                currentOnStart()
+            }
+        }
+
+        // Add the observer to the lifecycle
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        // When the effect leaves the Composition, remove the observer
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+}
+
+internal fun trackScreenView(name: String?) {
+    Timber.d("Track screen: $name")
+    Firebase.analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+        param(FirebaseAnalytics.Param.SCREEN_NAME, name ?: "Unknown")
+    }
+}
+
+internal fun trackMainScreenView(tileCount: Int) {
+    Timber.d("Track screen: $MainScreen")
+    Firebase.analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+        param(FirebaseAnalytics.Param.SCREEN_NAME, MainScreen)
+        param(FirebaseAnalytics.Param.ITEMS, tileCount.toString())
+    }
+}
+
+fun trackAction(action: String) {
+    Timber.d("Track action: $action")
+    Firebase.analytics.logEvent(action) {
+    }
+}
+
+fun trackColorChoice(color: QRColor) {
+    Timber.d("Track color choice: ${color.name}")
+    Firebase.analytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
+        param(FirebaseAnalytics.Param.ITEM_NAME, color.name)
+        param(FirebaseAnalytics.Param.CONTENT_TYPE, Analytics.Type.ColorChoice)
+    }
+}
+fun trackIconChoice(icon: QRIcon) {
+    Timber.d("Track icon choice: ${icon.name}")
+    Firebase.analytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
+        param(FirebaseAnalytics.Param.ITEM_NAME, icon.name)
+        param(FirebaseAnalytics.Param.CONTENT_TYPE, Analytics.Type.IconChoice)
+    }
+}

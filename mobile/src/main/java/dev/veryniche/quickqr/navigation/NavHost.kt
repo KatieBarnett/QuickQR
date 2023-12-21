@@ -9,11 +9,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
+import com.google.firebase.analytics.FirebaseAnalytics
+import dev.veryniche.quickqr.components.AboutActionIcon
 import dev.veryniche.quickqr.screens.ExpandedCodeScreen
 import dev.veryniche.quickqr.screens.MainScreen
+import dev.veryniche.quickqr.util.Analytics
+import dev.veryniche.quickqr.util.TrackedScreen
+import dev.veryniche.quickqr.util.trackMainScreenView
+import dev.veryniche.quickqr.util.trackScreenView
 
 @Composable
-fun QuickQRNavHost(navController: NavHostController) {
+fun QuickQRNavHost(
+    navController: NavHostController,
+) {
     NavHost(
         navController = navController,
         startDestination = Home.route
@@ -22,6 +30,9 @@ fun QuickQRNavHost(navController: NavHostController) {
             MainScreen(
                 openExpandedQRCode = {
                     navController.navigate(ExpandedCode.getExactRoute(it))
+                },
+                actionIcons = {
+                    AboutActionIcon { navController.navigate(About.route) }
                 },
                 modifier = Modifier
             )

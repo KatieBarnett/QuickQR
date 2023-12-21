@@ -1,8 +1,12 @@
 package dev.veryniche.quickqr.core.theme
 
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 object Dimen {
+    val spacing = 8.dp
+    val spacingDouble = 16.dp
+
     val qRCodeDisplayPadding = 8.dp
     val qRDetailDisplayPadding = 8.dp
     val qRDetailDisplaySpacing = 8.dp
@@ -16,4 +20,6 @@ object Dimen {
 
 
     val iconWidthDefault = 24.dp
+
+    val bulletTextIndent = 4.sp
 }

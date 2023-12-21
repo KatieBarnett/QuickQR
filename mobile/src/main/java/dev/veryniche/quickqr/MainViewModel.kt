@@ -86,6 +86,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun deleteCode(id: Int) {
+        viewModelScope.launch {
+            qrCodesRepository.deleteQRCode(id)
+        }
+    }
+
     private suspend fun saveQRCodeItem(item: QRCodeItem) {
         qrCodesRepository.saveQRCode(item)
     }

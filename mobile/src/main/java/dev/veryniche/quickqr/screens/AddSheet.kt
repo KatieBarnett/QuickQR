@@ -24,6 +24,10 @@ import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.previews.PreviewComponent
+import dev.veryniche.quickqr.util.Analytics
+import dev.veryniche.quickqr.util.trackAction
+import dev.veryniche.quickqr.util.trackColorChoice
+import dev.veryniche.quickqr.util.trackIconChoice
 import kotlinx.coroutines.launch
 
 enum class AddPage {
@@ -81,8 +85,10 @@ fun AddSheet(
                 AddChoice(
                     onScanClick = {
                         onScanClick.invoke()
+                        trackAction(Analytics.Action.ScanCodeAdd)
                     },
                     onEnterUrlClick = {
+                        trackAction(Analytics.Action.EnterCodeManually)
                         coroutineScope.launch {
                             pagerState.scrollToNextPage()
                         }
@@ -105,6 +111,7 @@ fun AddSheet(
                 AddSelectColour(
                     onColorClick = {
                         primaryColor = it
+                        trackColorChoice(it)
                         coroutineScope.launch {
                             pagerState.scrollToNextPage()
                         }
@@ -116,6 +123,7 @@ fun AddSheet(
                 AddSelectIcon(
                     onIconClick = {
                         icon = it
+                        trackIconChoice(it)
                         coroutineScope.launch {
                             pagerState.scrollToNextPage()
                         }

@@ -5,6 +5,7 @@
     <string name="label_name">Name</string>
     <string name="label_content">URL content</string>
     <string name="save_qr">Save Changes</string>
+    <string name="delete_qr">Delete QR Code</string>
     <string name="navigate_back">Back</string>
     <string name="navigate_about">About</string>
     <string name="navigate_showkase">Showkase Browser</string>
@@ -33,5 +34,30 @@
     <string name="confirm_changes_text">Your changes have not been saved</string>
     <string name="confirm_changes_confirm">Yes</string>
     <string name="confirm_changes_dismiss">Cancel</string>
+
+    <string name="confirm_delete_title">Are you sure you want to delete this QR code?</string>
+    <string name="confirm_delete_confirm">Yes</string>
+    <string name="confirm_delete_dismiss">Cancel</string>
+
+
+    <string name="about_subtitle">About the app</string>
+    <string name="about_developer_title">About the developer</string>
+    <string name="about_developer">About the developer</string>
+    <string name="about_privacy_policy_title">Privacy policy</string>
+    <string name="about_privacy_policy">Please click here to view the privacy policy.</string>
+    <string name="about_remove_ads_title">Don\'t want to see ads?</string>
+    <string name="about_remove_ads">Help me make more apps!</string>
+
+    <string name="welcome_title">Welcome!</string>
+    <string name="welcome_close">Close</string>
+    <string name="welcome_dont_show_again">Don\'t show this again</string>
+    <string name="about_instructions">Before you start, this is not a game by itself.\n\nThis app is meant to be used with the Welcome To The Moon game to allow you to flip cards easily, save your game and save precious table space.\n\nYou must have access to the physical game in order to play, this just replaces the three stacks of number and action cards.\n\nAll mechanics, theme and gameplay of the game belong to the designers Alexis Allard &amp; Benoit Turpin.\n\nIf you don\'t already have the game, you can check it out at BoardGameGeek:\n</string>
+    <string name="welcome_remove_ads_1">Don\'t want to see ads? Click</string>
+    <string name="welcome_remove_ads_2">here</string>
+    <string name="welcome_remove_ads_3">to remove them.</string>
+    <string name="welcome_coming_soon_title">Coming Soon</string>
+    <string name="welcome_coming_soon_ul_1">Companion wear app</string>
+    <string name="welcome_coming_soon_ul_2">Ability to reorder QR Code tiles</string>
+
 
 </resources>

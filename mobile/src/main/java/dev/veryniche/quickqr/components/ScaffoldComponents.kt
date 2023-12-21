@@ -1,28 +1,37 @@
 package dev.veryniche.quickqr.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat.startActivity
-import com.airbnb.android.showkase.models.Showkase
+import androidx.navigation.NavController
 import dev.veryniche.quickqr.R
-import dev.veryniche.quickqr.showkase.getBrowserIntent
 
 @Composable
-fun ShowkaseActionIcon() {
-    val context = LocalContext.current
-    IconButton(
-        onClick = {
-            startActivity(context, Showkase.getBrowserIntent(context), null)
+fun NavigationIcon(navController: NavController) {
+    if (navController.previousBackStackEntry != null) {
+        IconButton(
+            onClick = { navController.navigateUp() }
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = stringResource(id = R.string.navigate_back)
+            )
         }
+    }
+}
+
+@Composable
+fun AboutActionIcon(onClick: () -> Unit) {
+    IconButton(
+        onClick = { onClick.invoke() }
     ) {
         Icon(
-            imageVector = Icons.Filled.Build,
-            contentDescription = stringResource(id = R.string.navigate_showkase)
+            imageVector = Icons.Filled.Info,
+            contentDescription = stringResource(id = R.string.navigate_about)
         )
     }
 }

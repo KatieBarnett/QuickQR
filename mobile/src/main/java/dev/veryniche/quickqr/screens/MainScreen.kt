@@ -31,18 +31,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.veryniche.quickqr.BuildConfig
 import dev.veryniche.quickqr.MainViewModel
 import dev.veryniche.quickqr.R
-import dev.veryniche.quickqr.components.ShowkaseActionIcon
 import dev.veryniche.quickqr.components.TileGrid
 import dev.veryniche.quickqr.core.model.QRCodeItem
+import dev.veryniche.quickqr.util.Analytics
+import dev.veryniche.quickqr.util.TrackedScreen
+import dev.veryniche.quickqr.util.trackAction
+import dev.veryniche.quickqr.util.trackMainScreenView
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     openExpandedQRCode: (id: Int) -> Unit,
+    actionIcons: @Composable () -> Unit,
     modifier: Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -78,6 +81,12 @@ fun MainScreen(
     val context = LocalContext.current
     val scannedCode by viewModel.scannedCode.collectAsStateWithLifecycle()
     var flipAllCardsToFront by rememberSaveable { mutableStateOf<Int?>(null) }
+
+    val tiles: List<QRCodeItem> by viewModel.tiles.collectAsStateWithLifecycle(listOf())
+
+    TrackedScreen {
+        trackMainScreenView(tiles.size)
+    }
 
     fun hideAddSheet() {
         coroutineScope.launch {
@@ -122,9 +131,6 @@ fun MainScreen(
                     Text(text = stringResource(id = R.string.app_name))
                 },
                 actions = {
-                    if (BuildConfig.DEBUG) {
-                        ShowkaseActionIcon()
-                    }
                     IconButton(
                         onClick = {
                             flipAllCardsToFront = (flipAllCardsToFront ?: 0) + 1
@@ -135,25 +141,28 @@ fun MainScreen(
                             contentDescription = stringResource(id = R.string.navigate_flip_all_cards)
                         )
                     }
+                    actionIcons.invoke()
                 },
             )
         },
         modifier = modifier
     ) { contentPadding ->
-        val tiles: List<QRCodeItem> by viewModel.tiles.collectAsStateWithLifecycle(listOf())
         Box(Modifier.padding(contentPadding)) {
             TileGrid(
                 tiles = tiles,
                 addTile = {
                     editSheetContext = null
                     showAddSheet = true
+                    trackAction(Analytics.Action.AddCode)
                 },
                 longPressDetail = {
                     editSheetContext = it
                     showEditSheet = true
+                    trackAction(Analytics.Action.EditCode)
                 },
                 longPressCode = {
                     openExpandedQRCode(it.id)
+                    trackAction(Analytics.Action.ExpandCode)
                 },
                 triggerShowAllFront = flipAllCardsToFront,
                 modifier = Modifier.fillMaxSize(),
@@ -204,6 +213,12 @@ fun MainScreen(
                     scannedCode = scannedCode,
                     onScanClick = {
                         viewModel.scanBarcode(context)
+                        trackAction(Analytics.Action.ScanCodeEdit)
+                    },
+                    onDeleteClick = {
+                        viewModel.deleteCode(editSheetContext?.id ?: -1)
+                        trackAction(Analytics.Action.DeleteCode)
+                        resetScreen()
                     }
                 )
             }
