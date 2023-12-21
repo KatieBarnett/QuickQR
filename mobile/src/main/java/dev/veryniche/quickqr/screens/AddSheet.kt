@@ -93,12 +93,9 @@ fun AddSheet(
             AddPage.ENTER_URL -> {
                 AddEnterUrl(
                     onNextClick = {
-                        if (!it.isNullOrBlank()) {
-                            content = it
-                            coroutineScope.launch {
-                                pagerState.scrollToNextPage()
-                            }
-                        } else {
+                        content = it
+                        coroutineScope.launch {
+                            pagerState.scrollToNextPage()
                         }
                     },
                     modifier = Modifier

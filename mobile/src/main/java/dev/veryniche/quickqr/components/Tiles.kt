@@ -216,7 +216,6 @@ fun Tile(
     val animationSpecFlip = tween<Float>(1000, easing = CubicBezierEasing(0.4f, 0.0f, 0.8f, 0.8f))
     val haptics = LocalHapticFeedback.current
     LaunchedEffect(showingFront) {
-        Timber.d("flipRotation: $flipRotation $showingFront $triggerShowAllFront")
         if (showingFront == false) {
             // Do the flip
             animate(

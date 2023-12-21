@@ -69,7 +69,6 @@ fun EditSheet(
     onScanClick: () -> Unit,
 ) {
     var imageBitmap by remember(scannedCode) {
-        Timber.d("Got a scanned code of: ${scannedCode?.base64?.decodeImage()?.asImageBitmap()}")
         mutableStateOf(scannedCode?.base64?.decodeImage()?.asImageBitmap() ?: initialItem?.imageBitmap)
     }
     var name by remember { mutableStateOf(initialItem?.name) }

@@ -29,4 +29,9 @@
     <string name="add_enter_name">Enter name:</string>
     <string name="add_save">Save</string>
 
+    <string name="confirm_changes_title">Are you sure you want to exit?</string>
+    <string name="confirm_changes_text">Your changes have not been saved</string>
+    <string name="confirm_changes_confirm">Yes</string>
+    <string name="confirm_changes_dismiss">Cancel</string>
+
 </resources>
