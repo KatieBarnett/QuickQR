@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,7 +41,6 @@ import dev.veryniche.quickqr.ScannedCode
 import dev.veryniche.quickqr.components.ColorSelectorDialog
 import dev.veryniche.quickqr.components.IconSelectorDialog
 import dev.veryniche.quickqr.components.QRColorShape
-import dev.veryniche.quickqr.core.Constants
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
 import dev.veryniche.quickqr.core.decodeImage
 import dev.veryniche.quickqr.core.model.QRCodeItem

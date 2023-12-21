@@ -8,6 +8,7 @@
     <string name="navigate_back">Back</string>
     <string name="navigate_about">About</string>
     <string name="navigate_showkase">Showkase Browser</string>
+    <string name="navigate_flip_all_cards">Flip all cards</string>
     <string name="click_to_scan">Click to scan</string>
     <string name="click_to_rescan">Click to re-scan</string>
     <string name="generic_error">Something went wrong. Please try again.</string>

@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
-import dev.veryniche.quickqr.previews.PreviewComponent
 
 @Composable
 fun IconSelector(

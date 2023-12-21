@@ -1,10 +1,8 @@
 package dev.veryniche.quickqr.core
 
-import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.model.QRColor
-import dev.veryniche.quickqr.core.theme.md_theme_light_onPrimary
-import dev.veryniche.quickqr.core.theme.md_theme_light_primary
+import dev.veryniche.quickqr.core.model.QRIcon
 import java.util.Date
 
 object Constants {

@@ -1,9 +1,15 @@
 package dev.veryniche.quickqr.screens
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -43,6 +49,7 @@ fun MainScreen(
     val viewModel: MainViewModel = hiltViewModel()
     val context = LocalContext.current
     val scannedCode by viewModel.scannedCode.collectAsStateWithLifecycle()
+    var flipAllCardsToFront by remember { mutableStateOf<Int?>(null) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -53,6 +60,16 @@ fun MainScreen(
                 actions = {
                     if (BuildConfig.DEBUG) {
                         ShowkaseActionIcon()
+                    }
+                    IconButton(
+                        onClick = {
+                            flipAllCardsToFront = (flipAllCardsToFront ?: 0) + 1
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Refresh,
+                            contentDescription = stringResource(id = R.string.navigate_flip_all_cards)
+                        )
                     }
                 },
             )
@@ -74,6 +91,7 @@ fun MainScreen(
                 longPressCode = {
                     openExpandedQRCode(it.id)
                 },
+                triggerShowAllFront = flipAllCardsToFront,
                 modifier = Modifier.fillMaxSize(),
             )
         }
@@ -85,6 +103,7 @@ fun MainScreen(
                         viewModel.scannedCode.emit(null)
                     }
                 },
+                windowInsets = WindowInsets.ime,
                 sheetState = sheetState
             ) {
                 AddSheet(

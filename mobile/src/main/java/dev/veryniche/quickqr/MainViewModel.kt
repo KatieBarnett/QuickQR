@@ -3,8 +3,6 @@ package dev.veryniche.quickqr
 import android.content.Context
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

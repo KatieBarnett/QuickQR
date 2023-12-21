@@ -39,11 +39,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
-import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.core.model.QRCodeItem
+import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.previews.PreviewTile
+import timber.log.Timber
 
 @Composable
 fun SideQRCode(
@@ -166,6 +167,7 @@ fun Tile(
     qrCodeItem: QRCodeItem,
     longPressDetail: (QRCodeItem) -> Unit,
     longPressCode: (QRCodeItem) -> Unit,
+    triggerShowAllFront: Int? = null,
     modifier: Modifier = Modifier,
 ) {
     Tile(
@@ -194,6 +196,7 @@ fun Tile(
         longPressCode = {
             longPressCode.invoke(qrCodeItem)
         },
+        triggerShowAllFront = triggerShowAllFront,
         modifier = modifier,
     )
 }
@@ -205,13 +208,15 @@ fun Tile(
     sideBack: @Composable (Modifier) -> Unit,
     longPressDetail: () -> Unit,
     longPressCode: () -> Unit,
+    triggerShowAllFront: Int? = null,
     modifier: Modifier = Modifier,
 ) {
-    var showingFront by remember { mutableStateOf<Boolean?>(null) }
+    var showingFront by remember(triggerShowAllFront) { mutableStateOf<Boolean?>(true) }
     var flipRotation by remember { mutableFloatStateOf(0f) }
     val animationSpecFlip = tween<Float>(1000, easing = CubicBezierEasing(0.4f, 0.0f, 0.8f, 0.8f))
     val haptics = LocalHapticFeedback.current
     LaunchedEffect(showingFront) {
+        Timber.d("flipRotation: $flipRotation $showingFront $triggerShowAllFront")
         if (showingFront == false) {
             // Do the flip
             animate(
@@ -221,7 +226,7 @@ fun Tile(
             ) { value: Float, _: Float ->
                 flipRotation = value
             }
-        } else if (showingFront == true) {
+        } else if (showingFront == true && flipRotation > 90f) {
             animate(
                 initialValue = 180f,
                 targetValue = 0f,

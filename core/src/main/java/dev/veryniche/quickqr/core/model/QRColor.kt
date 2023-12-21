@@ -1,10 +1,7 @@
 package dev.veryniche.quickqr.core.model
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import dev.veryniche.quickqr.core.theme.md_theme_dark_onSurface
-import dev.veryniche.quickqr.core.theme.md_theme_light_onSurface
 import dev.veryniche.quickqr.core.theme.md_theme_light_primary
 import dev.veryniche.quickqr.core.util.isDark
 
@@ -36,9 +33,9 @@ enum class QRColor(val color: Color, val showInList: Boolean = true) {
 
 fun QRColor.getSecondaryColor(): Color {
     return if (color.toArgb().isDark()) {
-        md_theme_dark_onSurface
+        Color.White
     } else {
-        md_theme_light_onSurface
+        Color.Black
     }
 }
 

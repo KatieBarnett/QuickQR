@@ -24,6 +24,7 @@ fun TileGrid(
     addTile: () -> Unit,
     longPressDetail: (QRCodeItem) -> Unit,
     longPressCode: (QRCodeItem) -> Unit,
+    triggerShowAllFront: Int? = null,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
@@ -37,7 +38,12 @@ fun TileGrid(
             AddTile(addTile)
         }
         items(tiles) { tile ->
-            Tile(tile, longPressDetail, longPressCode)
+            Tile(
+                qrCodeItem = tile,
+                longPressDetail = longPressDetail,
+                longPressCode = longPressCode,
+                triggerShowAllFront = triggerShowAllFront,
+            )
         }
         item {
             Spacer(
