@@ -4,7 +4,6 @@ import android.content.Context
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
@@ -29,7 +28,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     val tiles = qrCodesRepository.getQRCodes()
-    val scannedCode = MutableStateFlow<Pair<String, String>?>(null)
+    val scannedCode = MutableStateFlow<ScannedCode?>(null)
 
     private val barcodeScannerOptions = GmsBarcodeScannerOptions.Builder()
         .enableAutoZoom() // available on 16.1.0 and higher
@@ -47,7 +46,7 @@ class MainViewModel @Inject constructor(
                     val base64 = createQRImage(it)
                     Timber.d("got barcode base64 $base64")
                     viewModelScope.launch {
-                        scannedCode.emit(Pair(base64, it))
+                        scannedCode.emit(ScannedCode(base64, it))
                     }
                 }
             }
@@ -60,7 +59,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun processEdit(
-        context: Context,
+        id: Int = -1,
         name: String?,
         content: String?,
         icon: QRIcon,
@@ -73,7 +72,7 @@ class MainViewModel @Inject constructor(
         } else {
             val qrImageBase64 = createQRImage(content)
             val qrCodeItem = QRCodeItem(
-                id = 1,
+                id = id,
                 name = name.trim(),
                 content = content.trim(),
                 imageBase64 = qrImageBase64,
@@ -82,6 +81,7 @@ class MainViewModel @Inject constructor(
                 lastModified = Date()
             )
             viewModelScope.launch {
+                scannedCode.emit(null)
                 saveQRCodeItem(qrCodeItem)
             }
             return qrCodeItem.imageBitmap
@@ -94,11 +94,16 @@ class MainViewModel @Inject constructor(
 
     fun createQRImage(content: String): String {
         // Initializing the QR Encoder with your value to be encoded, type you required and Dimension
-        val qrgEncoder = QRGEncoder("https://veryniche.dev/", null, QRGContents.Type.TEXT, 300)
-//        val qrgEncoder = QRGEncoder(content, null, QRGContents.Type.TEXT, 300)
+        val qrgEncoder = QRGEncoder(content, null, QRGContents.Type.TEXT, 300)
+        // TODO enable colour selection?
 //        qrgEncoder.setColorBlack(Color.RED)
 //        qrgEncoder.setColorWhite(Color.BLUE)
-        // Getting QR-Code as Bitmap∂
+        // Getting QR-Code as Bitmap
         return qrgEncoder.getBitmap(0).encodeImage()
     }
 }
+
+data class ScannedCode(
+    val base64: String,
+    val content: String
+)

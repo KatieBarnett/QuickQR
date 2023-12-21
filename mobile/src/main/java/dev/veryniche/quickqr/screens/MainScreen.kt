@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -25,6 +27,7 @@ import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.components.ShowkaseActionIcon
 import dev.veryniche.quickqr.components.TileGrid
 import dev.veryniche.quickqr.core.model.QRCodeItem
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,7 +46,10 @@ fun MainScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { stringResource(id = R.string.app_name) },
+                title = { Text(
+                    text = stringResource(id = R.string.app_name),
+                    style = MaterialTheme.typography.titleLarge,
+                ) },
                 actions = {
                     if (BuildConfig.DEBUG) {
                         ShowkaseActionIcon()
@@ -75,13 +81,17 @@ fun MainScreen(
             ModalBottomSheet(
                 onDismissRequest = {
                     showAddSheet = false
+                    scope.launch {
+                        viewModel.scannedCode.emit(null)
+                    }
                 },
                 sheetState = sheetState
             ) {
                 AddSheet(
+                    scannedCode = scannedCode,
                     onSaveClick = { name, content, icon, primaryColor ->
                         showAddSheet = false
-                        viewModel.processEdit(context, name, content, icon!!, primaryColor!!)
+                        viewModel.processEdit(name = name, content = content, icon = icon!!, primaryColor = primaryColor!!)
                     },
                     onScanClick = { viewModel.scanBarcode(context) },
 //                    onCloseClick = {
@@ -105,12 +115,12 @@ fun MainScreen(
                     initialItem = editSheetContext,
                     onSaveClick = { name, content, icon, primaryColor ->
                         showEditSheet = false
-                        viewModel.processEdit(context, name, content, icon, primaryColor)
+                        viewModel.processEdit(editSheetContext?.id ?: -1, name, content, icon, primaryColor)
                     },
                     scannedCode = scannedCode,
                     onScanClick = {
                         viewModel.scanBarcode(context)
-                                  },
+                    },
 //                    onColorClick = {},
 //                    onIconClick = {},
 //                    onCloseClick = {

@@ -29,7 +29,7 @@ object Constants {
         content = sampleUrl,
         imageBase64 = sampleQRCodeBase64,
         icon = QRIcon.Star,
-        primaryColor = QRColor.Violet,
+        primaryColor = QRColor.Indigo,
         lastModified = Date()
     )
 

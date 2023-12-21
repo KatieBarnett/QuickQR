@@ -13,7 +13,7 @@ message QRCode {
   string content = 3;
   string imageBase64 = 4;
   string iconName = 5;
-  string primaryColor = 6;
+  string colorName = 6;
   int32 sortOrder = 8;
   double lastModified = 9;
 }

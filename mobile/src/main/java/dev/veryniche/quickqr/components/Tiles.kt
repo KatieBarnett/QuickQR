@@ -127,13 +127,38 @@ fun SideDetails(
 
 @Composable
 fun SideAdd(modifier: Modifier) {
-    SideDetails(
-        name = stringResource(R.string.add_qr),
-        content = null,
-        icon = QRIcon.ADD_QR_CODE.vector,
-        background = MaterialTheme.colorScheme.primary,
+    ElevatedCard(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ),
         modifier = modifier
-    )
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier
+                .padding(Dimen.qRDetailDisplayPadding)
+                .fillMaxSize()
+        ) {
+            Image(
+                imageVector = QRIcon.ADD_QR_CODE.vector,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                contentDescription = stringResource(R.string.add_qr),
+                modifier = Modifier.fillMaxSize(0.3f)
+            )
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.weight(0.3f)) {
+                Text(
+                    text = stringResource(R.string.add_qr),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    textAlign = TextAlign.Center,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier
+                )
+            }
+        }
+    }
 }
 
 @Composable

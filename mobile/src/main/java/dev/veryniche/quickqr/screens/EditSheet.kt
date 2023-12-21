@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.veryniche.quickqr.R
+import dev.veryniche.quickqr.ScannedCode
 import dev.veryniche.quickqr.components.ColorSelectorDialog
 import dev.veryniche.quickqr.components.IconSelectorDialog
 import dev.veryniche.quickqr.components.QRColorShape
@@ -60,7 +61,7 @@ import java.util.Date
 @Composable
 fun EditSheet(
     initialItem: QRCodeItem? = null,
-    scannedCode: Pair<String, String>?,
+    scannedCode: ScannedCode?,
     onSaveClick: (
         name: String?,
         content: String?,
@@ -70,11 +71,11 @@ fun EditSheet(
     onScanClick: () -> Unit,
 ) {
     var imageBitmap by remember(scannedCode) {
-        Timber.d("Got a scanned code of: ${scannedCode?.first?.decodeImage()?.asImageBitmap()}")
-        mutableStateOf(scannedCode?.first?.decodeImage()?.asImageBitmap() ?: initialItem?.imageBitmap)
+        Timber.d("Got a scanned code of: ${scannedCode?.base64?.decodeImage()?.asImageBitmap()}")
+        mutableStateOf(scannedCode?.base64?.decodeImage()?.asImageBitmap() ?: initialItem?.imageBitmap)
     }
     var name by remember { mutableStateOf(initialItem?.name) }
-    var content by remember(scannedCode) { mutableStateOf(scannedCode?.second ?: initialItem?.content) }
+    var content by remember(scannedCode) { mutableStateOf(scannedCode?.content ?: initialItem?.content) }
     var icon by remember { mutableStateOf(initialItem?.icon ?: getRandomIcon()) }
     var primaryColor by remember { mutableStateOf(initialItem?.primaryColor ?: getRandomColor()) }
 

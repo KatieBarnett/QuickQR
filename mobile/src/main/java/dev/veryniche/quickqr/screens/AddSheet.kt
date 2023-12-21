@@ -7,6 +7,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import dev.veryniche.quickqr.ScannedCode
 import dev.veryniche.quickqr.components.AddChoice
 import dev.veryniche.quickqr.components.AddEnterName
 import dev.veryniche.quickqr.components.AddEnterUrl
@@ -40,13 +42,9 @@ suspend fun PagerState.scrollToNextPage() {
 @Composable
 fun AddSheet(
     modifier: Modifier,
-    onSaveClick: (
-        name: String?,
-        content: String?,
-        icon: QRIcon?,
-        primaryColor: QRColor?,
-    ) -> ImageBitmap?,
-    onScanClick: () -> Unit
+    scannedCode: ScannedCode?,
+    onSaveClick: (name: String?, content: String?, icon: QRIcon?, primaryColor: QRColor?) -> ImageBitmap?,
+    onScanClick: () -> Unit,
 ) {
     val pages by remember {
         mutableStateOf(
@@ -59,27 +57,31 @@ fun AddSheet(
             )
         )
     }
-    var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     var name by remember { mutableStateOf<String?>(null) }
     var content by remember { mutableStateOf<String?>(null) }
     var icon by remember { mutableStateOf<QRIcon?>(null) }
     var primaryColor by remember { mutableStateOf<QRColor?>(null) }
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { pages.size })
+
+    LaunchedEffect(key1 = scannedCode) {
+        if (scannedCode != null && pagerState.currentPage == pages.indexOf(AddPage.ADD_CHOICE)) {
+            pagerState.animateScrollToPage(pages.indexOf(AddPage.SELECT_COLOR))
+            content = scannedCode.content
+        }
+    }
+
     HorizontalPager(
         state = pagerState,
         beyondBoundsPageCount = pagerState.pageCount,
         userScrollEnabled = false,
         modifier = modifier
     ) { page ->
-        when (pages.get(page)) {
+        when (pages[page]) {
             AddPage.ADD_CHOICE -> {
                 AddChoice(
                     onScanClick = {
                         onScanClick.invoke()
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(pages.indexOf(AddPage.SELECT_COLOR))
-                        }
                     },
                     onEnterUrlClick = {
                         coroutineScope.launch {
@@ -129,9 +131,7 @@ fun AddSheet(
                 AddEnterName(
                     onSaveClick = {
                         name = it
-                        onSaveClick.invoke(name, content, icon, primaryColor).let {
-                            imageBitmap = it
-                        }
+                        onSaveClick.invoke(name, content, icon, primaryColor)
                     },
                     modifier = Modifier
                 )
@@ -140,19 +140,20 @@ fun AddSheet(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @PreviewComponent
 @Composable
 fun AddSheetPreview() {
     QuickQRTheme {
         Surface {
             AddSheet(
+                scannedCode = null,
                 modifier = Modifier,
                 onSaveClick = { name, content, icon, primaryColor ->
                     null
-                }
-            ) {
-            }
+                },
+                onScanClick = {
+                },
+            )
         }
     }
 }

@@ -26,7 +26,7 @@ class QRCodesDataSource @Inject constructor(
     suspend fun saveQRCode(qrCode: QRCodeItem) {
         qRCodeDataStore.updateData { currentQRCodes ->
             val currentIndex = currentQRCodes.qrCodesList.indexOfFirst { it.id == qrCode.id }
-            if (currentIndex != -1) {
+            if (currentIndex != -1 && qrCode.id != -1) {
                 currentQRCodes.toBuilder().setQrCodes(currentIndex, qrCode.toQRCode()).build()
             } else {
                 currentQRCodes.toBuilder().addQrCodes(qrCode.toQRCode(currentQRCodes.qrCodesList.size)).build()

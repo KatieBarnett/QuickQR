@@ -73,16 +73,20 @@ fun AddEnterUrl(
     onNextClick: (String) -> Unit,
     modifier: Modifier
 ) {
+    var firstTextChange by remember { mutableStateOf(false) }
     var content by remember { mutableStateOf<String?>(null) }
     AddContainer({
         Text(stringResource(id = R.string.add_enter_url))
         OutlinedTextField(
             value = content.orEmpty(),
-            onValueChange = { content = it },
-            isError = content.isNullOrBlank(),
+            onValueChange = {
+                firstTextChange = true
+                content = it
+            },
+            isError = content.isNullOrBlank() && firstTextChange,
             label = { Text(stringResource(R.string.label_content)) },
             supportingText = {
-                if (content.isNullOrBlank()) {
+                if (content.isNullOrBlank() && firstTextChange) {
                     Text(
                         text = stringResource(R.string.validation_message_content),
                         color = MaterialTheme.colorScheme.error
@@ -133,15 +137,19 @@ fun AddEnterName(
     modifier: Modifier
 ) {
     var name by remember { mutableStateOf<String?>(null) }
+    var firstTextChange by remember { mutableStateOf(false) }
     AddContainer({
         Text(stringResource(id = R.string.add_enter_name))
         OutlinedTextField(
             value = name.orEmpty(),
-            onValueChange = { name = it },
-            isError = name.isNullOrBlank(),
+            onValueChange = {
+                firstTextChange = true
+                name = it
+            },
+            isError = name.isNullOrBlank() && firstTextChange,
             label = { Text(stringResource(R.string.label_name)) },
             supportingText = {
-                if (name.isNullOrBlank()) {
+                if (name.isNullOrBlank() && firstTextChange) {
                     Text(
                         text = stringResource(R.string.validation_message_name),
                         color = MaterialTheme.colorScheme.error
