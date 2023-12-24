@@ -29,7 +29,9 @@ class QRCodesDataSource @Inject constructor(
             if (currentIndex != -1 && qrCode.id != -1) {
                 currentQRCodes.toBuilder().setQrCodes(currentIndex, qrCode.toQRCode()).build()
             } else {
-                currentQRCodes.toBuilder().addQrCodes(qrCode.toQRCode(currentQRCodes.qrCodesList.size)).build()
+                currentQRCodes.toBuilder().addQrCodes(
+                    qrCode.toQRCode(currentQRCodes.qrCodesList.size, currentQRCodes.qrCodesList.size)
+                ).build()
             }
         }
     }

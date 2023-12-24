@@ -28,6 +28,7 @@ object Constants {
         imageBase64 = sampleQRCodeBase64,
         icon = QRIcon.Star,
         primaryColor = QRColor.Indigo,
+        sortOrder = 0,
         lastModified = Date()
     )
 

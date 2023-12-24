@@ -36,10 +36,12 @@ import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.components.TileGrid
 import dev.veryniche.quickqr.components.TopAppBarTitle
 import dev.veryniche.quickqr.core.model.QRCodeItem
-import dev.veryniche.quickqr.util.Analytics
-import dev.veryniche.quickqr.util.TrackedScreen
-import dev.veryniche.quickqr.util.trackAction
-import dev.veryniche.quickqr.util.trackMainScreenView
+import dev.veryniche.quickqr.analytics.Analytics
+import dev.veryniche.quickqr.analytics.TrackedScreen
+import dev.veryniche.quickqr.analytics.trackAction
+import dev.veryniche.quickqr.analytics.trackMainScreenView
+import dev.veryniche.quickqr.purchase.isProVersionRequired
+import dev.veryniche.quickqr.purchase.purchasePro
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,6 +49,8 @@ import kotlinx.coroutines.launch
 fun MainScreen(
     openExpandedQRCode: (id: Int) -> Unit,
     actionIcons: @Composable () -> Unit,
+    isProPurchased: Boolean,
+    onProPurchaseClick: () -> Unit,
     modifier: Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -54,6 +58,7 @@ fun MainScreen(
     var editSheetContext by rememberSaveable { mutableStateOf<QRCodeItem?>(null) }
     var showAddSheet by rememberSaveable { mutableStateOf(false) }
     var showConfirmChanges by rememberSaveable { mutableStateOf(false) }
+    var showPurchase by rememberSaveable { mutableStateOf(false) }
     val editSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
         confirmValueChange = {
@@ -153,17 +158,21 @@ fun MainScreen(
                 tiles = tiles,
                 addTile = {
                     editSheetContext = null
-                    showAddSheet = true
-                    trackAction(Analytics.Action.AddCode)
+                    if (isProPurchased && isProVersionRequired(tiles.size)) {
+                        showAddSheet = true
+                    } else {
+                        showPurchase = true
+                    }
+                    trackAction(Analytics.Action.AddCode, isProPurchased)
                 },
                 longPressDetail = {
                     editSheetContext = it
                     showEditSheet = true
-                    trackAction(Analytics.Action.EditCode)
+                    trackAction(Analytics.Action.EditCode, isProPurchased)
                 },
                 longPressCode = {
                     openExpandedQRCode(it.id)
-                    trackAction(Analytics.Action.ExpandCode)
+                    trackAction(Analytics.Action.ExpandCode, isProPurchased)
                 },
                 triggerShowAllFront = flipAllCardsToFront,
                 modifier = Modifier.fillMaxSize(),
@@ -214,11 +223,11 @@ fun MainScreen(
                     scannedCode = scannedCode,
                     onScanClick = {
                         viewModel.scanBarcode(context)
-                        trackAction(Analytics.Action.ScanCodeEdit)
+                        trackAction(Analytics.Action.ScanCodeEdit, isProPurchased)
                     },
                     onDeleteClick = {
                         viewModel.deleteCode(editSheetContext?.id ?: -1)
-                        trackAction(Analytics.Action.DeleteCode)
+                        trackAction(Analytics.Action.DeleteCode, isProPurchased)
                         resetScreen()
                     }
                 )
@@ -247,6 +256,27 @@ fun MainScreen(
                     dismissOnBackPress = false,
                     dismissOnClickOutside = false
                 )
+            )
+        }
+        if (showPurchase) {
+            AlertDialog(
+                onDismissRequest = { showPurchase = false },
+                title = { Text(stringResource(R.string.pro_purchase_title)) },
+                text = { Text(stringResource(R.string.pro_purchase_text)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        onProPurchaseClick.invoke()
+                    }) {
+                        Text(stringResource(R.string.pro_purchase_confirm))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        showPurchase = false
+                    }) {
+                        Text(stringResource(R.string.pro_purchase_dismiss))
+                    }
+                }
             )
         }
     }

@@ -5,7 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -13,6 +17,9 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.navigation.QuickQRNavHost
+import dev.veryniche.quickqr.purchase.PurchaseManager
+import dev.veryniche.quickqr.purchase.isProPurchased
+import dev.veryniche.quickqr.purchase.purchasePro
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -24,21 +31,36 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         firebaseAnalytics = Firebase.analytics
         setContent {
-            QuickQRThemeMobileApp()
+            val purchaseManager = remember { PurchaseManager(this) }
+            LaunchedEffect(Unit) {
+                purchaseManager.billingSetup()
+                purchaseManager.checkProducts()
+            }
+
+            val purchasedProducts by purchaseManager.purchases.collectAsStateWithLifecycle()
+
+            QuickQRThemeMobileApp(
+                isProPurchased = isProPurchased(purchasedProducts),
+                onProPurchaseClick = { purchasePro(purchaseManager) }
+            )
         }
     }
 
     @Composable
-    fun QuickQRThemeMobileApp() {
+    fun QuickQRThemeMobileApp(isProPurchased: Boolean, onProPurchaseClick: () -> Unit) {
         QuickQRTheme {
             val navController = rememberNavController()
-            QuickQRNavHost(navController = navController, window = window)
+            QuickQRNavHost(
+                navController = navController,
+                isProPurchased = isProPurchased,
+                onProPurchaseClick = onProPurchaseClick
+            )
         }
     }
 
     @Preview(group = "Full App", showSystemUi = true, showBackground = true)
     @Composable
     fun DefaultPreview() {
-        QuickQRThemeMobileApp()
+        QuickQRThemeMobileApp(true, {})
     }
 }

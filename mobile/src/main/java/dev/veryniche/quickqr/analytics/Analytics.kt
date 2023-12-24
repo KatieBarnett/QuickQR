@@ -1,4 +1,4 @@
-package dev.veryniche.quickqr.util
+package dev.veryniche.quickqr.analytics
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -12,9 +12,9 @@ import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.analytics
 import com.google.firebase.analytics.logEvent
+import dev.veryniche.quickqr.analytics.Analytics.Screen.MainScreen
 import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.model.QRIcon
-import dev.veryniche.quickqr.util.Analytics.Screen.MainScreen
 import timber.log.Timber
 
 object Analytics {
@@ -84,9 +84,19 @@ internal fun trackMainScreenView(tileCount: Int) {
     }
 }
 
-fun trackAction(action: String) {
+fun trackAction(action: String, isProVersion: Boolean? = null) {
     Timber.d("Track action: $action")
     Firebase.analytics.logEvent(action) {
+        isProVersion?.let {
+            param(
+                FirebaseAnalytics.Param.CAMPAIGN,
+                if (isProVersion) {
+                    "Pro Version"
+                } else {
+                    "Free Version"
+                }
+            )
+        }
     }
 }
 

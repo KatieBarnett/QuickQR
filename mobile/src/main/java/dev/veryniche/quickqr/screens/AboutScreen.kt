@@ -21,13 +21,16 @@ import androidx.core.content.ContextCompat.startActivity
 import com.airbnb.android.showkase.models.Showkase
 import dev.veryniche.quickqr.BuildConfig
 import dev.veryniche.quickqr.R
+import dev.veryniche.quickqr.analytics.Analytics
+import dev.veryniche.quickqr.analytics.TrackedScreen
 import dev.veryniche.quickqr.components.NavigationIcon
 import dev.veryniche.quickqr.components.TopAppBarTitle
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.previews.PreviewScreen
 import dev.veryniche.quickqr.showkase.getBrowserIntent
-import dev.veryniche.quickqr.util.UnorderedListText
+import dev.veryniche.quickqr.analytics.UnorderedListText
+import dev.veryniche.quickqr.analytics.trackScreenView
 
 @Composable
 fun AboutHeading(textRes: Int, modifier: Modifier = Modifier) {
@@ -53,13 +56,15 @@ fun AboutText(textRes: Int, modifier: Modifier = Modifier) {
 @Composable
 fun AboutScreen(
     onNavigateBack: () -> Unit,
+    isProPurchased: Boolean,
+    onProPurchaseClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollableState = rememberScrollState()
     val context = LocalContext.current
-//    TrackedScreen {
-//        trackScreenView(name = Analytics.Screen.About)
-//    }
+    TrackedScreen {
+        trackScreenView(name = Analytics.Screen.About)
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -108,11 +113,14 @@ fun AboutScreen(
                     .padding(bottom = Dimen.spacing)
             )
 
-            AboutHeading(R.string.about_pro_version_title)
-            Button(content = {
-                Text(text = stringResource(id = R.string.about_get_pro_version))
-            }, onClick = {
-            })
+            if (!isProPurchased) {
+                AboutHeading(R.string.about_pro_version_title)
+                Button(content = {
+                    Text(text = stringResource(id = R.string.about_get_pro_version))
+                }, onClick = {
+                    onProPurchaseClick.invoke()
+                })
+            }
 
             AboutHeading(R.string.about_developer_title)
             AboutText(R.string.about_developer_text)
@@ -147,8 +155,16 @@ fun AboutScreen(
 
 @PreviewScreen
 @Composable
-fun AboutScreenPreview() {
+fun AboutScreenFreePreview() {
     QuickQRTheme {
-        AboutScreen({})
+        AboutScreen(isProPurchased = false, onNavigateBack = {}, onProPurchaseClick = {})
+    }
+}
+
+@PreviewScreen
+@Composable
+fun AboutScreenProPreview() {
+    QuickQRTheme {
+        AboutScreen(isProPurchased = true, onNavigateBack = {}, onProPurchaseClick = {})
     }
 }

@@ -8,16 +8,12 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +34,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.ScannedCode
 import dev.veryniche.quickqr.components.ColorSelectorDialog
@@ -55,8 +50,8 @@ import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.Dimen.AddCodeQRPadding
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.previews.PreviewComponent
-import dev.veryniche.quickqr.util.trackColorChoice
-import dev.veryniche.quickqr.util.trackIconChoice
+import dev.veryniche.quickqr.analytics.trackColorChoice
+import dev.veryniche.quickqr.analytics.trackIconChoice
 import java.util.Date
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -302,6 +297,7 @@ fun EditSheetErrorPreview() {
                     imageBase64 = "",
                     icon = QRIcon.Star,
                     primaryColor = QRColor.Violet,
+                    sortOrder = 0,
                     lastModified = Date()
                 ),
                 scannedCode = null,

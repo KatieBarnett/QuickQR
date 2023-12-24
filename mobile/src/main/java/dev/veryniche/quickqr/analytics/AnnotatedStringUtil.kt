@@ -1,4 +1,4 @@
-package dev.veryniche.quickqr.util
+package dev.veryniche.quickqr.analytics
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

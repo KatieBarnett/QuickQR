@@ -11,7 +11,7 @@ data class QRCodeItem(
     val imageBase64: String,
     val icon: QRIcon,
     val primaryColor: QRColor,
-    val sortOrder: Int? = null,
+    val sortOrder: Int,
     val lastModified: Date
 ) {
     val imageBitmap = imageBase64.decodeImage().asImageBitmap()

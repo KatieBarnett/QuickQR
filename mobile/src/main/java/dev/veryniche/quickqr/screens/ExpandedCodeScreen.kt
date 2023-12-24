@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.veryniche.quickqr.ExpandedCodeViewModel
 import dev.veryniche.quickqr.components.ExpandedQRCode
-import dev.veryniche.quickqr.util.Analytics
-import dev.veryniche.quickqr.util.TrackedScreen
-import dev.veryniche.quickqr.util.trackScreenView
+import dev.veryniche.quickqr.analytics.Analytics
+import dev.veryniche.quickqr.analytics.TrackedScreen
+import dev.veryniche.quickqr.analytics.trackScreenView
 
 @Composable
 fun ExpandedCodeScreen(id: Int?, modifier: Modifier) {

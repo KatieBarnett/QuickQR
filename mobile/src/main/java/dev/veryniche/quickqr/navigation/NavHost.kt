@@ -1,15 +1,8 @@
 package dev.veryniche.quickqr.navigation
 
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
-import android.widget.FrameLayout
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.window.DialogWindowProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -20,11 +13,13 @@ import dev.veryniche.quickqr.components.AboutActionIcon
 import dev.veryniche.quickqr.screens.AboutScreen
 import dev.veryniche.quickqr.screens.ExpandedCodeScreen
 import dev.veryniche.quickqr.screens.MainScreen
+import dev.veryniche.quickqr.util.SetDialogDestinationToEdgeToEdge
 
 @Composable
 fun QuickQRNavHost(
     navController: NavHostController,
-    window: Window
+    isProPurchased: Boolean,
+    onProPurchaseClick: () -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -38,6 +33,8 @@ fun QuickQRNavHost(
                 actionIcons = {
                     AboutActionIcon { navController.navigate(About.route) }
                 },
+                isProPurchased = isProPurchased,
+                onProPurchaseClick = onProPurchaseClick,
                 modifier = Modifier
             )
         }
@@ -49,27 +46,16 @@ fun QuickQRNavHost(
                 decorFitsSystemWindows = false
             )
         ) { backStackEntry ->
-
-            val activityWindow = window
-            val dialogWindow = (LocalView.current.parent as? DialogWindowProvider)?.window
-            val parentView = LocalView.current.parent as View
-            SideEffect {
-                if (activityWindow != null && dialogWindow != null) {
-                    val attributes = WindowManager.LayoutParams()
-                    attributes.copyFrom(activityWindow.attributes)
-                    attributes.type = dialogWindow.attributes.type
-                    dialogWindow.attributes = attributes
-                    parentView.layoutParams = FrameLayout.LayoutParams(
-                        activityWindow.decorView.width,
-                        activityWindow.decorView.height
-                    )
-                }
-            }
-
+            SetDialogDestinationToEdgeToEdge()
             ExpandedCodeScreen(backStackEntry.arguments?.getInt("id"), Modifier)
         }
         composable(route = About.route,) { backStackEntry ->
-            AboutScreen(onNavigateBack = { navController.navigateUp() }, Modifier)
+            AboutScreen(
+                onNavigateBack = { navController.navigateUp() },
+                isProPurchased = isProPurchased,
+                onProPurchaseClick = onProPurchaseClick,
+                modifier = Modifier
+            )
         }
     }
 }

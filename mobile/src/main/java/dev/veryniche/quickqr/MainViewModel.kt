@@ -76,6 +76,7 @@ class MainViewModel @Inject constructor(
                 imageBase64 = qrImageBase64,
                 icon = icon,
                 primaryColor = primaryColor,
+                sortOrder = id,
                 lastModified = Date()
             )
             viewModelScope.launch {

@@ -43,6 +43,7 @@ dependencies {
 
     implementation(libs.core.ktx)
     implementation(libs.hilt)
+    implementation(libs.timber)
 
     implementation(libs.datastore)
     implementation(libs.protobuf.kotlin.lite)

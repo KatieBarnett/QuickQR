@@ -24,10 +24,10 @@ import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.previews.PreviewComponent
-import dev.veryniche.quickqr.util.Analytics
-import dev.veryniche.quickqr.util.trackAction
-import dev.veryniche.quickqr.util.trackColorChoice
-import dev.veryniche.quickqr.util.trackIconChoice
+import dev.veryniche.quickqr.analytics.Analytics
+import dev.veryniche.quickqr.analytics.trackAction
+import dev.veryniche.quickqr.analytics.trackColorChoice
+import dev.veryniche.quickqr.analytics.trackIconChoice
 import kotlinx.coroutines.launch
 
 enum class AddPage {

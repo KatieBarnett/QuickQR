@@ -24,8 +24,7 @@ import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.screens.AboutHeading
-import dev.veryniche.quickqr.screens.AboutText
-import dev.veryniche.quickqr.util.UnorderedListText
+import dev.veryniche.quickqr.analytics.UnorderedListText
 
 @Composable
 fun WelcomeDialog(onDismissRequest: () -> Unit) {
@@ -39,13 +38,13 @@ fun WelcomeDialogContent(onDismissRequest: () -> Unit) {
     val scrollableState = rememberScrollState()
     val checkedState = remember { mutableStateOf(false) }
     Card(
-        modifier = Modifier.padding(Dimen.spacing)
+        modifier = Modifier
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(Dimen.spacing),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .padding(Dimen.spacing)
+                .padding(Dimen.spacingDouble)
                 .verticalScroll(scrollableState)
         ) {
             AboutHeading(R.string.welcome_title)
