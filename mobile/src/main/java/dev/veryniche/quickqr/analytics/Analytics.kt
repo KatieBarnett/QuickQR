@@ -19,20 +19,20 @@ import timber.log.Timber
 
 object Analytics {
     object Screen {
-        const val MainScreen = "Main Screen"
-        const val ExpandedCode = "Expanded Code"
+        const val MainScreen = "Main_Screen"
+        const val ExpandedCode = "Expanded_Code"
         const val About = "About"
     }
 
     object Action {
-        const val AddCode = "Add Code"
-        const val EditCode = "Edit Code"
-        const val ExpandCode = "Expand Code"
-        const val DeleteCode = "Delete Code"
-        const val ScanCodeEdit = "Scan Code Edit"
-        const val ScanCodeAdd = "Scan Code Add"
-        const val EnterCodeManually = "Enter Code Manually Add"
-        const val WelcomeRemoveAds = "Welcome Remove Ads"
+        const val AddCode = "Add_Code"
+        const val EditCode = "Edit_Code"
+        const val ExpandCode = "Expand_Code"
+        const val DeleteCode = "Delete_Code"
+        const val ScanCodeEdit = "Scan_Code_Edit"
+        const val ScanCodeAdd = "Scan_Code_Add"
+        const val EnterCodeManually = "Enter_Code_Manually_Add"
+        const val WelcomeRemoveAds = "Welcome_Remove_Ads"
     }
 
     object Type {
@@ -91,9 +91,9 @@ fun trackAction(action: String, isProVersion: Boolean? = null) {
             param(
                 FirebaseAnalytics.Param.CAMPAIGN,
                 if (isProVersion) {
-                    "Pro Version"
+                    "Pro_Version"
                 } else {
-                    "Free Version"
+                    "Free_Version"
                 }
             )
         }
