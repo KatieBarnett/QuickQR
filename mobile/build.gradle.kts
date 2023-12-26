@@ -93,6 +93,8 @@ dependencies {
 
     implementation(libs.billing)
 
+    implementation(libs.datastore.preferences)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
 //    wearApp(project(":wear"))

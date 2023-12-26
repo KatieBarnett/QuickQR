@@ -13,18 +13,26 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.datastore.preferences.core.edit
 import dev.veryniche.quickqr.R
+import dev.veryniche.quickqr.analytics.UnorderedListText
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
+import dev.veryniche.quickqr.dataStore
 import dev.veryniche.quickqr.screens.AboutHeading
-import dev.veryniche.quickqr.analytics.UnorderedListText
+import dev.veryniche.quickqr.util.Settings
+import kotlinx.coroutines.launch
 
 @Composable
 fun WelcomeDialog(onDismissRequest: () -> Unit) {
@@ -36,7 +44,9 @@ fun WelcomeDialog(onDismissRequest: () -> Unit) {
 @Composable
 fun WelcomeDialogContent(onDismissRequest: () -> Unit) {
     val scrollableState = rememberScrollState()
-    val checkedState = remember { mutableStateOf(false) }
+    var checkedState by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     Card(
         modifier = Modifier
     ) {
@@ -86,14 +96,21 @@ fun WelcomeDialogContent(onDismissRequest: () -> Unit) {
                     text = stringResource(id = R.string.welcome_dont_show_again)
                 )
                 Checkbox(
-                    checked = checkedState.value,
-                    onCheckedChange = { checkedState.value = it }
+                    checked = checkedState,
+                    onCheckedChange = {
+                        checkedState = it
+                    }
                 )
             }
             Button(content = {
                 Text(stringResource(id = R.string.welcome_close))
             }, onClick = {
-                onDismissRequest.invoke(/*checkedState.value*/)
+                coroutineScope.launch {
+                    context.dataStore.edit { settings ->
+                        settings[Settings.KEY_SHOW_WELCOME] = !checkedState
+                    }
+                }
+                onDismissRequest.invoke()
             })
         }
     }

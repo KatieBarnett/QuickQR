@@ -1,5 +1,6 @@
 package dev.veryniche.quickqr
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -20,6 +24,10 @@ import dev.veryniche.quickqr.navigation.QuickQRNavHost
 import dev.veryniche.quickqr.purchase.PurchaseManager
 import dev.veryniche.quickqr.purchase.isProPurchased
 import dev.veryniche.quickqr.purchase.purchasePro
+import dev.veryniche.quickqr.util.Settings
+
+// At the top level of your kotlin file:
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Settings.DATA_STORE_KEY)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
