@@ -1,122 +1,106 @@
 package dev.veryniche.quickqr.purchase
 
 import android.app.Activity
-import com.android.billingclient.api.AcknowledgePurchaseParams
+import android.util.Log
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.ConsumeParams
-import com.android.billingclient.api.ConsumeResponseListener
-import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.Purchase.PurchaseState
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
+import com.android.billingclient.api.queryProductDetails
+import com.android.billingclient.api.queryPurchasesAsync
 import com.google.common.collect.ImmutableList
+import dev.veryniche.quickqr.purchase.Products.proVersion
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PurchaseManager(
-    private val activity: Activity
+    private val activity: Activity,
+    private val coroutineScope: CoroutineScope
 ) {
     private val _purchases = MutableStateFlow<List<String>>(emptyList())
     val purchases = _purchases.asStateFlow()
 
-    private val purchaseUpdateListener = PurchasesUpdatedListener { result, purchases ->
-        if (result.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            for (purchase in purchases) {
-                handlePurchase(purchase)
+    private val purchasesUpdatedListener =
+        PurchasesUpdatedListener { billingResult, purchases ->
+            coroutineScope.launch {
+                processPurchases()
             }
-        } else if (result.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-            // User canceled the purchase
-        } else {
-            // Handle other error cases
         }
-    }
 
-    private var billingClient: BillingClient = BillingClient.newBuilder(activity)
-        .setListener(purchaseUpdateListener)
+    private var billingClient = BillingClient.newBuilder(activity)
+        .setListener(purchasesUpdatedListener)
         .enablePendingPurchases()
         .build()
 
-    private fun handlePurchase(purchase: Purchase) {
-        val consumeParams = ConsumeParams.newBuilder()
-            .setPurchaseToken(purchase.purchaseToken)
-            .build()
-
-        val listener = ConsumeResponseListener { billingResult, s -> }
-
-        billingClient.consumeAsync(consumeParams, listener)
-
-        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-            if (!purchase.isAcknowledged) {
-                val acknowledgePurchaseParams = AcknowledgePurchaseParams
-                    .newBuilder()
-                    .setPurchaseToken(purchase.purchaseToken)
-                    .build()
-
-                billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
-                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                        _purchases.update {
-                            val newList = it.toMutableList()
-                            newList.add(purchase.products[0].toString())
-                            newList
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    fun billingSetup() {
+   fun connectToBilling() {
         billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(result: BillingResult) {
-                if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                    // Connected
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    // The BillingClient is ready. You can query purchases here.
+                    coroutineScope.launch {
+                        processPurchases()
+                    }
                 }
             }
 
             override fun onBillingServiceDisconnected() {
-                // Handle billing service disconnection
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+                billingClient.startConnection(this)
             }
         })
     }
 
-    fun checkProducts() {
-        val queryPurchaseParams = QueryPurchasesParams.newBuilder()
+    suspend fun processAvailableProducts() {
+        val productList = ArrayList<QueryProductDetailsParams.Product>()
+        productList.add(
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(Products.proVersion)
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build()
+        )
+        val params = QueryProductDetailsParams.newBuilder()
+        params.setProductList(productList)
+
+        // leverage queryProductDetails Kotlin extension function
+        val productDetailsResult = withContext(Dispatchers.IO) {
+            billingClient.queryProductDetails(params.build())
+        }
+
+        // Process the result.
+        // Update products list
+        _purchases.update {
+            val newList = it.toMutableList()
+            newList.add(productDetailsResult.productDetailsList?.firstOrNull().toString())
+            newList
+        }
+    }
+
+    suspend fun processPurchases() {
+        val params = QueryPurchasesParams.newBuilder()
             .setProductType(BillingClient.ProductType.INAPP)
-            .build()
 
-        billingClient.queryPurchasesAsync(
-            queryPurchaseParams
-        ) { result, purchases ->
-            when (result.responseCode) {
-                BillingClient.BillingResponseCode.OK -> {
-                    for (purchase in purchases) {
-                        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                            // User has an active product
-                            _purchases.update {
-                                val newList = it.toMutableList()
-                                newList.add(purchase.products[0].toString())
-                                newList
-                            }
+        // uses queryPurchasesAsync Kotlin extension function
+        val purchasesResult = withContext(Dispatchers.IO) {
+            billingClient.queryPurchasesAsync(params.build())
+        }
 
-                            return@queryPurchasesAsync
-                        }
-                    }
-                }
-
-                BillingClient.BillingResponseCode.USER_CANCELED -> {
-                    // User canceled the purchase
-                }
-
-                else -> {
-                    // Handle other error cases
-                }
-            }
-
-            // User does not have an active subscription
+        _purchases.update {
+            val newList = it.toMutableList()
+            newList.addAll(
+                purchasesResult.purchasesList.filter {
+                    it.purchaseState == PurchaseState.PURCHASED
+                }.map { it.products.firstOrNull().toString() })
+            newList
         }
     }
 
@@ -146,13 +130,40 @@ class PurchaseManager(
                             .setProductDetails(it)
                             .build()
                     )
-
                     val billingFlowParams = BillingFlowParams.newBuilder()
                         .setProductDetailsParamsList(productDetailsParamsList)
                         .build()
 
                     billingClient.launchBillingFlow(activity, billingFlowParams)
                 }
+            } else if (billingResult.responseCode == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED) {
+                billingClient.startConnection(object : BillingClientStateListener {
+                    override fun onBillingSetupFinished(billingResult: BillingResult) {
+                        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                            val productDetails = productDetailsList.firstOrNull { productDetails ->
+                                productDetails.productId == productId
+                            }
+                            productDetails?.let {
+                                val productDetailsParamsList = listOf(
+                                    BillingFlowParams.ProductDetailsParams.newBuilder()
+                                        .setProductDetails(it)
+                                        .build()
+                                )
+                                val billingFlowParams = BillingFlowParams.newBuilder()
+                                    .setProductDetailsParamsList(productDetailsParamsList)
+                                    .build()
+
+                                billingClient.launchBillingFlow(activity, billingFlowParams)
+                            }
+                        }
+                    }
+
+                    override fun onBillingServiceDisconnected() {
+                        // Try to restart the connection on the next request to
+                        // Google Play by calling the startConnection() method.
+                        // TODO report error
+                    }
+                })
             }
         }
     }

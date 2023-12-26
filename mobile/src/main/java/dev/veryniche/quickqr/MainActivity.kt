@@ -2,6 +2,7 @@ package dev.veryniche.quickqr
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -25,6 +27,7 @@ import dev.veryniche.quickqr.purchase.PurchaseManager
 import dev.veryniche.quickqr.purchase.isProPurchased
 import dev.veryniche.quickqr.purchase.purchasePro
 import dev.veryniche.quickqr.util.Settings
+import timber.log.Timber
 
 // At the top level of your kotlin file:
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Settings.DATA_STORE_KEY)
@@ -39,10 +42,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         firebaseAnalytics = Firebase.analytics
         setContent {
-            val purchaseManager = remember { PurchaseManager(this) }
+            val coroutineScope = rememberCoroutineScope()
+            val purchaseManager = remember { PurchaseManager(this, coroutineScope) }
             LaunchedEffect(Unit) {
-                purchaseManager.billingSetup()
-                purchaseManager.checkProducts()
+                purchaseManager.connectToBilling()
             }
 
             val purchasedProducts by purchaseManager.purchases.collectAsStateWithLifecycle()

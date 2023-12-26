@@ -58,7 +58,7 @@ fun IconSelectorDialog(
     onSelected: (QRIcon) -> Unit
 ) {
     DialogContainer({ onDismissRequest.invoke() }) {
-        Text(stringResource(id = R.string.add_select_color))
+        Text(stringResource(id = R.string.add_select_icon))
         IconSelector(columns = 5, onIconClick = {
             onSelected.invoke(it)
         }, modifier = Modifier.fillMaxWidth())
