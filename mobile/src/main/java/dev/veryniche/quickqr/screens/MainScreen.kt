@@ -33,15 +33,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.veryniche.quickqr.MainViewModel
 import dev.veryniche.quickqr.R
-import dev.veryniche.quickqr.components.TileGrid
-import dev.veryniche.quickqr.components.TopAppBarTitle
-import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.analytics.Analytics
 import dev.veryniche.quickqr.analytics.TrackedScreen
 import dev.veryniche.quickqr.analytics.trackAction
 import dev.veryniche.quickqr.analytics.trackMainScreenView
+import dev.veryniche.quickqr.components.TileGrid
+import dev.veryniche.quickqr.components.TopAppBarTitle
+import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.purchase.isProVersionRequired
-import dev.veryniche.quickqr.purchase.purchasePro
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -158,7 +157,7 @@ fun MainScreen(
                 tiles = tiles,
                 addTile = {
                     editSheetContext = null
-                    if (isProPurchased && isProVersionRequired(tiles.size)) {
+                    if (isProPurchased || !isProVersionRequired(tiles.size)) {
                         showAddSheet = true
                     } else {
                         showPurchase = true
