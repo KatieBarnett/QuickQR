@@ -43,8 +43,10 @@ private val LightColorScheme = lightColorScheme(
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = md_theme_dark_primary,
-    onPrimary = md_theme_dark_onPrimary,
+//    primary = md_theme_dark_primary,
+//    onPrimary = md_theme_dark_onPrimary,
+    primary = md_theme_light_primary,
+    onPrimary = md_theme_light_onPrimary,
     primaryContainer = md_theme_dark_primaryContainer,
     onPrimaryContainer = md_theme_dark_onPrimaryContainer,
     secondary = md_theme_dark_secondary,
@@ -78,7 +80,7 @@ private val DarkColorScheme = darkColorScheme(
 fun QuickQRTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
