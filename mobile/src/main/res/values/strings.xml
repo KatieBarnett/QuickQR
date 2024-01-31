@@ -68,4 +68,9 @@
     <string name="pro_purchase_confirm">Purchase</string>
     <string name="pro_purchase_dismiss">Later</string>
 
+
+    <string name="purchase_error_generic">Error processing purchase. Please try again.</string>
+    <string name="purchase_error_disconnected">Error connecting to billing system. Please try again.</string>
+    <string name="purchase_error_dismiss">OK</string>
+
 </resources>

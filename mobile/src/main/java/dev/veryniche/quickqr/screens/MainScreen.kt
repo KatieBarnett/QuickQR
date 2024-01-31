@@ -265,6 +265,7 @@ fun MainScreen(
                 confirmButton = {
                     TextButton(onClick = {
                         onProPurchaseClick.invoke()
+                        showPurchase = false
                     }) {
                         Text(stringResource(R.string.pro_purchase_confirm))
                     }

@@ -8,10 +8,10 @@
         <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/core" />
-            <option value="$PROJECT_DIR$/mobile" />
-            <option value="$PROJECT_DIR$/storage" />
+            <option value="$USER_HOME$/Library/CloudStorage/GoogleDrive-katiebarnett5@gmail.com/My Drive/Apps/QuickQR/source/QuickQR" />
+            <option value="$USER_HOME$/Library/CloudStorage/GoogleDrive-katiebarnett5@gmail.com/My Drive/Apps/QuickQR/source/QuickQR/core" />
+            <option value="$USER_HOME$/Library/CloudStorage/GoogleDrive-katiebarnett5@gmail.com/My Drive/Apps/QuickQR/source/QuickQR/mobile" />
+            <option value="$USER_HOME$/Library/CloudStorage/GoogleDrive-katiebarnett5@gmail.com/My Drive/Apps/QuickQR/source/QuickQR/storage" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
