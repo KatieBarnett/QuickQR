@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.core.content.ContextCompat.startActivity
 import com.airbnb.android.showkase.models.Showkase
 import dev.veryniche.quickqr.BuildConfig
@@ -150,6 +151,15 @@ fun AboutScreen(
                     startActivity(context, Showkase.getBrowserIntent(context), null)
                 })
             }
+
+            Spacer(modifier = Modifier.height(Dimen.spacingDouble))
+            Text(
+                text = stringResource(id = R.string.about_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center,
+                modifier = modifier.fillMaxWidth()
+            )
         }
     }
 }
