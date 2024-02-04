@@ -32,6 +32,7 @@ import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.navigation.QuickQRNavHost
 import dev.veryniche.quickqr.purchase.PurchaseManager
 import dev.veryniche.quickqr.purchase.isProPurchased
+import dev.veryniche.quickqr.purchase.isProVersionRequired
 import dev.veryniche.quickqr.purchase.purchasePro
 import dev.veryniche.quickqr.util.Settings
 import kotlinx.coroutines.launch
@@ -62,9 +63,9 @@ class MainActivity : ComponentActivity() {
             QuickQRThemeMobileApp(
                 isProPurchased = isProPurchased(purchasedProducts),
                 onProPurchaseClick = {
-                    purchasePro(purchaseManager, {
+                    purchasePro(purchaseManager) {
                         showPurchaseErrorMessage = it
-                    })
+                    }
                 }
             )
 

@@ -1,5 +1,6 @@
 package dev.veryniche.quickqr.screens
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -42,6 +43,7 @@ import dev.veryniche.quickqr.components.TopAppBarTitle
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.purchase.isProVersionRequired
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -157,6 +159,9 @@ fun MainScreen(
                 tiles = tiles,
                 addTile = {
                     editSheetContext = null
+
+                    Timber.d("isProPurchased: $isProPurchased isProVersionRequired: ${isProVersionRequired(tiles.size)}")
+
                     if (isProPurchased || !isProVersionRequired(tiles.size)) {
                         showAddSheet = true
                     } else {

@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.HiltAndroidApp
+import dev.veryniche.quickqr.purchase.isProVersionRequired
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 import timber.log.Timber.Tree
@@ -25,7 +26,10 @@ class QuickQRApplication : Application() {
 
     /** A tree which logs important information for crash reporting.  */
     private class CrashReportingTree : Tree() {
+
         override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+            super.log(priority, tag, message, t)
+
             if (priority == Log.VERBOSE || priority == Log.DEBUG) {
                 return
             }

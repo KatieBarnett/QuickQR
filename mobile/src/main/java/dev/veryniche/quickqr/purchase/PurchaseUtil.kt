@@ -6,4 +6,4 @@ fun purchasePro(manager: PurchaseManager,
     manager.purchase(Products.proVersion, onError)
 }
 
-fun isProPurchased(manager: List<String>) = manager.contains(Products.proVersion)
+fun isProPurchased(purchasedProducts: List<String>) = purchasedProducts.contains(Products.proVersion)
