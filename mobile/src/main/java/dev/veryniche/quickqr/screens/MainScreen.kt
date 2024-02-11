@@ -1,6 +1,5 @@
 package dev.veryniche.quickqr.screens
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -60,6 +59,7 @@ fun MainScreen(
     var showAddSheet by rememberSaveable { mutableStateOf(false) }
     var showConfirmChanges by rememberSaveable { mutableStateOf(false) }
     var showPurchase by rememberSaveable { mutableStateOf(false) }
+    var showBarcodeScanErrorMessage by rememberSaveable { mutableStateOf<Int?>(null) }
     val editSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
         confirmValueChange = {
@@ -160,7 +160,9 @@ fun MainScreen(
                 addTile = {
                     editSheetContext = null
 
-                    Timber.d("isProPurchased: $isProPurchased isProVersionRequired: ${isProVersionRequired(tiles.size)}")
+                    Timber.d(
+                        "isProPurchased: $isProPurchased isProVersionRequired: ${isProVersionRequired(tiles.size)}"
+                    )
 
                     if (isProPurchased || !isProVersionRequired(tiles.size)) {
                         showAddSheet = true
@@ -201,7 +203,11 @@ fun MainScreen(
                             primaryColor = primaryColor!!
                         )
                     },
-                    onScanClick = { viewModel.scanBarcode(context) },
+                    onScanClick = {
+                        viewModel.scanBarcode(context) {
+                            showBarcodeScanErrorMessage = it
+                        }
+                    },
                     modifier = Modifier
                 )
             }
@@ -226,7 +232,7 @@ fun MainScreen(
                     },
                     scannedCode = scannedCode,
                     onScanClick = {
-                        viewModel.scanBarcode(context)
+                        viewModel.scanBarcode(context) { showBarcodeScanErrorMessage = it }
                         trackAction(Analytics.Action.ScanCodeEdit, isProPurchased)
                     },
                     onDeleteClick = {
@@ -280,6 +286,20 @@ fun MainScreen(
                         showPurchase = false
                     }) {
                         Text(stringResource(R.string.pro_purchase_dismiss))
+                    }
+                }
+            )
+        }
+        showBarcodeScanErrorMessage?.let { message ->
+            AlertDialog(
+                onDismissRequest = { showBarcodeScanErrorMessage = null },
+                title = { Text(stringResource(R.string.barcode_scan_error)) },
+                text = { Text(stringResource(message)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showBarcodeScanErrorMessage = null
+                    }) {
+                        Text(stringResource(R.string.barcode_scan_error_dismiss))
                     }
                 }
             )

@@ -89,6 +89,7 @@ dependencies {
     implementation(libs.timber)
 
     implementation(libs.play.services.code.scanner)
+    implementation(libs.play.services.base)
     implementation(libs.qrgenerator)
 
     implementation(libs.billing)

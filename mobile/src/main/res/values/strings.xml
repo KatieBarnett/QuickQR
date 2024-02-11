@@ -73,4 +73,13 @@
     <string name="purchase_error_disconnected">Error connecting to billing system. Please try again.</string>
     <string name="purchase_error_dismiss">OK</string>
 
+    <string name="module_download">Quick QR</string>
+    <string name="module_download_unavailable">Barcode scanner module is not available for this device. Please update Google Play Services and try again.</string>
+    <string name="module_download_failed">Barcode scanner module failed downloading. Please update Google Play Services and try again.</string>
+    <string name="module_download_dismiss">OK</string>
+
+    <string name="barcode_scan_error">Quick QR</string>
+    <string name="barcode_scan_error_message">Error loading on device barcode scanner. Please try again.</string>
+    <string name="barcode_scan_error_dismiss">OK</string>
+
 </resources>

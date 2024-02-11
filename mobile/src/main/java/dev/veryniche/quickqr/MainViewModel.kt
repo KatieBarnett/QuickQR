@@ -32,7 +32,7 @@ class MainViewModel @Inject constructor(
         .enableAutoZoom() // available on 16.1.0 and higher
         .build()
 
-    fun scanBarcode(context: Context) {
+    fun scanBarcode(context: Context, errorLoadingBarcodeScanner: (Int) -> Unit) {
         val scanner = GmsBarcodeScanning.getClient(
             context,
             barcodeScannerOptions
@@ -49,10 +49,11 @@ class MainViewModel @Inject constructor(
                 }
             }
             .addOnCanceledListener {
-                Timber.d("barcode cancelled")
+                Timber.d("Barcode scanning cancelled")
             }
             .addOnFailureListener { e ->
-                Timber.e(e)
+                Timber.e(e, "Error scanning barcode")
+                errorLoadingBarcodeScanner.invoke(R.string.barcode_scan_error_message)
             }
     }
 

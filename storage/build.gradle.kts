@@ -8,18 +8,15 @@ plugins {
 }
 
 android {
+    namespace = "dev.veryniche.quickqr.storage"
     compileSdk = rootProject.extra["compileSdk"] as Int
 
     defaultConfig {
         minSdk = rootProject.extra["minSdk"] as Int
-
         consumerProguardFiles("consumer-rules.pro")
     }
 
-    buildTypes {        
-        debug {
-
-        }
+    buildTypes {
         release {
             isMinifyEnabled = true
             proguardFiles(
@@ -35,7 +32,6 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    namespace = "dev.veryniche.quickqr.storage"
 }
 
 dependencies {

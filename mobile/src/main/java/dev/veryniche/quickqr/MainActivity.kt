@@ -2,7 +2,6 @@ package dev.veryniche.quickqr
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -32,11 +31,9 @@ import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.navigation.QuickQRNavHost
 import dev.veryniche.quickqr.purchase.PurchaseManager
 import dev.veryniche.quickqr.purchase.isProPurchased
-import dev.veryniche.quickqr.purchase.isProVersionRequired
 import dev.veryniche.quickqr.purchase.purchasePro
+import dev.veryniche.quickqr.util.BarcodeClientHelper
 import dev.veryniche.quickqr.util.Settings
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 // At the top level of your kotlin file:
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Settings.DATA_STORE_KEY)
@@ -59,6 +56,9 @@ class MainActivity : ComponentActivity() {
 
             val purchasedProducts by purchaseManager.purchases.collectAsStateWithLifecycle()
             var showPurchaseErrorMessage by rememberSaveable { mutableStateOf<Int?>(null) }
+            var showBarcodeModuleErrorMessage by rememberSaveable { mutableStateOf<Int?>(null) }
+
+            BarcodeClientHelper(this) { showBarcodeModuleErrorMessage = it }.checkInstallBarcodeModule()
 
             QuickQRThemeMobileApp(
                 isProPurchased = isProPurchased(purchasedProducts),
@@ -80,6 +80,20 @@ class MainActivity : ComponentActivity() {
                                 showPurchaseErrorMessage = null
                             }) {
                                 Text(stringResource(R.string.purchase_error_dismiss))
+                            }
+                        }
+                    )
+                }
+                showBarcodeModuleErrorMessage?.let { message ->
+                    AlertDialog(
+                        onDismissRequest = { showBarcodeModuleErrorMessage = null },
+                        title = { Text(stringResource(R.string.module_download)) },
+                        text = { Text(stringResource(message)) },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                showBarcodeModuleErrorMessage = null
+                            }) {
+                                Text(stringResource(R.string.module_download_dismiss))
                             }
                         }
                     )
