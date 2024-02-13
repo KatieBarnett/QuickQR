@@ -74,12 +74,15 @@
     <string name="purchase_error_dismiss">OK</string>
 
     <string name="module_download">Quick QR</string>
-    <string name="module_download_unavailable">Barcode scanner module is not available for this device. Please update Google Play Services and try again.</string>
+    <string name="module_download_unavailable">Barcode scanner module is not available for this device. Please update Google Play Services and try again if you want to use barcode scanning functionality.</string>
+    <string name="module_download_started">Barcode scanner module starting download. Please wait.</string>
     <string name="module_download_failed">Barcode scanner module failed downloading. Please update Google Play Services and try again.</string>
+    <string name="module_download_complete">Barcode scanner module installation complete. You can now scan barcodes.</string>
+    <string name="module_download_in_progress">Barcode scanner module download in progress: %d\%%</string>
     <string name="module_download_dismiss">OK</string>
 
     <string name="barcode_scan_error">Quick QR</string>
-    <string name="barcode_scan_error_message">Error loading on device barcode scanner. Please try again.</string>
+    <string name="barcode_scan_error_message">Error loading on device barcode scanner. Please wait a few moments and try again.</string>
     <string name="barcode_scan_error_dismiss">OK</string>
 
 </resources>

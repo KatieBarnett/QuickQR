@@ -83,6 +83,8 @@ dependencies {
     implementation(libs.lifecycle.runtime)
     implementation(libs.lifecycle.viewmodel.compose)
 
+    implementation(libs.barcode.scanning)
+
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
 

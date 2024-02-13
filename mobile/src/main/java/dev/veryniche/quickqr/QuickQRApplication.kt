@@ -5,11 +5,9 @@ import android.util.Log
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.HiltAndroidApp
-import dev.veryniche.quickqr.purchase.isProVersionRequired
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 import timber.log.Timber.Tree
-
 
 @HiltAndroidApp
 class QuickQRApplication : Application() {
@@ -40,5 +38,4 @@ class QuickQRApplication : Application() {
             }
         }
     }
-
 }

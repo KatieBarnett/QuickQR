@@ -4,6 +4,7 @@ activity-ktx = "1.8.2"
 agp = "8.2.2"
 androidx-test-ext-junit = "1.1.5"
 appcompat = "1.6.1"
+barcodeScanning = "17.2.0"
 billing = "6.1.0"
 codeScanner = "16.1.0"
 compose-bom = "2024.01.00"
@@ -45,6 +46,7 @@ activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
 billing = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billing" }
 compose-animation = { group = "androidx.compose.animation", name = "animation" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
