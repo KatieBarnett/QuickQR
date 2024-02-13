@@ -13,3 +13,5 @@ local.properties
 *.apk
 */*/*.abb
 *.aab
+.idea/
+.idea/*
