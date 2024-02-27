@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Quick QR</string>
+    <string name="app_name">QR Code Keeper</string>
     <!--
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.

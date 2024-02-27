@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Quick QR</string>
+    <string name="app_name">QR Code Keeper</string>
 
     <string name="add_qr">Add QR Code</string>
     <string name="label_name">Name</string>
@@ -39,17 +39,17 @@
     <string name="confirm_delete_confirm">Yes</string>
     <string name="confirm_delete_dismiss">Cancel</string>
 
-    <string name="about_title">Quick QR: About</string>
+    <string name="about_title">QR Code Keeper: About</string>
     <string name="about_developer_title">About the developer</string>
     <string name="about_developer">Visit our website</string>
     <string name="about_developer_text">At Very Niche we are a small app development team specialising in apps for very niche uses, nothing is too small! If you have an idea for an app you need, please let us know!</string>
     <string name="about_developer_url">https://veryniche.dev</string>
     <string name="about_privacy_policy_title">Privacy policy</string>
     <string name="about_privacy_policy">View the privacy policy</string>
-    <string name="about_privacy_policy_url">https://veryniche.dev/docs/quickqrprivacypolicy/</string>
+    <string name="about_privacy_policy_url">https://veryniche.dev/docs/qrcodekeeperprivacypolicy/</string>
     <string name="about_pro_version_title">Don\'t want to see ads?\nWant to add more than one QR Code?</string>
     <string name="about_get_pro_version">Get the pro version!</string>
-    <string name="about_instructions">Welcome to Quick QR - Store, share and show your favourite QR codes!</string>
+    <string name="about_instructions">Welcome to QR Code Keeper - Store, share and show your favourite QR codes!</string>
     <string name="about_instructions_ul_1">Add QR Code: Tap to add a QR Code</string>
     <string name="about_instructions_ul_2">Tap tile: Flip over the card and see the QR code, tap again to flip back</string>
     <string name="about_instructions_ul_3">Long press tile front side: Edit tile details &amp; QR code</string>
@@ -64,7 +64,7 @@
     <string name="welcome_close">Close</string>
     <string name="welcome_dont_show_again">Don\'t show this again</string>
 
-    <string name="pro_purchase_title">Quick QR Pro</string>
+    <string name="pro_purchase_title">QR Code Keeper Pro</string>
     <string name="pro_purchase_text">To add unlimited QR codes and remove ads, please purchase the Pro version.</string>
     <string name="pro_purchase_confirm">Purchase</string>
     <string name="pro_purchase_dismiss">Later</string>
@@ -73,7 +73,7 @@
     <string name="purchase_error_disconnected">Error connecting to billing system. Please try again.</string>
     <string name="purchase_error_dismiss">OK</string>
 
-    <string name="module_download">Quick QR</string>
+    <string name="module_download">QR Code Keeper</string>
     <string name="module_download_unavailable">Barcode scanner module is not available for this device. Please update Google Play Services and try again if you want to use barcode scanning functionality.</string>
     <string name="module_download_started">Barcode scanner module starting download. Please wait.</string>
     <string name="module_download_failed">Barcode scanner module failed downloading. Please update Google Play Services and try again.</string>
@@ -81,7 +81,7 @@
     <string name="module_download_in_progress">Barcode scanner module download in progress: %d\%%</string>
     <string name="module_download_dismiss">OK</string>
 
-    <string name="barcode_scan_error">Quick QR</string>
+    <string name="barcode_scan_error">QR Code Keeper</string>
     <string name="barcode_scan_error_message">Error loading on device barcode scanner. Please wait a few moments and try again.</string>
     <string name="barcode_scan_error_dismiss">OK</string>
 

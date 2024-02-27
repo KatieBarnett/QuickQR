@@ -23,7 +23,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Quick QR"
+rootProject.name = "QR Code Keeper"
 include(":mobile")
 //include(":wear")
 include(":core")

@@ -1,1 +1,1 @@
-# QuickQR
+# QR Code Keeper
