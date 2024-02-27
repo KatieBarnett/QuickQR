@@ -104,16 +104,16 @@ fun AboutScreen(
                     .padding(bottom = Dimen.spacing)
             )
 
-            AboutHeading(R.string.about_coming_soon_title)
-            UnorderedListText(
-                textLines = listOf(
-                    R.string.about_coming_soon_ul_1,
-                    R.string.about_coming_soon_ul_2
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = Dimen.spacing)
-            )
+//            AboutHeading(R.string.about_coming_soon_title)
+//            UnorderedListText(
+//                textLines = listOf(
+//                    R.string.about_coming_soon_ul_1,
+//                    R.string.about_coming_soon_ul_2
+//                ),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(bottom = Dimen.spacing)
+//            )
 
             if (!isProPurchased) {
                 AboutHeading(R.string.about_pro_version_title)
