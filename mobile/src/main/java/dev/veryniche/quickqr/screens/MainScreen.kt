@@ -2,8 +2,10 @@ package dev.veryniche.quickqr.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -37,6 +39,8 @@ import dev.veryniche.quickqr.analytics.Analytics
 import dev.veryniche.quickqr.analytics.TrackedScreen
 import dev.veryniche.quickqr.analytics.trackAction
 import dev.veryniche.quickqr.analytics.trackMainScreenView
+import dev.veryniche.quickqr.components.BannerAd
+import dev.veryniche.quickqr.components.BannerAdLocation
 import dev.veryniche.quickqr.components.TileGrid
 import dev.veryniche.quickqr.components.TopAppBarTitle
 import dev.veryniche.quickqr.core.model.QRCodeItem
@@ -154,7 +158,7 @@ fun MainScreen(
         },
         modifier = modifier
     ) { contentPadding ->
-        Box(Modifier.padding(contentPadding)) {
+        Column(Modifier.padding(contentPadding)) {
             TileGrid(
                 tiles = tiles,
                 addTile = {
@@ -181,8 +185,9 @@ fun MainScreen(
                     trackAction(Analytics.Action.ExpandCode, isProPurchased)
                 },
                 triggerShowAllFront = flipAllCardsToFront,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxWidth().weight(1f),
             )
+            BannerAd(location = BannerAdLocation.MainScreen)
         }
         if (showAddSheet) {
             ModalBottomSheet(

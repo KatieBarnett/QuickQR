@@ -24,6 +24,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -35,6 +36,7 @@ import dev.veryniche.quickqr.purchase.isProPurchased
 import dev.veryniche.quickqr.purchase.purchasePro
 import dev.veryniche.quickqr.util.BarcodeClientHelper
 import dev.veryniche.quickqr.util.Settings
+import timber.log.Timber
 
 // At the top level of your kotlin file:
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Settings.DATA_STORE_KEY)
@@ -49,6 +51,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         firebaseAnalytics = Firebase.analytics
+        MobileAds.initialize(this) { initializationStatus ->
+            Timber.d("AdMob init: ${initializationStatus.adapterStatusMap}")
+        }
         setContent {
             val coroutineScope = rememberCoroutineScope()
             val purchaseManager = remember { PurchaseManager(this, coroutineScope) }

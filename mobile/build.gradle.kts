@@ -94,6 +94,7 @@ dependencies {
 
     implementation(libs.play.services.code.scanner)
     implementation(libs.play.services.base)
+    implementation(libs.play.services.ads)
     implementation(libs.qrgenerator)
 
     implementation(libs.billing)
