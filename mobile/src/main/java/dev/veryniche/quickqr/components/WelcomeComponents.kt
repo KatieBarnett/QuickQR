@@ -26,7 +26,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.preferences.core.edit
 import dev.veryniche.quickqr.R
+import dev.veryniche.quickqr.analytics.Analytics
 import dev.veryniche.quickqr.analytics.UnorderedListText
+import dev.veryniche.quickqr.analytics.trackAction
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.dataStore
@@ -35,14 +37,22 @@ import dev.veryniche.quickqr.util.Settings
 import kotlinx.coroutines.launch
 
 @Composable
-fun WelcomeDialog(onDismissRequest: () -> Unit) {
+fun WelcomeDialog(
+    onDismissRequest: () -> Unit,
+    isProPurchased: Boolean,
+    onProPurchaseClick: () -> Unit,
+) {
     AnimatedTransitionDialog(onDismissRequest = onDismissRequest) { dialogHelper ->
-        WelcomeDialogContent(onDismissRequest)
+        WelcomeDialogContent(onDismissRequest, isProPurchased, onProPurchaseClick)
     }
 }
 
 @Composable
-fun WelcomeDialogContent(onDismissRequest: () -> Unit) {
+fun WelcomeDialogContent(
+    onDismissRequest: () -> Unit,
+    isProPurchased: Boolean,
+    onProPurchaseClick: () -> Unit,
+) {
     val scrollableState = rememberScrollState()
     var checkedState by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -86,11 +96,15 @@ fun WelcomeDialogContent(onDismissRequest: () -> Unit) {
 //                    .padding(bottom = Dimen.spacing)
 //            )
 
-            AboutHeading(R.string.about_pro_version_title)
-            Button(content = {
-                Text(text = stringResource(id = R.string.about_get_pro_version))
-            }, onClick = {
-            })
+            if (!isProPurchased) {
+                AboutHeading(R.string.about_pro_version_title)
+                Button(content = {
+                    Text(text = stringResource(id = R.string.about_get_pro_version))
+                }, onClick = {
+                    trackAction(Analytics.Action.WelcomeProVersion)
+                    onProPurchaseClick.invoke()
+                })
+            }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = stringResource(id = R.string.welcome_dont_show_again)
@@ -118,8 +132,16 @@ fun WelcomeDialogContent(onDismissRequest: () -> Unit) {
 
 @Preview(group = "Welcome Dialog", showBackground = true)
 @Composable
-fun WelcomeDialogPreview() {
+fun WelcomeDialogPreviewNoPro() {
     QuickQRTheme {
-        WelcomeDialogContent({})
+        WelcomeDialogContent({}, false, {})
+    }
+}
+
+@Preview(group = "Welcome Dialog", showBackground = true)
+@Composable
+fun WelcomeDialogPreviewPro() {
+    QuickQRTheme {
+        WelcomeDialogContent({}, true, {})
     }
 }

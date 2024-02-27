@@ -76,8 +76,10 @@ fun QuickQRNavHost(
     }
 
     if (showWelcome.value && showWelcomeThisTime) {
-        WelcomeDialog {
-            showWelcomeThisTime = false
-        }
+        WelcomeDialog(
+            onDismissRequest = { showWelcomeThisTime = false },
+            isProPurchased = isProPurchased,
+            onProPurchaseClick = onProPurchaseClick,
+        )
     }
 }

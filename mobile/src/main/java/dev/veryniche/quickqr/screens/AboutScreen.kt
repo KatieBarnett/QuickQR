@@ -31,6 +31,7 @@ import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.previews.PreviewScreen
 import dev.veryniche.quickqr.showkase.getBrowserIntent
 import dev.veryniche.quickqr.analytics.UnorderedListText
+import dev.veryniche.quickqr.analytics.trackAction
 import dev.veryniche.quickqr.analytics.trackScreenView
 
 @Composable
@@ -120,6 +121,7 @@ fun AboutScreen(
                 Button(content = {
                     Text(text = stringResource(id = R.string.about_get_pro_version))
                 }, onClick = {
+                    trackAction(Analytics.Action.AboutProVersion)
                     onProPurchaseClick.invoke()
                 })
             }

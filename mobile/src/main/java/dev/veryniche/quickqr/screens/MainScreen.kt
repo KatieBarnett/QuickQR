@@ -275,6 +275,7 @@ fun MainScreen(
                 text = { Text(stringResource(R.string.pro_purchase_text)) },
                 confirmButton = {
                     TextButton(onClick = {
+                        trackAction(Analytics.Action.AddMoreProVersion)
                         onProPurchaseClick.invoke()
                         showPurchase = false
                     }) {

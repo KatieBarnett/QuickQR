@@ -33,7 +33,9 @@ object Analytics {
         const val ScanCodeEdit = "Scan_Code_Edit"
         const val ScanCodeAdd = "Scan_Code_Add"
         const val EnterCodeManually = "Enter_Code_Manually_Add"
-        const val WelcomeRemoveAds = "Welcome_Remove_Ads"
+        const val WelcomeProVersion = "Welcome_Pro_version"
+        const val AddMoreProVersion = "Add_More_Pro_version"
+        const val AboutProVersion = "About_Pro_version"
     }
 
     object Type {
