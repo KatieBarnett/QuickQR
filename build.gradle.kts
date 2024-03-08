@@ -13,8 +13,8 @@ plugins {
 }
 
 ext {
-    extra["appVersionName"] = "2.0.0"
-    extra["appVersionCode"] = 26
+    extra["appVersionName"] = "2.0.1"
+    extra["appVersionCode"] = 27
     extra["compileSdk"] = 34
     extra["targetSdk"] = 34
     extra["minSdk"] = 26

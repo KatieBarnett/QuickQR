@@ -187,7 +187,9 @@ fun MainScreen(
                 triggerShowAllFront = flipAllCardsToFront,
                 modifier = Modifier.fillMaxWidth().weight(1f),
             )
-            BannerAd(location = BannerAdLocation.MainScreen)
+            if (!isProPurchased) {
+                BannerAd(location = BannerAdLocation.MainScreen)
+            }
         }
         if (showAddSheet) {
             ModalBottomSheet(
