@@ -1,5 +1,6 @@
 package dev.veryniche.quickqr.navigation
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +31,7 @@ fun QuickQRNavHost(
     navController: NavHostController,
     isProPurchased: Boolean,
     onProPurchaseClick: () -> Unit,
+    snackbarHostState: SnackbarHostState,
 ) {
     val context = LocalContext.current
     val showWelcome = context.dataStore.data
@@ -51,6 +53,7 @@ fun QuickQRNavHost(
                 },
                 isProPurchased = isProPurchased,
                 onProPurchaseClick = onProPurchaseClick,
+                snackbarHostState = snackbarHostState,
                 modifier = Modifier
             )
         }
@@ -70,6 +73,7 @@ fun QuickQRNavHost(
                 onNavigateBack = { navController.navigateUp() },
                 isProPurchased = isProPurchased,
                 onProPurchaseClick = onProPurchaseClick,
+                snackbarHostState = snackbarHostState,
                 modifier = Modifier
             )
         }

@@ -5,7 +5,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -34,6 +36,7 @@ import dev.veryniche.quickqr.navigation.QuickQRNavHost
 import dev.veryniche.quickqr.purchase.PurchaseManager
 import dev.veryniche.quickqr.purchase.isProPurchased
 import dev.veryniche.quickqr.purchase.purchasePro
+import dev.veryniche.quickqr.update.AppUpdateHelper
 import dev.veryniche.quickqr.util.BarcodeClientHelper
 import dev.veryniche.quickqr.util.Settings
 import timber.log.Timber
@@ -45,6 +48,24 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Set
 class MainActivity : ComponentActivity() {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private lateinit var appUpdateHelper: AppUpdateHelper
+
+    private val updateLauncher = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        // handle callback
+        if (result.data == null) {
+            return@registerForActivityResult
+        }
+
+        if (result.resultCode != RESULT_OK) {
+            Timber.e("Update flow failed! Result code: " + result.resultCode)
+            // If the update is canceled or fails,
+            // you can request to start the update again.
+        } else {
+            Timber.d("In app update succeeded")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -56,6 +77,7 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             val coroutineScope = rememberCoroutineScope()
+            val snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
             val purchaseManager = remember { PurchaseManager(this, coroutineScope) }
             LaunchedEffect(Unit) {
                 purchaseManager.connectToBilling()
@@ -67,13 +89,17 @@ class MainActivity : ComponentActivity() {
 
             BarcodeClientHelper(this) { showBarcodeModuleErrorMessage = it }.checkInstallBarcodeModule()
 
+            appUpdateHelper = AppUpdateHelper(this, updateLauncher, snackbarHostState, coroutineScope)
+            appUpdateHelper.checkForUpdates()
+
             QuickQRThemeMobileApp(
                 isProPurchased = isProPurchased(purchasedProducts),
                 onProPurchaseClick = {
                     purchasePro(purchaseManager) {
                         showPurchaseErrorMessage = it
                     }
-                }
+                },
+                snackbarHostState = snackbarHostState
             )
 
             QuickQRTheme {
@@ -109,14 +135,26 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (this::appUpdateHelper.isInitialized) {
+            appUpdateHelper.checkUpdateStatus()
+        }
+    }
+
     @Composable
-    fun QuickQRThemeMobileApp(isProPurchased: Boolean, onProPurchaseClick: () -> Unit) {
+    fun QuickQRThemeMobileApp(
+        isProPurchased: Boolean,
+        onProPurchaseClick: () -> Unit,
+        snackbarHostState: SnackbarHostState
+    ) {
         QuickQRTheme {
             val navController = rememberNavController()
             QuickQRNavHost(
                 navController = navController,
                 isProPurchased = isProPurchased,
-                onProPurchaseClick = onProPurchaseClick
+                onProPurchaseClick = onProPurchaseClick,
+                snackbarHostState = snackbarHostState
             )
         }
     }
@@ -124,6 +162,11 @@ class MainActivity : ComponentActivity() {
     @Preview(group = "Full App", showSystemUi = true, showBackground = true)
     @Composable
     fun DefaultPreview() {
-        QuickQRThemeMobileApp(true, {})
+        QuickQRThemeMobileApp(
+            true, {},
+            remember {
+                SnackbarHostState()
+            }
+        )
     }
 }
