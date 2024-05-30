@@ -1,5 +1,7 @@
 package dev.veryniche.quickqr.core
 
+import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
+import dev.veryniche.quickqr.core.Constants.sampleQRCodeItemLongText
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.model.QRIcon
@@ -28,6 +30,17 @@ object Constants {
         imageBase64 = sampleQRCodeBase64,
         icon = QRIcon.Star,
         primaryColor = QRColor.Indigo,
+        sortOrder = 0,
+        lastModified = Date()
+    )
+
+    val sampleQRCodeItemLongText = QRCodeItem(
+        id = 0,
+        name = "Camouflage the Status Bar with Edge-to-Edge Jetpack Compose Screens and Dialogs",
+        content = "https://proandroiddev.com/camouflage-the-status-bar-with-edge-to-edge-jetpack-compose-screens-and-dialogs-bea553dd97ff",
+        imageBase64 = sampleQRCodeBase64,
+        icon = QRIcon.Star,
+        primaryColor = QRColor.Yellow,
         sortOrder = 0,
         lastModified = Date()
     )

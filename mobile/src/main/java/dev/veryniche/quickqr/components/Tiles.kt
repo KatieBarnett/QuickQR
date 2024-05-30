@@ -36,14 +36,17 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
+import dev.veryniche.quickqr.core.Constants.sampleQRCodeItemLongText
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.previews.PreviewTile
+import dev.veryniche.quickqr.previews.QRCodeItemParameterProvider
 import timber.log.Timber
 
 @Composable
@@ -294,28 +297,18 @@ fun AddTilePreview() {
     }
 }
 
-class TileParameterProvider : PreviewParameterProvider<QRCodeItem> {
-    override val values = sequenceOf(
-        sampleQRCodeItem,
-//        sampleQRCodeItem.copy(name = "Very very very very very long name"),
-//        sampleQRCodeItem.copy(content = "Very very very very very long content"),
-//        sampleQRCodeItem.copy(
-//            name = "Very very very very very long name",
-//            content = "Very very very very very long content"
-//        ),
-    )
-}
-
 @PreviewTile
 @Composable
-fun TileFrontPreview() {
+fun TileFrontPreview(
+    @PreviewParameter(QRCodeItemParameterProvider::class) data: QRCodeItem
+) {
     QuickQRTheme {
         SideDetails(
-            name = sampleQRCodeItem.name,
-            content = sampleQRCodeItem.content,
-            icon = sampleQRCodeItem.icon.vector,
-            background = sampleQRCodeItem.primaryColor.color,
-            contentColor = sampleQRCodeItem.secondaryColor,
+            name = data.name,
+            content = data.content,
+            icon = data.icon.vector,
+            background = data.primaryColor.color,
+            contentColor = data.secondaryColor,
             modifier = Modifier.aspectRatio(1f)
         )
     }
@@ -323,28 +316,15 @@ fun TileFrontPreview() {
 
 @PreviewTile
 @Composable
-fun TileFrontLongDetailsPreview() {
-    QuickQRTheme {
-        SideDetails(
-            name = "Very very very very very long name",
-            content = "Very very very very very long content",
-            icon = sampleQRCodeItem.icon.vector,
-            background = sampleQRCodeItem.primaryColor.color,
-            contentColor = sampleQRCodeItem.secondaryColor,
-            modifier = Modifier.aspectRatio(1f)
-        )
-    }
-}
-
-@PreviewTile
-@Composable
-fun TileBackPreview() {
+fun TileBackPreview(
+    @PreviewParameter(QRCodeItemParameterProvider::class) data: QRCodeItem
+) {
     QuickQRTheme {
         SideQRCode(
-            image = sampleQRCodeItem.imageBitmap,
-            barcodeContent = sampleQRCodeItem.content,
-            background = sampleQRCodeItem.primaryColor.color,
-            contentColor = sampleQRCodeItem.secondaryColor,
+            image = data.imageBitmap,
+            barcodeContent = data.content,
+            background = data.primaryColor.color,
+            contentColor = data.secondaryColor,
             modifier = Modifier.aspectRatio(1f)
         )
     }
@@ -352,10 +332,12 @@ fun TileBackPreview() {
 
 @PreviewTile
 @Composable
-fun TilePreview() {
+fun TilePreview(
+    @PreviewParameter(QRCodeItemParameterProvider::class) data: QRCodeItem
+) {
     QuickQRTheme {
         Tile(
-            qrCodeItem = sampleQRCodeItem,
+            qrCodeItem = data,
             longPressCode = {},
             longPressDetail = {},
             modifier = Modifier,

@@ -37,6 +37,7 @@ object Analytics {
         const val AddMoreProVersion = "Add_More_Pro_version"
         const val AboutProVersion = "About_Pro_version"
         const val AdsClick = "Ads_Click"
+        const val VisitContentDestination = "Visit_Content_Destination"
     }
 
     object Type {

@@ -2,6 +2,7 @@ package dev.veryniche.quickqr.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
@@ -20,19 +22,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import dev.veryniche.quickqr.core.Constants
+import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
+import dev.veryniche.quickqr.core.Constants.sampleQRCodeItemLongText
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.previews.PreviewComponent
 import dev.veryniche.quickqr.previews.PreviewScreen
+import dev.veryniche.quickqr.previews.QRCodeItemParameterProvider
 
 @Composable
 fun ExpandedQRCode(
     qrCodeItem: QRCodeItem,
+    onVisitClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -82,23 +92,31 @@ fun ExpandedQRCode(
             )
             Text(
                 text = qrCodeItem.content,
-                color = Color.White,
+                color = qrCodeItem.primaryColor.color,
                 textAlign = TextAlign.Center,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyLarge,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable {
+                    onVisitClick.invoke()
+                }
             )
         }
     }
 }
 
+
 @PreviewComponent
 @PreviewScreen
 @Composable
-fun ExpandedQRCodePreview() {
+fun ExpandedQRCodePreview(
+    @PreviewParameter(QRCodeItemParameterProvider::class) data: QRCodeItem
+) {
     QuickQRTheme {
         ExpandedQRCode(
-            qrCodeItem = Constants.sampleQRCodeItem,
+            qrCodeItem = data,
+            onVisitClick = {},
             modifier = Modifier
         )
     }

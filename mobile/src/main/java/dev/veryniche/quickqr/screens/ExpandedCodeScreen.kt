@@ -1,5 +1,7 @@
 package dev.veryniche.quickqr.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -7,23 +9,39 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.veryniche.quickqr.ExpandedCodeViewModel
-import dev.veryniche.quickqr.components.ExpandedQRCode
 import dev.veryniche.quickqr.analytics.Analytics
 import dev.veryniche.quickqr.analytics.TrackedScreen
+import dev.veryniche.quickqr.analytics.trackAction
 import dev.veryniche.quickqr.analytics.trackScreenView
+import dev.veryniche.quickqr.components.ExpandedQRCode
 
 @Composable
 fun ExpandedCodeScreen(id: Int?, modifier: Modifier) {
     val viewModel: ExpandedCodeViewModel = hiltViewModel()
-    var qrCodeItem by remember { mutableStateOf(viewModel.getQRCodeItem(id)) }
+    val qrCodeItem by remember { mutableStateOf(viewModel.getQRCodeItem(id)) }
+    val context = LocalContext.current
 
     TrackedScreen {
         trackScreenView(Analytics.Screen.ExpandedCode)
     }
 
     qrCodeItem?.let {
-        ExpandedQRCode(qrCodeItem = it, modifier.fillMaxSize())
+        ExpandedQRCode(
+            qrCodeItem = it,
+            onVisitClick = {
+                trackAction(Analytics.Action.VisitContentDestination)
+                val updatedContent = if (!it.content.startsWith("http://") && !it.content.startsWith("https://")) {
+                    "https://${it.content}"
+                } else {
+                    it.content
+                }
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(updatedContent))
+                context.startActivity(intent)
+            },
+            modifier = modifier.fillMaxSize()
+        )
     } ?: GenericErrorScreen(modifier)
 }
