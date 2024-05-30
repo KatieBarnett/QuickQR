@@ -46,7 +46,7 @@
     <string name="about_developer_url">https://veryniche.dev</string>
     <string name="about_privacy_policy_title">Privacy policy</string>
     <string name="about_privacy_policy">View the privacy policy</string>
-    <string name="about_privacy_policy_url">https://veryniche.dev/docs/qrcodekeeperprivacypolicy/</string>
+    <string name="about_privacy_policy_url">https://veryniche.dev/apps/qrcodekeeper/privacypolicy/</string>
     <string name="about_pro_version_title">Don\'t want to see ads?\nWant to add more than one QR Code?</string>
     <string name="about_get_pro_version">Get the pro version!</string>
     <string name="about_instructions">Welcome to QR Code Keeper - Store, share and show your favourite QR codes!</string>
