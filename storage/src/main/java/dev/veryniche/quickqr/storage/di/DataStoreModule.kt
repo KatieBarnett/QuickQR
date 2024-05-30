@@ -12,7 +12,7 @@ import dagger.hilt.components.SingletonComponent
 import dev.veryniche.quickqr.core.network.AppDispatchers
 import dev.veryniche.quickqr.core.network.Dispatcher
 import dev.veryniche.quickqr.storage.QRCodesDataSource.Companion.PROTO_FILE_NAME
-import dev.veryniche.quickqr.storage.QrCodesSerializer
+import dev.veryniche.quickqr.storage.QRCodesSerializer
 import dev.veryniche.quickqr.storage.models.Qrcodes
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +28,7 @@ object DataStoreModule {
     fun providesQRCodesStore(
         @ApplicationContext context: Context,
         @Dispatcher(AppDispatchers.IO) ioDispatcher: CoroutineDispatcher,
-        qRCodesSerializer: QrCodesSerializer
+        qRCodesSerializer: QRCodesSerializer
     ): DataStore<Qrcodes> =
         DataStoreFactory.create(
             serializer = qRCodesSerializer,

@@ -8,7 +8,7 @@ import java.io.InputStream
 import java.io.OutputStream
 import javax.inject.Inject
 
-class QrCodesSerializer @Inject constructor() : Serializer<Qrcodes> {
+class QRCodesSerializer @Inject constructor() : Serializer<Qrcodes> {
 
     override val defaultValue: Qrcodes = Qrcodes.getDefaultInstance()
 

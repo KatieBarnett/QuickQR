@@ -36,7 +36,10 @@ fun QuickQRNavHost(
     val context = LocalContext.current
     val showWelcome = context.dataStore.data
         .map { preferences -> preferences[Settings.KEY_SHOW_WELCOME] ?: true }
-        .collectAsStateWithLifecycle(initialValue = true)
+        .collectAsStateWithLifecycle(
+            initialValue = true,
+                    lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+        )
     var showWelcomeThisTime by rememberSaveable { mutableStateOf(true) }
 
     NavHost(

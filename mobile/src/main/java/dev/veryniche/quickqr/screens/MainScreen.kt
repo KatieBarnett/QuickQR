@@ -94,10 +94,15 @@ fun MainScreen(
     )
     val viewModel: MainViewModel = hiltViewModel()
     val context = LocalContext.current
-    val scannedCode by viewModel.scannedCode.collectAsStateWithLifecycle()
+    val scannedCode by viewModel.scannedCode.collectAsStateWithLifecycle(
+        lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    )
     var flipAllCardsToFront by rememberSaveable { mutableStateOf<Int?>(null) }
 
-    val tiles: List<QRCodeItem> by viewModel.tiles.collectAsStateWithLifecycle(listOf())
+    val tiles: List<QRCodeItem> by viewModel.tiles.collectAsStateWithLifecycle(
+        initialValue = listOf(),
+        lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    )
 
     TrackedScreen {
         trackMainScreenView(tiles.size)

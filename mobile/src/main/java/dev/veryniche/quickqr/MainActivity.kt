@@ -83,7 +83,9 @@ class MainActivity : ComponentActivity() {
                 purchaseManager.connectToBilling()
             }
 
-            val purchasedProducts by purchaseManager.purchases.collectAsStateWithLifecycle()
+            val purchasedProducts by purchaseManager.purchases.collectAsStateWithLifecycle(
+                lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+            )
             var showPurchaseErrorMessage by rememberSaveable { mutableStateOf<Int?>(null) }
             var showBarcodeModuleErrorMessage by rememberSaveable { mutableStateOf<Int?>(null) }
 
