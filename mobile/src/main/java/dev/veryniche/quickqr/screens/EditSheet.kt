@@ -1,5 +1,7 @@
 package dev.veryniche.quickqr.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,11 +34,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.ScannedCode
+import dev.veryniche.quickqr.analytics.Analytics
+import dev.veryniche.quickqr.analytics.trackAction
+import dev.veryniche.quickqr.analytics.trackColorChoice
+import dev.veryniche.quickqr.analytics.trackIconChoice
 import dev.veryniche.quickqr.components.ColorSelectorDialog
 import dev.veryniche.quickqr.components.IconSelectorDialog
 import dev.veryniche.quickqr.components.QRColorShape
@@ -50,8 +58,7 @@ import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.Dimen.AddCodeQRPadding
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.previews.PreviewComponent
-import dev.veryniche.quickqr.analytics.trackColorChoice
-import dev.veryniche.quickqr.analytics.trackIconChoice
+import dev.veryniche.quickqr.util.resolveUrl
 import java.util.Date
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -68,6 +75,7 @@ fun EditSheet(
     onDeleteClick: () -> Unit,
     onScanClick: () -> Unit,
 ) {
+    val context = LocalContext.current
     var imageBitmap by remember(scannedCode) {
         mutableStateOf(scannedCode?.base64?.decodeImage()?.asImageBitmap() ?: initialItem?.imageBitmap)
     }
@@ -85,9 +93,9 @@ fun EditSheet(
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(Dimen.AddCodeQRHorizontalSpacing),
-            modifier = Modifier.height(intrinsicSize = IntrinsicSize.Max)
+            modifier = Modifier
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier) {
                 OutlinedTextField(
                     value = name.orEmpty(),
                     onValueChange = { name = it },
@@ -100,103 +108,122 @@ fun EditSheet(
                                 color = MaterialTheme.colorScheme.error
                             )
                         }
-                    }
+                    },
+                    modifier = Modifier.fillMaxWidth()
                 )
-                OutlinedTextField(
-                    value = content.orEmpty(),
-                    onValueChange = { content = it },
-                    isError = content.isNullOrBlank(),
-                    label = { Text(stringResource(R.string.label_content)) },
-                    supportingText = {
-                        if (content.isNullOrBlank()) {
-                            Text(
-                                text = stringResource(R.string.validation_message_content),
-                                color = MaterialTheme.colorScheme.error
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        value = content.orEmpty(),
+                        onValueChange = { content = it },
+                        isError = content.isNullOrBlank(),
+                        label = { Text(stringResource(R.string.label_content)) },
+                        supportingText = {
+                            if (content.isNullOrBlank()) {
+                                Text(
+                                    text = stringResource(R.string.validation_message_content),
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+                    Button (
+                        enabled = !content.isNullOrBlank(),
+                        onClick = {
+                            content?.let {
+                                trackAction(Analytics.Action.VisitContentDestination)
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it.resolveUrl()))
+                                context.startActivity(intent)
+                            }
+                        },
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    ) {
+                        Text(stringResource(R.string.open_url))
+                    }
+                }
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.weight(0.75f)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(text = stringResource(id = R.string.edit_icon))
+                            Image(
+                                imageVector = icon.vector,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                                contentDescription = icon.name,
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .aspectRatio(1f)
+                                    .clickable {
+                                        showIconSelector = true
+                                    }
+                            )
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(text = stringResource(id = R.string.edit_colour))
+                            QRColorShape(
+                                primaryColor,
+                                false,
+                                Modifier
+                                    .padding(top = 4.dp, bottom = 4.dp)
+                                    .size(40.dp)
+                                    .clickable {
+                                        showColorSelector = true
+                                    }
                             )
                         }
                     }
-                )
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(text = stringResource(id = R.string.edit_icon))
-                        Image(
-                            imageVector = icon.vector,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                            contentDescription = icon.name,
-                            modifier = Modifier
-                                .size(48.dp)
-                                .aspectRatio(1f)
-                                .clickable {
-                                    showIconSelector = true
-                                }
-                        )
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(text = stringResource(id = R.string.edit_colour))
-                        QRColorShape(
-                            primaryColor,
-                            false,
-                            Modifier
-                                .padding(top = 4.dp, bottom = 4.dp)
-                                .size(40.dp)
-                                .clickable {
-                                    showColorSelector = true
-                                }
-                        )
-                    }
-                }
-            }
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .weight(0.25f)
-                    .fillMaxHeight()
-                    .clickable {
-                        onScanClick.invoke()
-                    }
-            ) {
-                if (imageBitmap != null) {
-                    imageBitmap?.let {
-                        Image(
-                            it,
-                            content,
-                            Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(1f)
-                        )
-                    }
-                    Text(
-                        text = stringResource(R.string.click_to_rescan),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                } else {
-                    Image(
-                        QRIcon.SCAN.vector,
-                        contentDescription = content,
+
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
+                            .weight(0.25f)
                             .clickable {
                                 onScanClick.invoke()
                             }
-                    )
-                    Text(
-                        text = stringResource(R.string.click_to_scan),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    ) {
+                        if (imageBitmap != null) {
+                            imageBitmap?.let {
+                                Image(
+                                    it,
+                                    content,
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .aspectRatio(1f)
+                                )
+                            }
+                        } else {
+                            Image(
+                                QRIcon.SCAN.vector,
+                                contentDescription = content,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(1f)
+                                    .clickable {
+                                        onScanClick.invoke()
+                                    }
+                            )
+                        }
+                        Text(
+                            text = stringResource(R.string.click_to_rescan),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             }
         }

@@ -5,6 +5,7 @@
     <string name="label_name">Name</string>
     <string name="label_content">URL content</string>
     <string name="save_qr">Save Changes</string>
+    <string name="open_url">Open</string>
     <string name="delete_qr">Delete QR Code</string>
     <string name="navigate_back">Back</string>
     <string name="navigate_about">About</string>

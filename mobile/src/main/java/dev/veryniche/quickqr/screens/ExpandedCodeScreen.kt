@@ -17,6 +17,7 @@ import dev.veryniche.quickqr.analytics.TrackedScreen
 import dev.veryniche.quickqr.analytics.trackAction
 import dev.veryniche.quickqr.analytics.trackScreenView
 import dev.veryniche.quickqr.components.ExpandedQRCode
+import dev.veryniche.quickqr.util.resolveUrl
 
 @Composable
 fun ExpandedCodeScreen(id: Int?, modifier: Modifier) {
@@ -33,12 +34,7 @@ fun ExpandedCodeScreen(id: Int?, modifier: Modifier) {
             qrCodeItem = it,
             onVisitClick = {
                 trackAction(Analytics.Action.VisitContentDestination)
-                val updatedContent = if (!it.content.startsWith("http://") && !it.content.startsWith("https://")) {
-                    "https://${it.content}"
-                } else {
-                    it.content
-                }
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(updatedContent))
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it.content.resolveUrl()))
                 context.startActivity(intent)
             },
             modifier = modifier.fillMaxSize()
