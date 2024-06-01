@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.timber)
 
     implementation(libs.datastore)
+    implementation(libs.datastore.preferences)
     implementation(libs.protobuf.kotlin.lite)
 
     implementation(libs.compose.ui)

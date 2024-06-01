@@ -1,10 +1,8 @@
 package dev.veryniche.quickqr.screens
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
@@ -22,7 +20,10 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,12 +47,14 @@ import dev.veryniche.quickqr.components.BannerAd
 import dev.veryniche.quickqr.components.BannerAdLocation
 import dev.veryniche.quickqr.components.TileGrid
 import dev.veryniche.quickqr.components.TopAppBarTitle
+import dev.veryniche.quickqr.components.WelcomeDialog
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.purchase.isProVersionRequired
+import dev.veryniche.quickqr.util.getActivity
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun MainScreen(
     openExpandedQRCode: (id: Int) -> Unit,
@@ -104,6 +107,16 @@ fun MainScreen(
         lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
     )
 
+    val windowSizeClass: WindowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+
+    val showWelcomeDialogOnStart by viewModel.showWelcomeDialog.collectAsStateWithLifecycle(
+        initialValue = null,
+        lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    )
+    var showWelcomeDialog by rememberSaveable(showWelcomeDialogOnStart) {
+        mutableStateOf(showWelcomeDialogOnStart)
+    }
+
     TrackedScreen {
         trackMainScreenView(tiles.size)
     }
@@ -111,6 +124,9 @@ fun MainScreen(
     fun hideAddSheet() {
         coroutineScope.launch {
             addSheetState.hide()
+            context.getActivity()?.let {
+                viewModel.requestReviewIfAble(it)
+            }
         }.invokeOnCompletion {
             if (!addSheetState.isVisible) {
                 showAddSheet = false
@@ -322,6 +338,20 @@ fun MainScreen(
                         Text(stringResource(R.string.barcode_scan_error_dismiss))
                     }
                 }
+            )
+        }
+
+        if (showWelcomeDialog == true) {
+            WelcomeDialog(
+                isProPurchased = isProPurchased,
+                onProPurchaseClick = onProPurchaseClick,
+                onDismissRequest = {
+                    showWelcomeDialog = false
+                },
+                saveShowWelcomeOnStart = { value ->
+                    viewModel.updateShowWelcomeOnStart(!value)
+                },
+                windowSizeClass = windowSizeClass,
             )
         }
     }

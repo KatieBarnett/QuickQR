@@ -66,6 +66,9 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.ui)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.material3.windowsizeclass)
+    implementation(libs.material3.adaptive)
+    implementation(libs.play.core.ktx)
     debugImplementation(libs.compose.ui.tooling)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.animation)
@@ -98,9 +101,9 @@ dependencies {
     implementation(libs.billing)
 
     implementation(libs.datastore.preferences)
-
-    implementation(libs.play.app.update)
-    implementation(libs.play.app.update.ktx)
+//
+//    implementation(libs.play.app.update)
+//    implementation(libs.play.app.update.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

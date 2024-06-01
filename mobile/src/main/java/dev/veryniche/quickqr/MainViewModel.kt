@@ -1,5 +1,6 @@
 package dev.veryniche.quickqr
 
+import android.app.Activity
 import android.content.Context
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
@@ -14,7 +15,11 @@ import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.storage.QRCodesRepository
+import dev.veryniche.quickqr.storage.UserPreferencesRepository
+import dev.veryniche.welcometoflip.review.ReviewManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Date
@@ -22,11 +27,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val qrCodesRepository: QRCodesRepository
+    private val qrCodesRepository: QRCodesRepository,
+    private val userPreferencesRepository: UserPreferencesRepository,
 ) : ViewModel() {
 
     val tiles = qrCodesRepository.getQRCodes()
     val scannedCode = MutableStateFlow<ScannedCode?>(null)
+
+    private val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
+
+    val showWelcomeDialog = userPreferencesFlow.map {
+        it.showWelcomeOnStart
+    }
 
     private val barcodeScannerOptions = GmsBarcodeScannerOptions.Builder()
         .enableAutoZoom() // available on 16.1.0 and higher
@@ -106,6 +118,20 @@ class MainViewModel @Inject constructor(
 //        qrgEncoder.setColorWhite(Color.BLUE)
         // Getting QR-Code as Bitmap
         return qrgEncoder.getBitmap(0).encodeImage()
+    }
+
+    private val reviewManager = ReviewManager(userPreferencesRepository)
+
+    fun requestReviewIfAble(activity: Activity) {
+        viewModelScope.launch {
+            reviewManager.requestReviewIfAble(activity, this)
+        }
+    }
+
+    fun updateShowWelcomeOnStart(value: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            userPreferencesRepository.updateShowWelcomeOnStart(value)
+        }
     }
 }
 

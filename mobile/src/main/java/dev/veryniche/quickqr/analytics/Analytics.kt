@@ -9,10 +9,11 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.analytics
-import com.google.firebase.analytics.logEvent
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
+import dev.veryniche.quickqr.analytics.Analytics.Action.ReviewRequested
 import dev.veryniche.quickqr.analytics.Analytics.Screen.MainScreen
 import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.model.QRIcon
@@ -38,6 +39,7 @@ object Analytics {
         const val AboutProVersion = "About_Pro_version"
         const val AdsClick = "Ads_Click"
         const val VisitContentDestination = "Visit_Content_Destination"
+        const val ReviewRequested = "Review Requested"
     }
 
     object Type {
@@ -114,10 +116,16 @@ fun trackColorChoice(color: QRColor) {
         param(FirebaseAnalytics.Param.CONTENT_TYPE, Analytics.Type.ColorChoice)
     }
 }
+
 fun trackIconChoice(icon: QRIcon) {
     Timber.d("Track icon choice: ${icon.name}")
     Firebase.analytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
         param(FirebaseAnalytics.Param.ITEM_NAME, icon.name)
         param(FirebaseAnalytics.Param.CONTENT_TYPE, Analytics.Type.IconChoice)
     }
+}
+
+fun trackReviewRequested() {
+    Timber.d("Track action: Review requested")
+    Firebase.analytics.logEvent(ReviewRequested) {}
 }

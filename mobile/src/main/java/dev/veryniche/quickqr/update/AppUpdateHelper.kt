@@ -1,9 +1,7 @@
 package dev.veryniche.quickqr.update
 
-import android.content.Context
+import android.app.Activity
 import android.content.IntentSender
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.IntentSenderRequest
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -18,8 +16,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AppUpdateHelper(
-    private val context: Context,
-    private val activityResultLauncher: ActivityResultLauncher<IntentSenderRequest>,
+    private val activity: Activity,
     private val snackbarHostState: SnackbarHostState,
     private val coroutineScope: CoroutineScope
 ) {
@@ -27,9 +24,10 @@ class AppUpdateHelper(
     companion object {
         const val DAYS_FOR_FLEXIBLE_UPDATE = 2
         const val DAYS_FOR_FLEXIBLE_UPDATE_TO_IMMEDIATE = 14
+        const val REQUEST_CODE = 123
     }
 
-    val appUpdateManager = AppUpdateManagerFactory.create(context)
+    val appUpdateManager = AppUpdateManagerFactory.create(activity)
 
     fun checkForUpdates() {
         Timber.d("Checking for available updates")
@@ -66,8 +64,9 @@ class AppUpdateHelper(
                     appUpdateManager.registerListener(listener)
                     appUpdateManager.startUpdateFlowForResult(
                         appUpdateInfo,
-                        activityResultLauncher,
-                        AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build()
+                        activity,
+                        AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build(),
+                        REQUEST_CODE
                     )
                 } catch (exception: IntentSender.SendIntentException) {
                     Timber.e("Error launching app update for ${AppUpdateType.FLEXIBLE} update")
@@ -84,8 +83,9 @@ class AppUpdateHelper(
                     appUpdateManager.registerListener(listener)
                     appUpdateManager.startUpdateFlowForResult(
                         appUpdateInfo,
-                        activityResultLauncher,
-                        AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build()
+                        activity,
+                        AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build(),
+                        REQUEST_CODE
                     )
                 } catch (exception: IntentSender.SendIntentException) {
                     Timber.e("Error launching app update for ${AppUpdateType.IMMEDIATE} update")
@@ -98,8 +98,9 @@ class AppUpdateHelper(
                     appUpdateManager.registerListener(listener)
                     appUpdateManager.startUpdateFlowForResult(
                         appUpdateInfo,
-                        activityResultLauncher,
-                        AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build()
+                        activity,
+                        AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build(),
+                        REQUEST_CODE
                     )
                 } catch (exception: IntentSender.SendIntentException) {
                     Timber.e("Error launching app update for ${AppUpdateType.IMMEDIATE} update")
@@ -165,8 +166,9 @@ class AppUpdateHelper(
                     Timber.d("App update already running (immediate), restarting")
                     appUpdateManager.startUpdateFlowForResult(
                         appUpdateInfo,
-                        activityResultLauncher,
-                        AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build()
+                        activity,
+                        AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build(),
+                        REQUEST_CODE
                     )
                 }
             }

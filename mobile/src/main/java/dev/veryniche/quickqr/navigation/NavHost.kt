@@ -3,13 +3,9 @@ package dev.veryniche.quickqr.navigation
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -17,14 +13,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import dev.veryniche.quickqr.components.AboutActionIcon
-import dev.veryniche.quickqr.components.WelcomeDialog
-import dev.veryniche.quickqr.dataStore
 import dev.veryniche.quickqr.screens.AboutScreen
 import dev.veryniche.quickqr.screens.ExpandedCodeScreen
 import dev.veryniche.quickqr.screens.MainScreen
 import dev.veryniche.quickqr.util.SetDialogDestinationToEdgeToEdge
-import dev.veryniche.quickqr.util.Settings
-import kotlinx.coroutines.flow.map
 
 @Composable
 fun QuickQRNavHost(
@@ -33,15 +25,6 @@ fun QuickQRNavHost(
     onProPurchaseClick: () -> Unit,
     snackbarHostState: SnackbarHostState,
 ) {
-    val context = LocalContext.current
-    val showWelcome = context.dataStore.data
-        .map { preferences -> preferences[Settings.KEY_SHOW_WELCOME] ?: true }
-        .collectAsStateWithLifecycle(
-            initialValue = true,
-                    lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
-        )
-    var showWelcomeThisTime by rememberSaveable { mutableStateOf(true) }
-
     NavHost(
         navController = navController,
         startDestination = Home.route
@@ -80,13 +63,5 @@ fun QuickQRNavHost(
                 modifier = Modifier
             )
         }
-    }
-
-    if (showWelcome.value && showWelcomeThisTime) {
-        WelcomeDialog(
-            onDismissRequest = { showWelcomeThisTime = false },
-            isProPurchased = isProPurchased,
-            onProPurchaseClick = onProPurchaseClick,
-        )
     }
 }
