@@ -70,6 +70,7 @@ fun AddChoice(
 
 @Composable
 fun AddEnterUrl(
+    onChangeMade: () -> Unit,
     onNextClick: (String) -> Unit,
     modifier: Modifier
 ) {
@@ -80,6 +81,7 @@ fun AddEnterUrl(
         OutlinedTextField(
             value = content.orEmpty(),
             onValueChange = {
+                onChangeMade.invoke()
                 firstTextChange = true
                 content = it
             },
@@ -183,7 +185,7 @@ fun AddChoicePreview() {
 fun AddEnterUrlPreview() {
     QuickQRTheme {
         Surface {
-            AddEnterUrl({}, modifier = Modifier)
+            AddEnterUrl({}, {}, modifier = Modifier)
         }
     }
 }

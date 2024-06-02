@@ -65,18 +65,19 @@ fun MainScreen(
     modifier: Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
+    var showPurchase by rememberSaveable { mutableStateOf(false) }
+    var showBarcodeScanErrorMessage by rememberSaveable { mutableStateOf<Int?>(null) }
     var showEditSheet by rememberSaveable { mutableStateOf(false) }
     var editSheetContext by rememberSaveable { mutableStateOf<QRCodeItem?>(null) }
     var showAddSheet by rememberSaveable { mutableStateOf(false) }
     var showConfirmChanges by rememberSaveable { mutableStateOf(false) }
-    var showPurchase by rememberSaveable { mutableStateOf(false) }
-    var showBarcodeScanErrorMessage by rememberSaveable { mutableStateOf<Int?>(null) }
+    var haveSheetChangesBeenMade by remember { mutableStateOf(false) }
     val editSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
         confirmValueChange = {
             if (it == SheetValue.Hidden) {
-                showConfirmChanges = true
-                false
+                showConfirmChanges = haveSheetChangesBeenMade
+                !haveSheetChangesBeenMade
             } else {
                 // We're expanding the sheet so we always return true
                 true
@@ -87,8 +88,8 @@ fun MainScreen(
         skipPartiallyExpanded = true,
         confirmValueChange = {
             if (it == SheetValue.Hidden) {
-                showConfirmChanges = true
-                false
+                showConfirmChanges = haveSheetChangesBeenMade
+                !haveSheetChangesBeenMade
             } else {
                 // We're expanding the sheet so we always return true
                 true
@@ -122,31 +123,39 @@ fun MainScreen(
     }
 
     fun hideAddSheet() {
-        coroutineScope.launch {
-            addSheetState.hide()
-            context.getActivity()?.let {
-                viewModel.requestReviewIfAble(it)
-            }
-        }.invokeOnCompletion {
-            if (!addSheetState.isVisible) {
-                showAddSheet = false
+        if (addSheetState.isVisible) {
+            coroutineScope.launch {
+                addSheetState.hide()
+                context.getActivity()?.let {
+                    viewModel.requestReviewIfAble(it)
+                }
+            }.invokeOnCompletion {
+                if (!addSheetState.isVisible) {
+                    showAddSheet = false
+                }
             }
         }
     }
 
     fun hideEditSheet() {
-        coroutineScope.launch {
-            editSheetState.hide()
-        }.invokeOnCompletion {
-            if (!editSheetState.isVisible) {
-                showEditSheet = false
-                editSheetContext = null
+        if (editSheetState.isVisible) {
+            coroutineScope.launch {
+                editSheetState.hide()
+                context.getActivity()?.let {
+                    viewModel.requestReviewIfAble(it)
+                }
+            }.invokeOnCompletion {
+                if (!editSheetState.isVisible) {
+                    showEditSheet = false
+                    editSheetContext = null
+                }
             }
         }
     }
 
     fun resetScreen() {
         showConfirmChanges = false
+        haveSheetChangesBeenMade = false
         hideAddSheet()
         hideEditSheet()
         coroutineScope.launch {
@@ -155,9 +164,7 @@ fun MainScreen(
     }
 
     BackHandler(enabled = addSheetState.isVisible || editSheetState.isVisible) {
-        coroutineScope.launch {
-            showConfirmChanges = true
-        }
+        resetScreen()
     }
 
     Scaffold(
@@ -222,7 +229,7 @@ fun MainScreen(
         if (showAddSheet) {
             ModalBottomSheet(
                 onDismissRequest = {
-                    showConfirmChanges = true
+                    showAddSheet = false
                 },
                 windowInsets = WindowInsets.ime,
                 sheetState = addSheetState
@@ -243,13 +250,16 @@ fun MainScreen(
                             showBarcodeScanErrorMessage = it
                         }
                     },
+                    onChangeMade = {
+                        haveSheetChangesBeenMade = true
+                    },
                     modifier = Modifier
                 )
             }
         } else if (showEditSheet) {
             ModalBottomSheet(
                 onDismissRequest = {
-                    showConfirmChanges = true
+                    showEditSheet = false
                 },
                 sheetState = editSheetState
             ) {
@@ -258,17 +268,20 @@ fun MainScreen(
                     onSaveClick = { name, content, icon, primaryColor ->
                         resetScreen()
                         viewModel.processEdit(
-                            editSheetContext?.id ?: -1,
-                            name,
-                            content,
-                            icon,
-                            primaryColor
+                            id = editSheetContext?.id ?: -1,
+                            name = name,
+                            content = content,
+                            icon = icon,
+                            primaryColor = primaryColor
                         )
                     },
                     scannedCode = scannedCode,
                     onScanClick = {
                         viewModel.scanBarcode(context) { showBarcodeScanErrorMessage = it }
                         trackAction(Analytics.Action.ScanCodeEdit, isProPurchased)
+                    },
+                    onChangeMade = {
+                        haveSheetChangesBeenMade = true
                     },
                     onDeleteClick = {
                         viewModel.deleteCode(editSheetContext?.id ?: -1)
@@ -280,7 +293,9 @@ fun MainScreen(
         }
         if (showConfirmChanges) {
             AlertDialog(
-                onDismissRequest = { showConfirmChanges = false },
+                onDismissRequest = {
+                    showConfirmChanges = false
+                },
                 title = { Text(stringResource(R.string.confirm_changes_title)) },
                 text = { Text(stringResource(R.string.confirm_changes_text)) },
                 confirmButton = {

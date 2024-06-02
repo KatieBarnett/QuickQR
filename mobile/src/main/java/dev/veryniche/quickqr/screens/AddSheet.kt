@@ -15,6 +15,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import dev.veryniche.quickqr.ScannedCode
+import dev.veryniche.quickqr.analytics.Analytics
+import dev.veryniche.quickqr.analytics.trackAction
+import dev.veryniche.quickqr.analytics.trackColorChoice
+import dev.veryniche.quickqr.analytics.trackIconChoice
 import dev.veryniche.quickqr.components.AddChoice
 import dev.veryniche.quickqr.components.AddEnterName
 import dev.veryniche.quickqr.components.AddEnterUrl
@@ -24,10 +28,6 @@ import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.previews.PreviewComponent
-import dev.veryniche.quickqr.analytics.Analytics
-import dev.veryniche.quickqr.analytics.trackAction
-import dev.veryniche.quickqr.analytics.trackColorChoice
-import dev.veryniche.quickqr.analytics.trackIconChoice
 import kotlinx.coroutines.launch
 
 enum class AddPage {
@@ -46,6 +46,7 @@ suspend fun PagerState.scrollToNextPage() {
 fun AddSheet(
     modifier: Modifier,
     scannedCode: ScannedCode?,
+    onChangeMade: () -> Unit,
     onSaveClick: (name: String?, content: String?, icon: QRIcon?, primaryColor: QRColor?) -> ImageBitmap?,
     onScanClick: () -> Unit,
 ) {
@@ -84,6 +85,7 @@ fun AddSheet(
             AddPage.ADD_CHOICE -> {
                 AddChoice(
                     onScanClick = {
+                        onChangeMade.invoke()
                         onScanClick.invoke()
                         trackAction(Analytics.Action.ScanCodeAdd)
                     },
@@ -104,6 +106,7 @@ fun AddSheet(
                             pagerState.scrollToNextPage()
                         }
                     },
+                    onChangeMade = onChangeMade,
                     modifier = Modifier
                 )
             }
@@ -155,6 +158,7 @@ fun AddSheetPreview() {
                 onSaveClick = { name, content, icon, primaryColor ->
                     null
                 },
+                onChangeMade = {},
                 onScanClick = {
                 },
             )

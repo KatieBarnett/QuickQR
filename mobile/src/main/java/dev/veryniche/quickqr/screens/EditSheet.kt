@@ -8,18 +8,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -66,6 +62,7 @@ import java.util.Date
 fun EditSheet(
     initialItem: QRCodeItem? = null,
     scannedCode: ScannedCode?,
+    onChangeMade: () -> Unit,
     onSaveClick: (
         name: String?,
         content: String?,
@@ -98,7 +95,10 @@ fun EditSheet(
             Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier) {
                 OutlinedTextField(
                     value = name.orEmpty(),
-                    onValueChange = { name = it },
+                    onValueChange = {
+                        onChangeMade.invoke()
+                        name = it
+                    },
                     isError = name.isNullOrBlank(),
                     label = { Text(stringResource(R.string.label_name)) },
                     supportingText = {
@@ -117,7 +117,10 @@ fun EditSheet(
                 ) {
                     OutlinedTextField(
                         value = content.orEmpty(),
-                        onValueChange = { content = it },
+                        onValueChange = {
+                            onChangeMade.invoke()
+                            content = it
+                        },
                         isError = content.isNullOrBlank(),
                         label = { Text(stringResource(R.string.label_content)) },
                         supportingText = {
@@ -130,7 +133,7 @@ fun EditSheet(
                         },
                         modifier = Modifier.weight(1f)
                     )
-                    Button (
+                    Button(
                         enabled = !content.isNullOrBlank(),
                         onClick = {
                             content?.let {
@@ -257,6 +260,7 @@ fun EditSheet(
         ColorSelectorDialog(
             onDismissRequest = { showColorSelector = false }
         ) {
+            onChangeMade.invoke()
             primaryColor = it
             trackColorChoice(it)
             showColorSelector = false
@@ -267,6 +271,7 @@ fun EditSheet(
         IconSelectorDialog(
             onDismissRequest = { showIconSelector = false }
         ) {
+            onChangeMade.invoke()
             icon = it
             trackIconChoice(it)
             showIconSelector = false
@@ -306,6 +311,7 @@ fun EditSheetPreview() {
                 onSaveClick = { _, _, _, _ -> null },
                 onScanClick = { Pair(null, null) },
                 onDeleteClick = {},
+                onChangeMade = {},
             )
         }
     }
@@ -330,6 +336,7 @@ fun EditSheetErrorPreview() {
                 scannedCode = null,
                 onSaveClick = { _, _, _, _ -> null },
                 onDeleteClick = {},
+                onChangeMade = {},
                 onScanClick = { Pair(null, null) },
             )
         }
