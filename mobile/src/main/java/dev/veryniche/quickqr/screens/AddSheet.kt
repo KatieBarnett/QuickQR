@@ -77,7 +77,7 @@ fun AddSheet(
 
     HorizontalPager(
         state = pagerState,
-        beyondBoundsPageCount = pagerState.pageCount,
+        beyondBoundsPageCount = 0,
         userScrollEnabled = false,
         modifier = modifier
     ) { page ->

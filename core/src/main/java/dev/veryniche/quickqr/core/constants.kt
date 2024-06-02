@@ -1,7 +1,5 @@
 package dev.veryniche.quickqr.core
 
-import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
-import dev.veryniche.quickqr.core.Constants.sampleQRCodeItemLongText
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.model.QRIcon

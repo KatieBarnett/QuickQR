@@ -10,7 +10,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
@@ -29,9 +29,8 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.navigation.QuickQRNavHost
+import dev.veryniche.quickqr.purchase.Products
 import dev.veryniche.quickqr.purchase.PurchaseManager
-import dev.veryniche.quickqr.purchase.isProPurchased
-import dev.veryniche.quickqr.purchase.purchasePro
 import dev.veryniche.quickqr.update.AppUpdateHelper
 import dev.veryniche.quickqr.util.BarcodeClientHelper
 import timber.log.Timber
@@ -69,15 +68,20 @@ class MainActivity : ComponentActivity() {
         setContent {
             val coroutineScope = rememberCoroutineScope()
             val snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
-            val purchaseManager = remember { PurchaseManager(this, coroutineScope) }
-            LaunchedEffect(Unit) {
-                purchaseManager.connectToBilling()
-            }
 
-            val purchasedProducts by purchaseManager.purchases.collectAsStateWithLifecycle(
+            val purchaseManager = remember { PurchaseManager(this, coroutineScope) }
+
+            val purchaseViewModel: PurchaseViewModel =
+                hiltViewModel<PurchaseViewModel, PurchaseViewModel.PurchaseViewModelFactory> { factory ->
+                    factory.create(purchaseManager)
+                }
+            val isProPurchased by purchaseViewModel.isProPurchased.collectAsStateWithLifecycle(
+                initialValue = false,
                 lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
             )
+
             var showPurchaseErrorMessage by rememberSaveable { mutableStateOf<Int?>(null) }
+
             var showBarcodeModuleErrorMessage by rememberSaveable { mutableStateOf<Int?>(null) }
 
             BarcodeClientHelper(this) { showBarcodeModuleErrorMessage = it }.checkInstallBarcodeModule()
@@ -86,9 +90,9 @@ class MainActivity : ComponentActivity() {
             appUpdateHelper.checkForUpdates()
 
             QuickQRThemeMobileApp(
-                isProPurchased = isProPurchased(purchasedProducts),
+                isProPurchased = isProPurchased,
                 onProPurchaseClick = {
-                    purchasePro(purchaseManager) {
+                    purchaseViewModel.purchaseProduct(Products.proVersion) {
                         showPurchaseErrorMessage = it
                     }
                 },

@@ -1,6 +1,8 @@
 package dev.veryniche.quickqr.purchase
 
 import android.app.Activity
+import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -23,6 +25,23 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+data class InAppProduct(
+    val productId: String,
+    val productName: String,
+    val productDescription: String,
+    val purchasePrice: String?,
+    val purchaseCurrency: String?,
+    val purchased: Boolean?,
+) {
+    val displayedPrice = "$purchasePrice $purchaseCurrency"
+}
+
+internal fun getProductQuery(id: String) =
+    QueryProductDetailsParams.Product.newBuilder()
+        .setProductId(id)
+        .setProductType(BillingClient.ProductType.INAPP)
+        .build()
+
 class PurchaseManager(
     private val activity: Activity,
     private val coroutineScope: CoroutineScope
@@ -30,9 +49,19 @@ class PurchaseManager(
     private val _purchases = MutableStateFlow<List<String>>(emptyList())
     val purchases = _purchases.asStateFlow()
 
+    private val _availableProducts = MutableStateFlow<List<InAppProduct>>(emptyList())
+    val availableProducts = _availableProducts.asStateFlow()
+
     private val purchasesUpdatedListener =
-        PurchasesUpdatedListener { billingResult, purchases ->
-            coroutineScope.launch {
+        PurchasesUpdatedListener { _, _ ->
+            coroutineScope.launch(Dispatchers.IO) {
+                processPurchases()
+            }
+        }
+
+    val acknowledgePurchaseResponseListener =
+        AcknowledgePurchaseResponseListener {
+            coroutineScope.launch(Dispatchers.IO) {
                 processPurchases()
             }
         }
@@ -42,35 +71,34 @@ class PurchaseManager(
         .enablePendingPurchases()
         .build()
 
-   fun connectToBilling() {
-        billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    // The BillingClient is ready. You can query purchases here.
-                    coroutineScope.launch {
-                        processPurchases()
+    fun connectToBilling() {
+        billingClient.startConnection(
+            object : BillingClientStateListener {
+                override fun onBillingSetupFinished(billingResult: BillingResult) {
+                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                        // The BillingClient is ready. You can query purchases here.
+                        coroutineScope.launch {
+                            processAvailableProducts()
+                            processPurchases()
+                        }
                     }
                 }
-            }
 
-            override fun onBillingServiceDisconnected() {
-                // Try to restart the connection on the next request to
-                // Google Play by calling the startConnection() method.
-                billingClient.startConnection(this)
+                override fun onBillingServiceDisconnected() {
+                    // Try to restart the connection on the next request to
+                    // Google Play by calling the startConnection() method.
+                    billingClient.startConnection(this)
+                }
             }
-        })
+        )
     }
 
     suspend fun processAvailableProducts() {
         val productList = ArrayList<QueryProductDetailsParams.Product>()
-        productList.add(
-            QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(Products.proVersion)
-                .setProductType(BillingClient.ProductType.INAPP)
-                .build()
-        )
+        productList.addAll(productList)
+
         val params = QueryProductDetailsParams.newBuilder()
-        params.setProductList(productList)
+        params.setProductList(appProductList)
 
         // leverage queryProductDetails Kotlin extension function
         val productDetailsResult = withContext(Dispatchers.IO) {
@@ -79,9 +107,20 @@ class PurchaseManager(
 
         // Process the result.
         // Update products list
-        _purchases.update {
+        _availableProducts.update {
             val newList = it.toMutableList()
-            newList.add(productDetailsResult.productDetailsList?.firstOrNull().toString())
+            newList.addAll(
+                productDetailsResult.productDetailsList?.map {
+                    InAppProduct(
+                        productId = it.productId,
+                        productName = it.name,
+                        productDescription = it.description,
+                        purchasePrice = it.oneTimePurchaseOfferDetails?.formattedPrice,
+                        purchaseCurrency = it.oneTimePurchaseOfferDetails?.priceCurrencyCode,
+                        purchased = null
+                    )
+                } ?: listOf()
+            )
             newList
         }
     }
@@ -100,7 +139,20 @@ class PurchaseManager(
             newList.addAll(
                 purchasesResult.purchasesList.filter {
                     it.purchaseState == PurchaseState.PURCHASED
-                }.map { it.products.firstOrNull().toString() })
+                }.map { purchase ->
+                    if (!purchase.isAcknowledged) {
+                        val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                            .setPurchaseToken(purchase.purchaseToken)
+                        withContext(Dispatchers.IO) {
+                            billingClient.acknowledgePurchase(
+                                acknowledgePurchaseParams.build(),
+                                acknowledgePurchaseResponseListener
+                            )
+                        }
+                    }
+                    purchase.products.firstOrNull().toString()
+                }
+            )
             newList
         }
     }
@@ -123,43 +175,43 @@ class PurchaseManager(
                 .build()
 
         billingClient.queryProductDetailsAsync(queryProductDetailsParams) { billingResult, productDetailsList ->
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    val productDetails = productDetailsList.firstOrNull { productDetails ->
-                        productDetails.productId == productId
-                    }
-                    if (productDetails != null) {
-                        initiateBilling(productDetails)
-                    }  else {
-                        onError.invoke(R.string.purchase_error_generic)
-                        Timber.e("Product details for $productId are null")
-                    }
-                } else if (billingResult.responseCode == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED) {
-                    billingClient.startConnection(object : BillingClientStateListener {
-                        override fun onBillingSetupFinished(billingResult: BillingResult) {
-                            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                                if (retryCount < 3) {
-                                    purchase(productId, onError, retryCount + 1)
-                                } else {
-                                    onError.invoke(R.string.purchase_error_disconnected)
-                                    Timber.e("Can't connect to billing client - too many retries")
-                                }
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                val productDetails = productDetailsList.firstOrNull { productDetails ->
+                    productDetails.productId == productId
+                }
+                if (productDetails != null) {
+                    initiateBilling(productDetails)
+                    Timber.i("Initiating purchase of $productId")
+                } else {
+                    onError.invoke(R.string.purchase_error_generic)
+                    Timber.e("Product details for $productId are null")
+                }
+            } else if (billingResult.responseCode == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED) {
+                billingClient.startConnection(object : BillingClientStateListener {
+                    override fun onBillingSetupFinished(billingResult: BillingResult) {
+                        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                            if (retryCount < 3) {
+                                purchase(productId, onError, retryCount + 1)
                             } else {
                                 onError.invoke(R.string.purchase_error_disconnected)
-                                Timber.e("Can't connect to billing client")
+                                Timber.e("Can't connect to billing client - too many retries")
                             }
-                        }
-
-                        override fun onBillingServiceDisconnected() {
+                        } else {
                             onError.invoke(R.string.purchase_error_disconnected)
                             Timber.e("Can't connect to billing client")
                         }
-                    })
-                }
+                    }
 
+                    override fun onBillingServiceDisconnected() {
+                        onError.invoke(R.string.purchase_error_disconnected)
+                        Timber.e("Can't connect to billing client")
+                    }
+                })
+            }
         }
     }
 
-    fun initiateBilling(productDetails: ProductDetails) {
+    private fun initiateBilling(productDetails: ProductDetails) {
         val productDetailsParamsList = listOf(
             BillingFlowParams.ProductDetailsParams.newBuilder()
                 .setProductDetails(productDetails)

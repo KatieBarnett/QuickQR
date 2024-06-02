@@ -5,7 +5,6 @@ import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.model.QRIcon
 import dev.veryniche.quickqr.storage.models.QRCode
 import timber.log.Timber
-import java.lang.IllegalArgumentException
 import java.util.Date
 
 fun QRCode.toQRCodeItem(): QRCodeItem {

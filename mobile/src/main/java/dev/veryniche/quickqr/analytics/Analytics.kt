@@ -13,6 +13,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
+import dev.veryniche.quickqr.analytics.Analytics.Action.PurchaseClick
 import dev.veryniche.quickqr.analytics.Analytics.Action.ReviewRequested
 import dev.veryniche.quickqr.analytics.Analytics.Screen.MainScreen
 import dev.veryniche.quickqr.core.model.QRColor
@@ -33,6 +34,7 @@ object Analytics {
         const val DeleteCode = "Delete_Code"
         const val ScanCodeEdit = "Scan_Code_Edit"
         const val ScanCodeAdd = "Scan_Code_Add"
+        const val PurchaseClick = "Purchase_Click"
         const val EnterCodeManually = "Enter_Code_Manually_Add"
         const val WelcomeProVersion = "Welcome_Pro_version"
         const val AddMoreProVersion = "Add_More_Pro_version"
@@ -90,6 +92,13 @@ internal fun trackMainScreenView(tileCount: Int) {
     Firebase.analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
         param(FirebaseAnalytics.Param.SCREEN_NAME, MainScreen)
         param(FirebaseAnalytics.Param.ITEMS, tileCount.toString())
+    }
+}
+
+fun trackPurchaseClick(purchaseId: String) {
+    Timber.d("Track action: Purchase: $purchaseId")
+    Firebase.analytics.logEvent(PurchaseClick) {
+        param(FirebaseAnalytics.Param.ITEM_ID, purchaseId)
     }
 }
 
