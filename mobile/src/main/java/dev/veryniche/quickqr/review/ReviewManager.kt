@@ -1,4 +1,4 @@
-package dev.veryniche.welcometoflip.review
+package dev.veryniche.quickqr.review
 
 import android.app.Activity
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -15,15 +15,32 @@ class ReviewManager(
 ) {
     companion object {
         const val DAYS_SINCE_LAST_REVIEW = 30
+        const val REVIEW_AFTER_NUMBER_OF_OPENS = 3
     }
 
-    private val lastReviewDateFlow = userPreferencesRepository.userPreferencesFlow.map { it.lastReviewDate }
+    private val lastReviewFlow = userPreferencesRepository.userPreferencesFlow.map {
+        Pair(
+            it.lastReviewDate,
+            it.numberOfOpens
+        )
+    }
 
     suspend fun requestReviewIfAble(activity: Activity, coroutineScope: CoroutineScope) {
-        lastReviewDateFlow.collectLatest { lastReviewDate ->
+        lastReviewFlow.collectLatest { lastReview ->
+            val lastReviewDate = lastReview.first
+            val numberOfOpens = lastReview.second
             val currentTimestamp = System.currentTimeMillis()
-            val daysSinceLastReview = (currentTimestamp - lastReviewDate) / (1000 * 60 * 60 * 24)
-            if (lastReviewDate == -1L || daysSinceLastReview >= DAYS_SINCE_LAST_REVIEW) {
+            val daysSinceLastReview = if (lastReviewDate > 0) {
+                (currentTimestamp - lastReviewDate) / (1000 * 60 * 60 * 24)
+            } else {
+                -1
+            }
+            Timber.i(
+                "Days since last review: $daysSinceLastReview, last review date: $lastReviewDate, number of opens: $numberOfOpens"
+            )
+            if (((numberOfOpens >= REVIEW_AFTER_NUMBER_OF_OPENS) && (lastReviewDate == -1L)) ||
+                (daysSinceLastReview >= DAYS_SINCE_LAST_REVIEW)
+            ) {
                 val manager = ReviewManagerFactory.create(activity)
                 val request = manager.requestReviewFlow()
                 trackReviewRequested()
@@ -37,6 +54,7 @@ class ReviewManager(
                             // reviewed or not, or even whether the review dialog was shown. Thus, no
                             // matter the result, we continue our app flow.
                             coroutineScope.launch {
+                                Timber.i("Updating last review date")
                                 userPreferencesRepository.updateLastReviewDate()
                             }
                         }

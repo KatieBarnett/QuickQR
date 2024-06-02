@@ -36,6 +36,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.veryniche.quickqr.MainViewModel
 import dev.veryniche.quickqr.R
@@ -122,13 +124,20 @@ fun MainScreen(
         trackMainScreenView(tiles.size)
     }
 
+    LifecycleEventEffect(
+        event = Lifecycle.Event.ON_CREATE,
+        lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    ) {
+        context.getActivity()?.let {
+            viewModel.requestReviewIfAble(it)
+            viewModel.incrementNumberOfOpens()
+        }
+    }
+
     fun hideAddSheet() {
         if (addSheetState.isVisible) {
             coroutineScope.launch {
                 addSheetState.hide()
-                context.getActivity()?.let {
-                    viewModel.requestReviewIfAble(it)
-                }
             }.invokeOnCompletion {
                 if (!addSheetState.isVisible) {
                     showAddSheet = false
@@ -141,9 +150,6 @@ fun MainScreen(
         if (editSheetState.isVisible) {
             coroutineScope.launch {
                 editSheetState.hide()
-                context.getActivity()?.let {
-                    viewModel.requestReviewIfAble(it)
-                }
             }.invokeOnCompletion {
                 if (!editSheetState.isVisible) {
                     showEditSheet = false

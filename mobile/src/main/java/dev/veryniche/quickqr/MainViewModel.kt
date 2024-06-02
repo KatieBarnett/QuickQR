@@ -14,9 +14,9 @@ import dev.veryniche.quickqr.core.encodeImage
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.model.QRIcon
+import dev.veryniche.quickqr.review.ReviewManager
 import dev.veryniche.quickqr.storage.QRCodesRepository
 import dev.veryniche.quickqr.storage.UserPreferencesRepository
-import dev.veryniche.welcometoflip.review.ReviewManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -131,6 +131,12 @@ class MainViewModel @Inject constructor(
     fun updateShowWelcomeOnStart(value: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             userPreferencesRepository.updateShowWelcomeOnStart(value)
+        }
+    }
+
+    fun incrementNumberOfOpens() {
+        viewModelScope.launch(Dispatchers.IO) {
+            userPreferencesRepository.incrementNumberOfOpens()
         }
     }
 }
