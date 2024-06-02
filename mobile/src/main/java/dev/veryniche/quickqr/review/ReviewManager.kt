@@ -36,7 +36,8 @@ class ReviewManager(
                 -1
             }
             Timber.i(
-                "Days since last review: $daysSinceLastReview, last review date: $lastReviewDate, number of opens: $numberOfOpens"
+                "Days since last review: $daysSinceLastReview, " +
+                    "last review date: $lastReviewDate, number of opens: $numberOfOpens"
             )
             if (((numberOfOpens >= REVIEW_AFTER_NUMBER_OF_OPENS) && (lastReviewDate == -1L)) ||
                 (daysSinceLastReview >= DAYS_SINCE_LAST_REVIEW)
