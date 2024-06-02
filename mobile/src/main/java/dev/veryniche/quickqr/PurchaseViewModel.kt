@@ -22,7 +22,7 @@ class PurchaseViewModel @AssistedInject constructor(
         fun create(purchaseManager: PurchaseManager): PurchaseViewModel
     }
 
-    val isProPurchased = purchaseManager.purchases.map { !it.contains(Products.proVersion) }
+    val isProPurchased = purchaseManager.purchases.map { it.contains(Products.proVersion) }
 
     init {
         viewModelScope.launch {

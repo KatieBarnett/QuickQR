@@ -140,6 +140,7 @@ class PurchaseManager(
                 purchasesResult.purchasesList.filter {
                     it.purchaseState == PurchaseState.PURCHASED
                 }.map { purchase ->
+                    Timber.i("Purchased: ${purchase.products.firstOrNull()}, state: $${purchase.purchaseState}")
                     if (!purchase.isAcknowledged) {
                         val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                             .setPurchaseToken(purchase.purchaseToken)
@@ -148,6 +149,7 @@ class PurchaseManager(
                                 acknowledgePurchaseParams.build(),
                                 acknowledgePurchaseResponseListener
                             )
+                            Timber.i("Purchased: ${purchase.products.firstOrNull()}, acknowledged")
                         }
                     }
                     purchase.products.firstOrNull().toString()
