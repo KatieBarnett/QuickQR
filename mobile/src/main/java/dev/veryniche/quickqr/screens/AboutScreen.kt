@@ -2,7 +2,12 @@ package dev.veryniche.quickqr.screens
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -27,15 +32,15 @@ import dev.veryniche.quickqr.BuildConfig
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.analytics.Analytics
 import dev.veryniche.quickqr.analytics.TrackedScreen
+import dev.veryniche.quickqr.analytics.UnorderedListText
+import dev.veryniche.quickqr.analytics.trackAction
+import dev.veryniche.quickqr.analytics.trackScreenView
 import dev.veryniche.quickqr.components.NavigationIcon
 import dev.veryniche.quickqr.components.TopAppBarTitle
 import dev.veryniche.quickqr.core.theme.Dimen
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.previews.PreviewScreen
 import dev.veryniche.quickqr.showkase.getBrowserIntent
-import dev.veryniche.quickqr.analytics.UnorderedListText
-import dev.veryniche.quickqr.analytics.trackAction
-import dev.veryniche.quickqr.analytics.trackScreenView
 
 @Composable
 fun AboutHeading(textRes: Int, modifier: Modifier = Modifier) {

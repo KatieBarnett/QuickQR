@@ -261,6 +261,7 @@ fun MainScreen(
                 onDismissRequest = {
                     showEditSheet = false
                 },
+                windowInsets = WindowInsets.ime,
                 sheetState = editSheetState
             ) {
                 EditSheet(

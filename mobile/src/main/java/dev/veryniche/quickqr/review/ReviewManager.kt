@@ -1,7 +1,6 @@
 package dev.veryniche.welcometoflip.review
 
 import android.app.Activity
-import android.content.Context
 import com.google.android.play.core.review.ReviewManagerFactory
 import dev.veryniche.quickqr.analytics.trackReviewRequested
 import dev.veryniche.quickqr.storage.UserPreferencesRepository
