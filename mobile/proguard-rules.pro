@@ -40,3 +40,7 @@
 -dontwarn dev.veryniche.quickqr.storage.QRCodesRepository
 -dontwarn dev.veryniche.quickqr.storage.QrCodesSerializer
 -dontwarn dev.veryniche.quickqr.storage.di.DataStoreModule_ProvidesQRCodesStoreFactory
+-dontwarn dev.veryniche.quickqr.storage.QRCodesSerializer
+-dontwarn dev.veryniche.quickqr.storage.UserPreferences
+-dontwarn dev.veryniche.quickqr.storage.UserPreferencesRepository
+-dontwarn dev.veryniche.quickqr.storage.di.DataStoreModule_ProvidePreferencesDataStoreFactory
