@@ -21,6 +21,8 @@ horologist-compose-tools = "0.4.8"
 horologist-tiles = "0.4.8"
 junit = "4.13.2"
 kotlin = "2.0.0"
+kotlinSerialization = "1.7.0-RC"
+kotlinSerializationPlugin = "2.0.0"
 kspPlugin = "2.0.0-1.0.21"
 lifecycle = "2.8.1"
 lifecycleRuntimeCompose = "2.8.1"
@@ -72,6 +74,7 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 horologist-compose-tools = { group = "com.google.android.horologist", name = "horologist-compose-tools", version.ref = "horologist-compose-tools" }
 horologist-tiles = { group = "com.google.android.horologist", name = "horologist-tiles", version.ref = "horologist-tiles" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+kotlin-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinSerialization" }
 lifecycle-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
 lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
@@ -110,7 +113,8 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServicesPlugin" }
-kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerializationPlugin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kspPlugin" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazziPlugin" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }

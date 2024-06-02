@@ -54,7 +54,9 @@ import androidx.compose.material.icons.rounded.Widgets
 import androidx.compose.material.icons.rounded.WineBar
 import androidx.compose.material.icons.rounded.Work
 import androidx.compose.ui.graphics.vector.ImageVector
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class QRIcon(val vector: ImageVector, val showInList: Boolean = true) {
     ADD_QR_CODE(Icons.Rounded.QrCode2, showInList = false),
     SCAN(Icons.Rounded.QrCodeScanner, showInList = false),

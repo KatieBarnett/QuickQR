@@ -4,8 +4,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import dev.veryniche.quickqr.core.theme.md_theme_light_primary
 import dev.veryniche.quickqr.core.util.isDark
+import kotlinx.serialization.Serializable
 
 // Colours from https://materialui.co/metrocolors
+@Serializable
 enum class QRColor(val color: Color, val showInList: Boolean = true) {
     Primary(md_theme_light_primary, showInList = false),
     Lime(Color(0xFFA4C400)),
