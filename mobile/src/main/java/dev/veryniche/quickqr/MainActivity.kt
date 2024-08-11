@@ -75,10 +75,7 @@ class MainActivity : ComponentActivity() {
                 hiltViewModel<PurchaseViewModel, PurchaseViewModel.PurchaseViewModelFactory> { factory ->
                     factory.create(purchaseManager)
                 }
-            val isProPurchased by purchaseViewModel.isProPurchased.collectAsStateWithLifecycle(
-                initialValue = false,
-                lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
-            )
+            val isProPurchased by purchaseViewModel.isProPurchased.collectAsStateWithLifecycle(false)
 
             var showPurchaseErrorMessage by rememberSaveable { mutableStateOf<Int?>(null) }
 

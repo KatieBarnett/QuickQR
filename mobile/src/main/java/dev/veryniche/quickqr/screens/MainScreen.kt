@@ -100,22 +100,16 @@ fun MainScreen(
     )
     val viewModel: MainViewModel = hiltViewModel()
     val context = LocalContext.current
-    val scannedCode by viewModel.scannedCode.collectAsStateWithLifecycle(
-        lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
-    )
+    val scannedCode by viewModel.scannedCode.collectAsStateWithLifecycle()
     var flipAllCardsToFront by rememberSaveable { mutableStateOf<Int?>(null) }
 
     val tiles: List<QRCodeItem> by viewModel.tiles.collectAsStateWithLifecycle(
         initialValue = listOf(),
-        lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
     )
 
     val windowSizeClass: WindowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
-    val showWelcomeDialogOnStart by viewModel.showWelcomeDialog.collectAsStateWithLifecycle(
-        initialValue = null,
-        lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
-    )
+    val showWelcomeDialogOnStart by viewModel.showWelcomeDialog.collectAsStateWithLifecycle(null)
     var showWelcomeDialog by rememberSaveable(showWelcomeDialogOnStart) {
         mutableStateOf(showWelcomeDialogOnStart)
     }
@@ -126,7 +120,6 @@ fun MainScreen(
 
     LifecycleEventEffect(
         event = Lifecycle.Event.ON_CREATE,
-        lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
     ) {
         context.getActivity()?.let {
             viewModel.requestReviewIfAble(it)
