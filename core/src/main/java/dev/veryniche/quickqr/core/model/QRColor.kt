@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 // Colours from https://materialui.co/metrocolors
 @Serializable
 enum class QRColor(val color: Color, val showInList: Boolean = true) {
-    Primary(md_theme_light_primary, showInList = false),
+    Primary(Color(0xFFB91640), showInList = false),
     Lime(Color(0xFFA4C400)),
     Green(Color(0xFF60A917)),
     Emerald(Color(0xFF008A00)),

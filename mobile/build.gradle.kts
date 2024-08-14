@@ -96,6 +96,9 @@ dependencies {
 
     implementation(libs.timber)
 
+    implementation(libs.glance.appwidget)
+    implementation(libs.glance.material3)
+
     implementation(libs.play.services.code.scanner)
     implementation(libs.play.services.base)
     implementation(libs.play.services.ads)
