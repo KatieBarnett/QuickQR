@@ -2,15 +2,32 @@ package dev.veryniche.quickqr
 
 import android.app.Application
 import android.util.Log
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.EntryPoint
+import dagger.hilt.EntryPoints
+import dagger.hilt.InstallIn
 import dagger.hilt.android.HiltAndroidApp
+import dagger.hilt.components.SingletonComponent
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 import timber.log.Timber.Tree
 
 @HiltAndroidApp
-class QuickQRApplication : Application() {
+class QuickQRApplication : Application(), Configuration.Provider {
+
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface HiltWorkerFactoryEntryPoint {
+        fun workerFactory(): HiltWorkerFactory
+    }
+
+    override val workManagerConfiguration = Configuration.Builder()
+        .setWorkerFactory(EntryPoints.get(this, HiltWorkerFactoryEntryPoint::class.java).workerFactory())
+        .setMinimumLoggingLevel(Log.INFO)
+        .build()
 
     override fun onCreate() {
         super.onCreate()

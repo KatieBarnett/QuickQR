@@ -16,27 +16,34 @@ import dev.veryniche.quickqr.analytics.TrackedScreen
 import dev.veryniche.quickqr.analytics.trackAction
 import dev.veryniche.quickqr.analytics.trackScreenView
 import dev.veryniche.quickqr.components.ExpandedQRCode
+import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.util.resolveUrl
 
 @Composable
-fun ExpandedCodeScreen(id: Int?, modifier: Modifier) {
+fun ExpandedCodeScreen(id: Int?, modifier: Modifier = Modifier) {
     val viewModel: ExpandedCodeViewModel = hiltViewModel()
     val qrCodeItem by remember { mutableStateOf(viewModel.getQRCodeItem(id)) }
-    val context = LocalContext.current
 
     TrackedScreen {
         trackScreenView(Analytics.Screen.ExpandedCode)
     }
 
     qrCodeItem?.let {
-        ExpandedQRCode(
-            qrCodeItem = it,
-            onVisitClick = {
-                trackAction(Analytics.Action.VisitContentDestination)
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it.content.resolveUrl()))
-                context.startActivity(intent)
-            },
-            modifier = modifier.fillMaxSize()
-        )
+        ExpandedCodeScreen(it, Modifier)
     } ?: GenericErrorScreen(modifier)
+}
+
+@Composable
+fun ExpandedCodeScreen(item: QRCodeItem, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+
+    ExpandedQRCode(
+        qrCodeItem = item,
+        onVisitClick = {
+            trackAction(Analytics.Action.VisitContentDestination)
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.content.resolveUrl()))
+            context.startActivity(intent)
+        },
+        modifier = modifier.fillMaxSize()
+    )
 }

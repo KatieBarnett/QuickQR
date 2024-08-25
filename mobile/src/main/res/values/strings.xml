@@ -88,4 +88,10 @@
     <string name="barcode_scan_error_message">Error loading on device barcode scanner. Please wait a few moments and try again.</string>
     <string name="barcode_scan_error_dismiss">OK</string>
 
+    <string name="widget_configuration">Select the QR Code to use for the widget</string>
+    <string name="widget_configuration_empty">No QR Codes to add. Open the full app to add some.</string>
+    <string name="widget_configuration_empty_button">Open App</string>
+    <string name="widget_configuration_background">Include colored background:</string>
+    <string name="widget_error">Error displaying QR Code Widget. Please remove it and re-add it.</string>
+
 </resources>

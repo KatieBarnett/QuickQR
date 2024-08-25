@@ -164,12 +164,14 @@ fun SideAdd(modifier: Modifier) {
 @Composable
 fun Tile(
     qrCodeItem: QRCodeItem,
-    longPressDetail: (QRCodeItem) -> Unit,
-    longPressCode: (QRCodeItem) -> Unit,
+    onClickOverride: (() -> Unit)? = null,
+    longPressDetail: ((QRCodeItem) -> Unit)?,
+    longPressCode: ((QRCodeItem) -> Unit)?,
     triggerShowAllFront: Int? = null,
     modifier: Modifier = Modifier,
 ) {
     Tile(
+        onClickOverride = onClickOverride,
         sideFront = { modifier ->
             SideDetails(
                 name = qrCodeItem.name,
@@ -189,11 +191,15 @@ fun Tile(
                 modifier = modifier
             )
         },
-        longPressDetail = {
-            longPressDetail.invoke(qrCodeItem)
+        longPressDetail = longPressDetail?.let {
+            {
+                it.invoke(qrCodeItem)
+            }
         },
-        longPressCode = {
-            longPressCode.invoke(qrCodeItem)
+        longPressCode = longPressCode?.let {
+            {
+                longPressCode.invoke(qrCodeItem)
+            }
         },
         triggerShowAllFront = triggerShowAllFront,
         modifier = modifier,
@@ -205,8 +211,9 @@ fun Tile(
 fun Tile(
     sideFront: @Composable (Modifier) -> Unit,
     sideBack: @Composable (Modifier) -> Unit,
-    longPressDetail: () -> Unit,
-    longPressCode: () -> Unit,
+    onClickOverride: (() -> Unit)? = null,
+    longPressDetail: (() -> Unit)?,
+    longPressCode: (() -> Unit)?,
     triggerShowAllFront: Int? = null,
     modifier: Modifier = Modifier,
 ) {
@@ -240,14 +247,20 @@ fun Tile(
             .aspectRatio(1f)
             .combinedClickable(
                 onClick = {
-                    showingFront = !(showingFront ?: true)
+                    if (onClickOverride != null) {
+                        onClickOverride.invoke()
+                    } else {
+                        showingFront = !(showingFront ?: true)
+                    }
                 },
                 onLongClick = {
-                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                    if (showingFront != false) {
-                        longPressDetail.invoke()
-                    } else {
-                        longPressCode.invoke()
+                    if (longPressDetail != null || longPressCode != null) {
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        if (showingFront != false) {
+                            longPressDetail?.invoke()
+                        } else {
+                            longPressCode?.invoke()
+                        }
                     }
                 }
             )

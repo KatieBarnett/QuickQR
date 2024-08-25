@@ -4,6 +4,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object Dimen {
+    val spacingQuarter = 2.dp
+    val spacingHalf = 4.dp
+    val spacingThreeQuarters = 6.dp
     val spacing = 8.dp
     val spacingDouble = 16.dp
 

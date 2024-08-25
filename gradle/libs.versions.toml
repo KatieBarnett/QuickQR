@@ -16,7 +16,7 @@ firebaseBom = "33.1.2"
 firebaseCrashlyticsPlugin = "3.0.2"
 glance = "1.1.0"
 googleServicesPlugin = "4.4.2"
-hilt = "2.51.1"
+hilt = "2.52"
 hiltAndroidx = "1.2.0"
 horologist-compose-tools = "0.6.9"
 horologist-tiles = "0.6.16"
@@ -39,12 +39,13 @@ play-services-wearable = "18.2.0"
 protobuf = "3.25.3"
 protobufPlugin = "0.9.4"
 qrgenerator = "1.0.1"
-showkase = "1.0.0-beta18"
+showkase = "1.0.3"
 splashscreen = "1.1.0-rc01"
 tiles = "1.4.0"
 tiles-material = "1.4.0"
 timber = "5.0.1"
 watchface-complications-data-source-ktx = "1.2.1"
+work = "2.10.0-alpha02"
 
 [libraries]
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
@@ -70,14 +71,19 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
+glance-appwidget-preview = { group = "androidx.glance", name = "glance-appwidget-preview", version.ref = "glance" }
 glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "glance" }
+glance-preview = { group = "androidx.glance", name = "glance-preview", version.ref = "glance" }
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+hilt-compiler-androidx = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltAndroidx" }
+hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltAndroidx" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltAndroidx" }
 horologist-compose-tools = { group = "com.google.android.horologist", name = "horologist-compose-tools", version.ref = "horologist-compose-tools" }
 horologist-tiles = { group = "com.google.android.horologist", name = "horologist-tiles", version.ref = "horologist-tiles" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinSerialization" }
+kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
 lifecycle-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
 lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
@@ -109,6 +115,7 @@ wear-play-services = { group = "com.google.android.gms", name = "play-services-w
 wear-tiles = { group = "androidx.wear.tiles", name = "tiles", version.ref = "tiles" }
 wear-tiles-material = { group = "androidx.wear.tiles", name = "tiles-material", version.ref = "tiles-material" }
 wear-watchface-complications-data-source-ktx = { group = "androidx.wear.watchface", name = "watchface-complications-data-source-ktx", version.ref = "watchface-complications-data-source-ktx" }
+work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

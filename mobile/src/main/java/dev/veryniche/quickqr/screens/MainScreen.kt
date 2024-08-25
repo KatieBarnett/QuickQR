@@ -39,6 +39,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import dev.veryniche.quickqr.MainViewModel
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.analytics.Analytics
@@ -53,6 +55,7 @@ import dev.veryniche.quickqr.components.WelcomeDialog
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.purchase.isProVersionRequired
 import dev.veryniche.quickqr.util.getActivity
+import dev.veryniche.quickqr.widgets.QRCodeWidgetWorker
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -267,13 +270,16 @@ fun MainScreen(
                     initialItem = editSheetContext,
                     onSaveClick = { name, content, icon, primaryColor ->
                         resetScreen()
-                        viewModel.processEdit(
+                        val bitmap = viewModel.processEdit(
                             id = editSheetContext?.id ?: -1,
                             name = name,
                             content = content,
                             icon = icon,
                             primaryColor = primaryColor
                         )
+                        val work = OneTimeWorkRequestBuilder<QRCodeWidgetWorker>().build()
+                        WorkManager.getInstance(context).enqueue(work)
+                        bitmap
                     },
                     scannedCode = scannedCode,
                     onScanClick = {

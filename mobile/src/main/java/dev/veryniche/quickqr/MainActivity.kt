@@ -10,6 +10,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,10 +23,9 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.gms.ads.MobileAds
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import dev.veryniche.quickqr.core.theme.QuickQRTheme
 import dev.veryniche.quickqr.navigation.QuickQRNavHost
@@ -33,12 +33,12 @@ import dev.veryniche.quickqr.purchase.Products
 import dev.veryniche.quickqr.purchase.PurchaseManager
 import dev.veryniche.quickqr.update.AppUpdateHelper
 import dev.veryniche.quickqr.util.BarcodeClientHelper
+import dev.veryniche.quickqr.widgets.QRCodeWidgetWorker
 import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var appUpdateHelper: AppUpdateHelper
 
     @Deprecated(
@@ -61,7 +61,6 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        firebaseAnalytics = Firebase.analytics
         MobileAds.initialize(this) { initializationStatus ->
             Timber.d("AdMob init: ${initializationStatus.adapterStatusMap}")
         }
@@ -80,6 +79,11 @@ class MainActivity : ComponentActivity() {
             var showPurchaseErrorMessage by rememberSaveable { mutableStateOf<Int?>(null) }
 
             var showBarcodeModuleErrorMessage by rememberSaveable { mutableStateOf<Int?>(null) }
+
+            SideEffect {
+                val work = OneTimeWorkRequestBuilder<QRCodeWidgetWorker>().build()
+                WorkManager.getInstance(this).enqueue(work)
+            }
 
             BarcodeClientHelper(this) { showBarcodeModuleErrorMessage = it }.checkInstallBarcodeModule()
 

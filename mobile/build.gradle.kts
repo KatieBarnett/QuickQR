@@ -79,6 +79,8 @@ dependencies {
 
     implementation(libs.activity.ktx)
 
+    implementation(libs.hilt.work)
+
     implementation(libs.hilt.navigation.compose)
     implementation(libs.compose.navigation)
 
@@ -91,13 +93,16 @@ dependencies {
 
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
+    ksp(libs.hilt.compiler.androidx)
 
     implementation(libs.splashscreen)
 
     implementation(libs.timber)
 
     implementation(libs.glance.appwidget)
+    implementation(libs.glance.appwidget.preview)
     implementation(libs.glance.material3)
+    implementation(libs.glance.preview)
 
     implementation(libs.play.services.code.scanner)
     implementation(libs.play.services.base)
@@ -107,6 +112,11 @@ dependencies {
     implementation(libs.billing)
 
     implementation(libs.datastore.preferences)
+
+    implementation(libs.kotlin.serialization.json)
+
+
+    implementation(libs.work)
 //
 //    implementation(libs.play.app.update)
 //    implementation(libs.play.app.update.ktx)

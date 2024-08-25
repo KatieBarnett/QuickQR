@@ -24,6 +24,7 @@ object Analytics {
     object Screen {
         const val MainScreen = "Main_Screen"
         const val ExpandedCode = "Expanded_Code"
+        const val ExpandedCodeWidget = "Expanded_Code_Widget"
         const val About = "About"
     }
 

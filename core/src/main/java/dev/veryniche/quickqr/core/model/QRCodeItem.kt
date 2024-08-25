@@ -1,6 +1,7 @@
 package dev.veryniche.quickqr.core.model
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import dev.veryniche.quickqr.core.decodeImage
 import kotlinx.serialization.KSerializer
@@ -51,10 +52,9 @@ data class QRCodeItem(
     @Serializable(with = DateSerializer::class)
     val lastModified: Date
 ) {
-    val imageBitmap = imageBase64.decodeImage().asImageBitmap()
+    val imageBitmap: ImageBitmap
+        get() = imageBase64.decodeImage().asImageBitmap()
 
     @Serializable(with = ColorAsStringSerializer::class)
     val secondaryColor = primaryColor.getSecondaryColor()
 }
-
-
