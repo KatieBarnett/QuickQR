@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:configure="dev.veryniche.quickqr.widgets.WidgetConfigurationActivity"
+    android:widgetFeatures="reconfigurable"
+    android:resizeMode="horizontal|vertical"
+    android:previewImage="@drawable/qr_code_widget_preview"
+    android:targetCellWidth="2"
+    android:targetCellHeight="2"
+    tools:targetApi="s">
+</appwidget-provider>

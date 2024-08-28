@@ -1,14 +1,6 @@
 package dev.veryniche.quickqr.widgets
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
-import android.util.Base64
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
-import androidx.compose.ui.graphics.drawscope.draw
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.hilt.work.HiltWorker
@@ -16,54 +8,36 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import dev.veryniche.quickqr.components.Tile
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.storage.QRCodesRepository
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.io.ByteArrayOutputStream
-import androidx.compose.ui.graphics.vector.ImageVector
+import timber.log.Timber
 
 @HiltWorker
-class QRCodeWidgetWorker @AssistedInject constructor(
+class TileWidgetWorker @AssistedInject constructor(
     @Assisted val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val qrCodesRepository: QRCodesRepository,
 ) : CoroutineWorker(appContext, workerParams) {
 
-//    fun encodeIcon(icon: ImageVector) {
-//        val drawable = icon.asDrawable(appContext)
-//        val bitmap = Bitmap.createBitmap(
-//            drawable.intrinsicWidth,
-//            drawable.intrinsicHeight,
-//            Bitmap.Config.ARGB_8888
-//        )
-//        val canvas = Canvas(bitmap)
-//        drawable.setBounds(0, 0, canvas.width, canvas.height)
-//        drawable.draw(canvas)
-//
-//        val byteArrayOutputStream = ByteArrayOutputStream()
-//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-//        val byteArray = byteArrayOutputStream.toByteArray()
-//
-//        Base64.encodeToString(byteArray, Base64.DEFAULT)
-//        return byteArray
-//    }
-
     override suspend fun doWork(): Result {
         val manager = GlanceAppWidgetManager(appContext)
-        val widget = QRCodeWidget()
+        val widget = TileWidget()
         val glanceIds = manager.getGlanceIds(widget.javaClass)
+        Timber.d("Updating widgets: $glanceIds")
         glanceIds.forEach { glanceId ->
             updateAppWidgetState(
                 context = appContext,
                 glanceId = glanceId,
             ) { prefs ->
                 prefs.apply {
-                    val itemString = prefs[QRCodeWidget.KEY_QR_CODE_ITEM]
+                    val itemString = prefs[TileWidget.KEY_QR_CODE_ITEM]
                     itemString?.let {
                         val item = Json.decodeFromString<QRCodeItem>(itemString)
                         val updatedItem = qrCodesRepository.getQRCode(item.id)
-                        this[QRCodeWidget.KEY_QR_CODE_ITEM] = Json.encodeToString(updatedItem)
+                        this[TileWidget.KEY_QR_CODE_ITEM] = Json.encodeToString(updatedItem)
                     }
                 }
                 widget.update(appContext, glanceId)

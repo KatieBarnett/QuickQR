@@ -1,5 +1,6 @@
 package dev.veryniche.quickqr.core.model
 
+import androidx.annotation.DrawableRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountBalance
 import androidx.compose.material.icons.rounded.AccountCircle
@@ -57,7 +58,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class QRIcon(val vector: ImageVector, val showInList: Boolean = true) {
+enum class QRIcon(val vector: ImageVector, val showInList: Boolean = true, @DrawableRes val drawableId: Int) {
     ADD_QR_CODE(Icons.Rounded.QrCode2, showInList = false),
     SCAN(Icons.Rounded.QrCodeScanner, showInList = false),
     Web(Icons.Rounded.Web),

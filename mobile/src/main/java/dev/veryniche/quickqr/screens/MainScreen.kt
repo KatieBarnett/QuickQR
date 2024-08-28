@@ -56,6 +56,7 @@ import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.purchase.isProVersionRequired
 import dev.veryniche.quickqr.util.getActivity
 import dev.veryniche.quickqr.widgets.QRCodeWidgetWorker
+import dev.veryniche.quickqr.widgets.TileWidgetWorker
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -277,8 +278,10 @@ fun MainScreen(
                             icon = icon,
                             primaryColor = primaryColor
                         )
-                        val work = OneTimeWorkRequestBuilder<QRCodeWidgetWorker>().build()
-                        WorkManager.getInstance(context).enqueue(work)
+                        val qRCodeWidgetWorker = OneTimeWorkRequestBuilder<QRCodeWidgetWorker>().build()
+                        WorkManager.getInstance(context).enqueue(qRCodeWidgetWorker)
+                        val tileWidgetWorker = OneTimeWorkRequestBuilder<TileWidgetWorker>().build()
+                        WorkManager.getInstance(context).enqueue(tileWidgetWorker)
                         bitmap
                     },
                     scannedCode = scannedCode,

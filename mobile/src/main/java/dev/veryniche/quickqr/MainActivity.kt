@@ -34,6 +34,7 @@ import dev.veryniche.quickqr.purchase.PurchaseManager
 import dev.veryniche.quickqr.update.AppUpdateHelper
 import dev.veryniche.quickqr.util.BarcodeClientHelper
 import dev.veryniche.quickqr.widgets.QRCodeWidgetWorker
+import dev.veryniche.quickqr.widgets.TileWidgetWorker
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -81,8 +82,10 @@ class MainActivity : ComponentActivity() {
             var showBarcodeModuleErrorMessage by rememberSaveable { mutableStateOf<Int?>(null) }
 
             SideEffect {
-                val work = OneTimeWorkRequestBuilder<QRCodeWidgetWorker>().build()
-                WorkManager.getInstance(this).enqueue(work)
+                val qRCodeWidgetWorker = OneTimeWorkRequestBuilder<QRCodeWidgetWorker>().build()
+                WorkManager.getInstance(this).enqueue(qRCodeWidgetWorker)
+                val tileWidgetWorker = OneTimeWorkRequestBuilder<TileWidgetWorker>().build()
+                WorkManager.getInstance(this).enqueue(tileWidgetWorker)
             }
 
             BarcodeClientHelper(this) { showBarcodeModuleErrorMessage = it }.checkInstallBarcodeModule()
