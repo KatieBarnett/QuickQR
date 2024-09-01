@@ -23,6 +23,7 @@ object Dimen {
 
 
     val iconWidthDefault = 24.dp
+    val iconWidthDefaultWidget = 48.dp
 
     val bulletTextIndent = 4.sp
 }

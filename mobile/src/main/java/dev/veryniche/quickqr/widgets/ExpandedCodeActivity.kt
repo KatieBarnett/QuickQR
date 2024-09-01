@@ -2,6 +2,7 @@ package dev.veryniche.quickqr.widgets
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
@@ -43,10 +44,21 @@ class ExpandedCodeActivity : ComponentActivity() {
         const val ARG_QR_CODE_ITEM = "arg_qr_code_item"
     }
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(
+        true
+    ) {
+        override fun handleOnBackPressed() {
+            finishAffinity()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
         MobileAds.initialize(this) { initializationStatus ->
             Timber.d("AdMob init: ${initializationStatus.adapterStatusMap}")
         }
@@ -104,7 +116,7 @@ fun ExpandedCodeActivityDisplay(
         modifier = modifier
     ) { contentPadding ->
         Column(Modifier.padding(contentPadding)) {
-            ExpandedCodeScreen(item)
+            ExpandedCodeScreen(item, Modifier.weight(1f))
             if (!isProPurchased) {
                 BannerAd(location = BannerAdLocation.MainScreen)
             }

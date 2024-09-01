@@ -5,7 +5,7 @@
     android:configure="dev.veryniche.quickqr.widgets.WidgetConfigurationActivity"
     android:widgetFeatures="reconfigurable"
     android:resizeMode="horizontal|vertical"
-    android:previewImage="@drawable/qr_code_widget_preview"
+    android:previewImage="@drawable/tile_widget_preview"
     android:targetCellWidth="2"
     android:targetCellHeight="2"
     tools:targetApi="s">

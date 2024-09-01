@@ -2,7 +2,6 @@ package dev.veryniche.quickqr.core.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import dev.veryniche.quickqr.core.theme.md_theme_light_primary
 import dev.veryniche.quickqr.core.util.isDark
 import kotlinx.serialization.Serializable
 

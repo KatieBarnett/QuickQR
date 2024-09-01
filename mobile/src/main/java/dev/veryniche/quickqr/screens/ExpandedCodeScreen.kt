@@ -29,7 +29,7 @@ fun ExpandedCodeScreen(id: Int?, modifier: Modifier = Modifier) {
     }
 
     qrCodeItem?.let {
-        ExpandedCodeScreen(it, Modifier)
+        ExpandedCodeScreen(it, Modifier.fillMaxSize())
     } ?: GenericErrorScreen(modifier)
 }
 
@@ -44,6 +44,6 @@ fun ExpandedCodeScreen(item: QRCodeItem, modifier: Modifier = Modifier) {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.content.resolveUrl()))
             context.startActivity(intent)
         },
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
     )
 }

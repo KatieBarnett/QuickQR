@@ -1,14 +1,6 @@
 package dev.veryniche.quickqr.widgets
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
-import android.util.Base64
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
-import androidx.compose.ui.graphics.drawscope.draw
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.hilt.work.HiltWorker
@@ -20,8 +12,6 @@ import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.storage.QRCodesRepository
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.io.ByteArrayOutputStream
-import androidx.compose.ui.graphics.vector.ImageVector
 
 @HiltWorker
 class QRCodeWidgetWorker @AssistedInject constructor(

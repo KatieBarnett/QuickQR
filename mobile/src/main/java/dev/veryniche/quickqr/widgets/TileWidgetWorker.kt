@@ -8,7 +8,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import dev.veryniche.quickqr.components.Tile
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.storage.QRCodesRepository
 import kotlinx.serialization.encodeToString

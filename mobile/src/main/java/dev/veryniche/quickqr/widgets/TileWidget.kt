@@ -4,12 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
@@ -29,8 +25,10 @@ import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
+import androidx.glance.layout.ContentScale
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
+import androidx.glance.layout.size
 import androidx.glance.preview.ExperimentalGlancePreviewApi
 import androidx.glance.preview.Preview
 import androidx.glance.text.Text
@@ -40,7 +38,6 @@ import androidx.glance.unit.ColorProvider
 import dev.veryniche.quickqr.R
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItem
 import dev.veryniche.quickqr.core.Constants.sampleQRCodeItemLongText
-import dev.veryniche.quickqr.core.decodeImage
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.theme.Dimen
@@ -115,23 +112,22 @@ fun TileWidget(
         val intent = Intent(context, ExpandedCodeActivity::class.java)
         intent.putExtra(ExpandedCodeActivity.ARG_QR_CODE_ITEM, Json.encodeToString(qrCodeItem))
         Column(
-            modifier = columnModifier
+            modifier = columnModifier.fillMaxSize()
                 .clickable(actionStartActivity(intent)),
-            verticalAlignment = Alignment.Top,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            qrCodeItem.icon.base64?.decodeImage()?.asImageBitmap()?.let {
-                Image(
-                    provider = ImageProvider(it.asAndroidBitmap()),
-                    colorFilter = if (useColorBackground) {
-                        ColorFilter.tint(ColorProvider(qrCodeItem.secondaryColor))
-                    } else {
-                        ColorFilter.tint(GlanceTheme.colors.secondary)
-                    },
-                    contentDescription = qrCodeItem.name,
-                    modifier = GlanceModifier
-                )
-            }
+            Image(
+                provider = ImageProvider(qrCodeItem.icon.drawableId),
+                colorFilter = if (useColorBackground) {
+                    ColorFilter.tint(ColorProvider(qrCodeItem.secondaryColor))
+                } else {
+                    ColorFilter.tint(GlanceTheme.colors.secondary)
+                },
+                contentDescription = qrCodeItem.name,
+                contentScale = ContentScale.Fit,
+                modifier = GlanceModifier.size(Dimen.iconWidthDefaultWidget)
+            )
             Text(
                 text = qrCodeItem.name,
                 style = TextStyle(
@@ -144,20 +140,6 @@ fun TileWidget(
                     }
                 ),
                 modifier = GlanceModifier
-            )
-            Text(
-                text = qrCodeItem.content,
-                style = TextStyle(
-                    fontSize = 8.sp,
-                    textAlign = TextAlign.Center,
-                    color =
-                    if (useColorBackground) {
-                        ColorProvider(qrCodeItem.secondaryColor)
-                    } else {
-                        GlanceTheme.colors.secondary
-                    }
-                ),
-                modifier = GlanceModifier.padding(top = Dimen.spacingQuarter)
             )
         }
     }
