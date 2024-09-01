@@ -96,6 +96,12 @@ fun WelcomeDialogContent(
                         .fillMaxWidth()
                         .padding(bottom = Dimen.spacing)
                 )
+                Text(
+                    text = stringResource(id = R.string.about_instructions_widget),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth()
+                )
 //            AboutHeading(R.string.about_coming_soon_title)
 //            UnorderedListText(
 //                textLines = listOf(

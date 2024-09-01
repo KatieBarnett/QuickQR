@@ -57,6 +57,7 @@
     <string name="about_instructions_ul_2">Tap tile: Flip over the card and see the QR code, tap again to flip back</string>
     <string name="about_instructions_ul_3">Long press tile front side: Edit tile details &amp; QR code</string>
     <string name="about_instructions_ul_4">Long press tile QR code side: Show QR code full screen</string>
+    <string name="about_instructions_widget">You can also add a widget to the home screen!</string>
     <string name="about_coming_soon_title">Coming Soon</string>
     <string name="about_coming_soon_ul_1">Companion Wear OS app to show your QR codes on your watch</string>
     <string name="about_coming_soon_ul_2">Ability to reorder QR Code tiles</string>
