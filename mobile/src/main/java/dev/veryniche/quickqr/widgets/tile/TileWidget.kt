@@ -149,6 +149,9 @@ fun TileWidget(
                 .cornerRadius(4.dp)
         } else {
             GlanceModifier
+                .background(Color.Unspecified)
+                .padding(0.dp)
+                .cornerRadius(0.dp)
         }
         val context = LocalContext.current
         val intent = Intent(context, ExpandedCodeActivity::class.java)

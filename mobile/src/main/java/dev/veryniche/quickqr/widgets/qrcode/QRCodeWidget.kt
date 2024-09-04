@@ -149,7 +149,10 @@ fun QRCodeWidget(
                 .cornerRadius(4.dp)
         } else {
             GlanceModifier
+                .background(Color.Unspecified)
+                .cornerRadius(0.dp)
         }
+
         val context = LocalContext.current
         val intent = Intent(context, ExpandedCodeActivity::class.java)
         intent.putExtra(ExpandedCodeActivity.ARG_QR_CODE_ITEM, Json.encodeToString(qrCodeItem))
