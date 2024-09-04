@@ -1,4 +1,4 @@
-package dev.veryniche.quickqr.widgets
+package dev.veryniche.quickqr.widgets.qrcode
 
 import android.content.Context
 import android.content.Intent

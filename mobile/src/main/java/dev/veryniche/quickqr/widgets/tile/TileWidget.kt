@@ -1,4 +1,4 @@
-package dev.veryniche.quickqr.widgets
+package dev.veryniche.quickqr.widgets.tile
 
 import android.app.WallpaperManager
 import android.app.WallpaperManager.FLAG_SYSTEM
@@ -14,10 +14,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -35,11 +35,10 @@ import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
+import androidx.glance.layout.ContentScale
 import androidx.glance.layout.fillMaxSize
-import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
-import androidx.glance.layout.width
-import androidx.glance.layout.wrapContentHeight
+import androidx.glance.layout.size
 import androidx.glance.preview.ExperimentalGlancePreviewApi
 import androidx.glance.preview.Preview
 import androidx.glance.text.Text
@@ -52,12 +51,17 @@ import dev.veryniche.quickqr.core.Constants.sampleQRCodeItemLongText
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.core.model.QRColor
 import dev.veryniche.quickqr.core.theme.Dimen
+import dev.veryniche.quickqr.widgets.ExpandedCodeActivity
+import dev.veryniche.quickqr.widgets.QuickQRGlanceColorScheme
+import dev.veryniche.quickqr.widgets.WidgetError
+import dev.veryniche.quickqr.widgets.getUseDarkColorOnWallPaper
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import timber.log.Timber
 
 // Android entry point for DI https://stackoverflow.com/questions/75511282/display-data-from-database-room-in-widget-glance-using-jetpack-compose
 
-class QRCodeWidget : GlanceAppWidget(errorUiLayout = R.layout.qrcode_widget_error_layout) {
+class TileWidget : GlanceAppWidget(errorUiLayout = R.layout.qrcode_widget_error_layout) {
 
     companion object {
         private val extraSmallMode = DpSize(120.dp, 120.dp)
@@ -79,8 +83,10 @@ class QRCodeWidget : GlanceAppWidget(errorUiLayout = R.layout.qrcode_widget_erro
         // In this method, load data needed to render the AppWidget.
         // Use `withContext` to switch to another thread for long running
         // operations.
-
         provideContent {
+            val useColorBackground = currentState(KEY_COLORED_BACKGROUND)?.toBoolean() ?: false
+            val itemString = currentState(KEY_QR_CODE_ITEM)
+            Timber.d("useColorBackground: $useColorBackground, itemString: $itemString")
             GlanceTheme(
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     GlanceTheme.colors
@@ -106,24 +112,22 @@ class QRCodeWidget : GlanceAppWidget(errorUiLayout = R.layout.qrcode_widget_erro
                         wallpaperManager.removeOnColorsChangedListener(listener)
                     }
                 }
-                Content(useDarkColorOnWallpaper)
+                Content(itemString.orEmpty(), useColorBackground, useDarkColorOnWallpaper)
             }
         }
     }
 
     @Composable
-    private fun Content(useDarkText: Boolean) {
-        val state = currentState(TileWidget.KEY_QR_CODE_ITEM)
+    private fun Content(itemString: String, useColorBackground: Boolean, useDarkText: Boolean) {
         val item = try {
-            state?.let {
-                Json.decodeFromString<QRCodeItem>(state)
+            itemString?.let {
+                Json.decodeFromString<QRCodeItem>(it)
             }
         } catch (e: Exception) {
             null
         }
         if (item != null) {
-            val useColorBackground = currentState(TileWidget.KEY_COLORED_BACKGROUND)?.toBoolean() ?: false
-            QRCodeWidget(item, useColorBackground, useDarkText)
+            TileWidget(item, useColorBackground, useDarkText)
         } else {
             WidgetError(useDarkText)
         }
@@ -131,16 +135,17 @@ class QRCodeWidget : GlanceAppWidget(errorUiLayout = R.layout.qrcode_widget_erro
 }
 
 @Composable
-fun QRCodeWidget(
+fun TileWidget(
     qrCodeItem: QRCodeItem,
     useColorBackground: Boolean,
     useDarkTextOnBackground: Boolean,
-    modifier: GlanceModifier = GlanceModifier
+    modifier: GlanceModifier = GlanceModifier,
 ) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         val columnModifier = if (useColorBackground) {
             GlanceModifier
                 .background(qrCodeItem.primaryColor.color)
+                .padding(Dimen.qRDetailDisplayPadding)
                 .cornerRadius(4.dp)
         } else {
             GlanceModifier
@@ -149,22 +154,25 @@ fun QRCodeWidget(
         val intent = Intent(context, ExpandedCodeActivity::class.java)
         intent.putExtra(ExpandedCodeActivity.ARG_QR_CODE_ITEM, Json.encodeToString(qrCodeItem))
         Column(
-            modifier = columnModifier
+            modifier = columnModifier.fillMaxSize()
                 .clickable(actionStartActivity(intent)),
-            verticalAlignment = Alignment.Top,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
-                provider = ImageProvider(qrCodeItem.imageBitmap.asAndroidBitmap()),
+                provider = ImageProvider(qrCodeItem.icon.drawableId),
+                colorFilter = if (useColorBackground) {
+                    ColorFilter.tint(ColorProvider(qrCodeItem.secondaryColor))
+                } else {
+                    if (useDarkTextOnBackground) {
+                        ColorFilter.tint(ColorProvider(Color.Black))
+                    } else {
+                        ColorFilter.tint(ColorProvider(Color.White))
+                    }
+                },
                 contentDescription = qrCodeItem.name,
-                modifier = GlanceModifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(
-                        top = Dimen.spacingThreeQuarters,
-                        start = Dimen.spacingThreeQuarters,
-                        end = Dimen.spacingThreeQuarters
-                    )
+                contentScale = ContentScale.Fit,
+                modifier = GlanceModifier.size(Dimen.iconWidthDefaultWidget)
             )
             Text(
                 text = qrCodeItem.name,
@@ -182,7 +190,6 @@ fun QRCodeWidget(
                     }
                 ),
                 modifier = GlanceModifier
-                    .padding(horizontal = Dimen.spacing, vertical = Dimen.spacingQuarter)
             )
         }
     }
@@ -192,7 +199,7 @@ fun QRCodeWidget(
 @Preview(heightDp = 120, widthDp = 120)
 @Preview(heightDp = 180, widthDp = 120)
 @Composable
-fun QRCodeWidgetPreview() {
+fun TileWidgetPreview() {
     GlanceTheme(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             GlanceTheme.colors
@@ -201,7 +208,7 @@ fun QRCodeWidgetPreview() {
         }
     ) {
         Box(GlanceModifier.padding(Dimen.spacing)) {
-            QRCodeWidget(sampleQRCodeItem.copy(primaryColor = QRColor.Primary), false, false)
+            TileWidget(sampleQRCodeItem.copy(primaryColor = QRColor.Primary), false, useDarkTextOnBackground = false)
         }
     }
 }
@@ -210,7 +217,7 @@ fun QRCodeWidgetPreview() {
 @Preview(heightDp = 120, widthDp = 120)
 @Preview(heightDp = 180, widthDp = 120)
 @Composable
-fun QRCodeWidgetWithBackgroundPreview() {
+fun TileWidgetWithBackgroundPreview() {
     GlanceTheme(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             GlanceTheme.colors
@@ -218,16 +225,17 @@ fun QRCodeWidgetWithBackgroundPreview() {
             QuickQRGlanceColorScheme.colors
         }
     ) {
-        Box(GlanceModifier.padding(Dimen.spacing).width(120.dp)) {
-            QRCodeWidget(sampleQRCodeItem.copy(primaryColor = QRColor.Primary), true, false)
+        Box(GlanceModifier.padding(Dimen.spacing)) {
+            TileWidget(sampleQRCodeItem.copy(primaryColor = QRColor.Primary), true, useDarkTextOnBackground = false)
         }
     }
 }
 
 @OptIn(ExperimentalGlancePreviewApi::class)
+@Preview(heightDp = 120, widthDp = 120)
 @Preview(heightDp = 180, widthDp = 120)
 @Composable
-fun QRCodeWidgetLongTextPreview() {
+fun TileWidgetLongTextPreview() {
     GlanceTheme(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             GlanceTheme.colors
@@ -235,8 +243,12 @@ fun QRCodeWidgetLongTextPreview() {
             QuickQRGlanceColorScheme.colors
         }
     ) {
-        Box(GlanceModifier.padding(Dimen.spacing).width(120.dp)) {
-            QRCodeWidget(sampleQRCodeItemLongText.copy(primaryColor = QRColor.Primary), true, false)
+        Box(GlanceModifier.padding(Dimen.spacing)) {
+            TileWidget(
+                sampleQRCodeItemLongText.copy(primaryColor = QRColor.Primary),
+                true,
+                useDarkTextOnBackground = false
+            )
         }
     }
 }

@@ -1,4 +1,4 @@
-package dev.veryniche.quickqr.widgets
+package dev.veryniche.quickqr.widgets.tile
 
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver

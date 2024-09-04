@@ -55,8 +55,8 @@ import dev.veryniche.quickqr.components.WelcomeDialog
 import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.purchase.isProVersionRequired
 import dev.veryniche.quickqr.util.getActivity
-import dev.veryniche.quickqr.widgets.QRCodeWidgetWorker
-import dev.veryniche.quickqr.widgets.TileWidgetWorker
+import dev.veryniche.quickqr.widgets.qrcode.QRCodeWidgetWorker
+import dev.veryniche.quickqr.widgets.tile.TileWidgetWorker
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

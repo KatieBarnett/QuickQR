@@ -33,8 +33,8 @@ import dev.veryniche.quickqr.purchase.Products
 import dev.veryniche.quickqr.purchase.PurchaseManager
 import dev.veryniche.quickqr.update.AppUpdateHelper
 import dev.veryniche.quickqr.util.BarcodeClientHelper
-import dev.veryniche.quickqr.widgets.QRCodeWidgetWorker
-import dev.veryniche.quickqr.widgets.TileWidgetWorker
+import dev.veryniche.quickqr.widgets.qrcode.QRCodeWidgetWorker
+import dev.veryniche.quickqr.widgets.tile.TileWidgetWorker
 import timber.log.Timber
 
 @AndroidEntryPoint

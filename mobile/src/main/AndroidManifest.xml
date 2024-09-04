@@ -43,7 +43,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".widgets.WidgetConfigurationActivity"
+        <activity android:name=".widgets.qrcode.QRCodeWidgetConfigurationActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".widgets.tile.TileWidgetConfigurationActivity"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
@@ -54,7 +61,7 @@
             android:exported="false">
         </activity>
 
-        <receiver android:name=".widgets.QRCodeWidgetReceiver"
+        <receiver android:name=".widgets.qrcode.QRCodeWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -64,7 +71,7 @@
                 android:resource="@xml/qrcode_widget_info" />
         </receiver>
 
-        <receiver android:name=".widgets.TileWidgetReceiver"
+        <receiver android:name=".widgets.tile.TileWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

@@ -2,7 +2,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:initialLayout="@layout/glance_default_loading_layout"
-    android:configure="dev.veryniche.quickqr.widgets.WidgetConfigurationActivity"
+    android:configure="dev.veryniche.quickqr.widgets.qrcode.QRCodeWidgetConfigurationActivity"
     android:widgetFeatures="reconfigurable"
     android:resizeMode="horizontal|vertical"
     android:previewImage="@drawable/qr_code_widget_preview"

@@ -1,4 +1,4 @@
-package dev.veryniche.quickqr.widgets
+package dev.veryniche.quickqr.widgets.qrcode
 
 import android.content.Context
 import androidx.glance.appwidget.GlanceAppWidgetManager
@@ -12,31 +12,48 @@ import dev.veryniche.quickqr.core.model.QRCodeItem
 import dev.veryniche.quickqr.storage.QRCodesRepository
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import timber.log.Timber
 
 @HiltWorker
-class TileWidgetWorker @AssistedInject constructor(
+class QRCodeWidgetWorker @AssistedInject constructor(
     @Assisted val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val qrCodesRepository: QRCodesRepository,
 ) : CoroutineWorker(appContext, workerParams) {
 
+//    fun encodeIcon(icon: ImageVector) {
+//        val drawable = icon.asDrawable(appContext)
+//        val bitmap = Bitmap.createBitmap(
+//            drawable.intrinsicWidth,
+//            drawable.intrinsicHeight,
+//            Bitmap.Config.ARGB_8888
+//        )
+//        val canvas = Canvas(bitmap)
+//        drawable.setBounds(0, 0, canvas.width, canvas.height)
+//        drawable.draw(canvas)
+//
+//        val byteArrayOutputStream = ByteArrayOutputStream()
+//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+//        val byteArray = byteArrayOutputStream.toByteArray()
+//
+//        Base64.encodeToString(byteArray, Base64.DEFAULT)
+//        return byteArray
+//    }
+
     override suspend fun doWork(): Result {
         val manager = GlanceAppWidgetManager(appContext)
-        val widget = TileWidget()
+        val widget = QRCodeWidget()
         val glanceIds = manager.getGlanceIds(widget.javaClass)
-        Timber.d("Updating widgets: $glanceIds")
         glanceIds.forEach { glanceId ->
             updateAppWidgetState(
                 context = appContext,
                 glanceId = glanceId,
             ) { prefs ->
                 prefs.apply {
-                    val itemString = prefs[TileWidget.KEY_QR_CODE_ITEM]
+                    val itemString = prefs[QRCodeWidget.KEY_QR_CODE_ITEM]
                     itemString?.let {
                         val item = Json.decodeFromString<QRCodeItem>(itemString)
                         val updatedItem = qrCodesRepository.getQRCode(item.id)
-                        this[TileWidget.KEY_QR_CODE_ITEM] = Json.encodeToString(updatedItem)
+                        this[QRCodeWidget.KEY_QR_CODE_ITEM] = Json.encodeToString(updatedItem)
                     }
                 }
                 widget.update(appContext, glanceId)
