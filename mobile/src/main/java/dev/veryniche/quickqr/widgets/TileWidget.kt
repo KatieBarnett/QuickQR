@@ -1,9 +1,19 @@
 package dev.veryniche.quickqr.widgets
 
+import android.app.WallpaperManager
+import android.app.WallpaperManager.FLAG_SYSTEM
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -78,17 +88,44 @@ class TileWidget : GlanceAppWidget(errorUiLayout = R.layout.qrcode_widget_error_
                     QuickQRGlanceColorScheme.colors
                 }
             ) {
-                Content()
+                val wallpaperManager = WallpaperManager.getInstance(context)
+                val colors = wallpaperManager.getWallpaperColors(FLAG_SYSTEM)
+                var useDarkColorOnWallpaper by remember {
+                    mutableStateOf(
+                        getUseDarkColorOnWallPaper(colors, FLAG_SYSTEM) ?: false
+                    )
+                }
+                DisposableEffect(wallpaperManager) {
+                    val listener = WallpaperManager.OnColorsChangedListener { colors, type ->
+                        getUseDarkColorOnWallPaper(colors, type)?.let {
+                            useDarkColorOnWallpaper = it
+                        }
+                    }
+                    wallpaperManager.addOnColorsChangedListener(listener, Handler(Looper.getMainLooper()))
+                    onDispose {
+                        wallpaperManager.removeOnColorsChangedListener(listener)
+                    }
+                }
+                Content(useDarkColorOnWallpaper)
             }
         }
     }
 
     @Composable
-    private fun Content() {
-        currentState(KEY_QR_CODE_ITEM)?.let {
-            val item = Json.decodeFromString<QRCodeItem>(it)
+    private fun Content(useDarkText: Boolean) {
+        val state = currentState(KEY_QR_CODE_ITEM)
+        val item = try {
+            state?.let {
+                Json.decodeFromString<QRCodeItem>(state)
+            }
+        } catch (e: Exception) {
+            null
+        }
+        if (item != null) {
             val useColorBackground = currentState(KEY_COLORED_BACKGROUND)?.toBoolean() ?: false
-            TileWidget(item, useColorBackground)
+            TileWidget(item, useColorBackground, useDarkText)
+        } else {
+            WidgetError(useDarkText)
         }
     }
 }
@@ -97,6 +134,7 @@ class TileWidget : GlanceAppWidget(errorUiLayout = R.layout.qrcode_widget_error_
 fun TileWidget(
     qrCodeItem: QRCodeItem,
     useColorBackground: Boolean,
+    useDarkTextOnBackground: Boolean,
     modifier: GlanceModifier = GlanceModifier,
 ) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -122,7 +160,11 @@ fun TileWidget(
                 colorFilter = if (useColorBackground) {
                     ColorFilter.tint(ColorProvider(qrCodeItem.secondaryColor))
                 } else {
-                    ColorFilter.tint(GlanceTheme.colors.secondary)
+                    if (useDarkTextOnBackground) {
+                        ColorFilter.tint(ColorProvider(Color.Black))
+                    } else {
+                        ColorFilter.tint(ColorProvider(Color.White))
+                    }
                 },
                 contentDescription = qrCodeItem.name,
                 contentScale = ContentScale.Fit,
@@ -136,7 +178,11 @@ fun TileWidget(
                     if (useColorBackground) {
                         ColorProvider(qrCodeItem.secondaryColor)
                     } else {
-                        GlanceTheme.colors.secondary
+                        if (useDarkTextOnBackground) {
+                            ColorProvider(Color.Black)
+                        } else {
+                            ColorProvider(Color.White)
+                        }
                     }
                 ),
                 modifier = GlanceModifier
@@ -158,7 +204,7 @@ fun TileWidgetPreview() {
         }
     ) {
         Box(GlanceModifier.padding(Dimen.spacing)) {
-            TileWidget(sampleQRCodeItem.copy(primaryColor = QRColor.Primary), false)
+            TileWidget(sampleQRCodeItem.copy(primaryColor = QRColor.Primary), false, useDarkTextOnBackground = false)
         }
     }
 }
@@ -176,7 +222,7 @@ fun TileWidgetWithBackgroundPreview() {
         }
     ) {
         Box(GlanceModifier.padding(Dimen.spacing)) {
-            TileWidget(sampleQRCodeItem.copy(primaryColor = QRColor.Primary), true)
+            TileWidget(sampleQRCodeItem.copy(primaryColor = QRColor.Primary), true, useDarkTextOnBackground = false)
         }
     }
 }
@@ -194,7 +240,11 @@ fun TileWidgetLongTextPreview() {
         }
     ) {
         Box(GlanceModifier.padding(Dimen.spacing)) {
-            TileWidget(sampleQRCodeItemLongText.copy(primaryColor = QRColor.Primary), true)
+            TileWidget(
+                sampleQRCodeItemLongText.copy(primaryColor = QRColor.Primary),
+                true,
+                useDarkTextOnBackground = false
+            )
         }
     }
 }

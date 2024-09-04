@@ -1,9 +1,19 @@
 package dev.veryniche.quickqr.widgets
 
+import android.app.WallpaperManager
+import android.app.WallpaperManager.FLAG_SYSTEM
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -78,17 +88,44 @@ class QRCodeWidget : GlanceAppWidget(errorUiLayout = R.layout.qrcode_widget_erro
                     QuickQRGlanceColorScheme.colors
                 }
             ) {
-                Content()
+                val wallpaperManager = WallpaperManager.getInstance(context)
+                val colors = wallpaperManager.getWallpaperColors(FLAG_SYSTEM)
+                var useDarkColorOnWallpaper by remember {
+                    mutableStateOf(
+                        getUseDarkColorOnWallPaper(colors, FLAG_SYSTEM) ?: false
+                    )
+                }
+                DisposableEffect(wallpaperManager) {
+                    val listener = WallpaperManager.OnColorsChangedListener { colors, type ->
+                        getUseDarkColorOnWallPaper(colors, type)?.let {
+                            useDarkColorOnWallpaper = it
+                        }
+                    }
+                    wallpaperManager.addOnColorsChangedListener(listener, Handler(Looper.getMainLooper()))
+                    onDispose {
+                        wallpaperManager.removeOnColorsChangedListener(listener)
+                    }
+                }
+                Content(useDarkColorOnWallpaper)
             }
         }
     }
 
     @Composable
-    private fun Content() {
-        currentState(KEY_QR_CODE_ITEM)?.let {
-            val item = Json.decodeFromString<QRCodeItem>(it)
-            val useColorBackground = currentState(KEY_COLORED_BACKGROUND)?.toBoolean() ?: false
-            QRCodeWidget(item, useColorBackground)
+    private fun Content(useDarkText: Boolean) {
+        val state = currentState(TileWidget.KEY_QR_CODE_ITEM)
+        val item = try {
+            state?.let {
+                Json.decodeFromString<QRCodeItem>(state)
+            }
+        } catch (e: Exception) {
+            null
+        }
+        if (item != null) {
+            val useColorBackground = currentState(TileWidget.KEY_COLORED_BACKGROUND)?.toBoolean() ?: false
+            QRCodeWidget(item, useColorBackground, useDarkText)
+        } else {
+            WidgetError(useDarkText)
         }
     }
 }
@@ -97,6 +134,7 @@ class QRCodeWidget : GlanceAppWidget(errorUiLayout = R.layout.qrcode_widget_erro
 fun QRCodeWidget(
     qrCodeItem: QRCodeItem,
     useColorBackground: Boolean,
+    useDarkTextOnBackground: Boolean,
     modifier: GlanceModifier = GlanceModifier
 ) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -136,7 +174,11 @@ fun QRCodeWidget(
                     if (useColorBackground) {
                         ColorProvider(qrCodeItem.secondaryColor)
                     } else {
-                        GlanceTheme.colors.secondary
+                        if (useDarkTextOnBackground) {
+                            ColorProvider(Color.Black)
+                        } else {
+                            ColorProvider(Color.White)
+                        }
                     }
                 ),
                 modifier = GlanceModifier
@@ -159,7 +201,7 @@ fun QRCodeWidgetPreview() {
         }
     ) {
         Box(GlanceModifier.padding(Dimen.spacing)) {
-            QRCodeWidget(sampleQRCodeItem.copy(primaryColor = QRColor.Primary), false)
+            QRCodeWidget(sampleQRCodeItem.copy(primaryColor = QRColor.Primary), false, false)
         }
     }
 }
@@ -177,7 +219,7 @@ fun QRCodeWidgetWithBackgroundPreview() {
         }
     ) {
         Box(GlanceModifier.padding(Dimen.spacing).width(120.dp)) {
-            QRCodeWidget(sampleQRCodeItem.copy(primaryColor = QRColor.Primary), true)
+            QRCodeWidget(sampleQRCodeItem.copy(primaryColor = QRColor.Primary), true, false)
         }
     }
 }
@@ -194,7 +236,7 @@ fun QRCodeWidgetLongTextPreview() {
         }
     ) {
         Box(GlanceModifier.padding(Dimen.spacing).width(120.dp)) {
-            QRCodeWidget(sampleQRCodeItemLongText.copy(primaryColor = QRColor.Primary), true)
+            QRCodeWidget(sampleQRCodeItemLongText.copy(primaryColor = QRColor.Primary), true, false)
         }
     }
 }
