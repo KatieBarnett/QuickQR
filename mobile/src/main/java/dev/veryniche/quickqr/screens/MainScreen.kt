@@ -234,7 +234,7 @@ fun MainScreen(
                 onDismissRequest = {
                     showAddSheet = false
                 },
-                windowInsets = WindowInsets.ime,
+                contentWindowInsets = { WindowInsets.ime },
                 sheetState = addSheetState
             ) {
                 AddSheet(
@@ -264,7 +264,7 @@ fun MainScreen(
                 onDismissRequest = {
                     showEditSheet = false
                 },
-                windowInsets = WindowInsets.ime,
+                contentWindowInsets = { WindowInsets.ime },
                 sheetState = editSheetState
             ) {
                 EditSheet(
